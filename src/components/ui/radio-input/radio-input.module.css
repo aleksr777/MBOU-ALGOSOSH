@@ -19,7 +19,9 @@
 .label::after {
   content: "";
   position: absolute;
-  transition: color, background-color 0.3s linear;
+  transition:
+    color,
+    background-color 0.3s linear;
   margin: 0;
 }
 
