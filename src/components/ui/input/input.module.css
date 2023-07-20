@@ -10,7 +10,7 @@
   border: 1px solid var(--text-input-placeholder);
   border-radius: var(--common-border-radius);
   width: 100%;
-  padding: 19px 16px;
+  padding: 18px 16px;
   box-sizing: border-box;
   transition: var(--common-transition);
 }
