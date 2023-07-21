@@ -22,7 +22,6 @@ export const StringComponent: React.FC = () => {
   const [ symbolsArr, setSymbolsArr ] = useState<Symbol[]>( [] )
 
 
-  // Шейкерная сортировка (модификация пузырьковой сортировки)
   async function expandString ( arrSymbols: Symbol[] ) {
     let arr = arrSymbols
     let left = 0
@@ -90,10 +89,11 @@ export const StringComponent: React.FC = () => {
           disabled={ isFormActive ? false : true }
         />
         <Button
-          text={ isFormActive ? 'Развернуть' : 'Идёт разворот...' }
+          isLoader={ isFormActive ? false : true }
+          text={ isFormActive ? 'Развернуть' : '' }
           type='submit'
           linkedList='small'
-          disabled={ isFormActive ? false : true } />
+        />
       </form>
 
       <div className={ styles.blockLetters }>
