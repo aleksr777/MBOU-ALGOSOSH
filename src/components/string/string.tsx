@@ -16,11 +16,18 @@ type Symbol = {
 
 export const StringComponent: React.FC = () => {
 
-  const { values, handleChange } = useForm( { stringInput: '' } )
+  const validateConfig = {
+    stringInput: {
+      pattern: /^[A-Za-zА-Яа-я]{1,12}$/,
+      checkIsEmptyValue: true,
+    }
+  }
+
+  const { values, handleChange, errors, validateForm } = useForm( { stringInput: '' }, validateConfig )
+
   const [ isSubmitActive, setIsSubmitActive ] = useState( false )
   const [ isFormActive, setIsFormActive ] = useState( true )
   const [ symbolsArr, setSymbolsArr ] = useState<Symbol[]>( [] )
-
 
   async function expandString ( arrSymbols: Symbol[] ) {
     let arr = arrSymbols
@@ -54,42 +61,42 @@ export const StringComponent: React.FC = () => {
 
   const handleSubmit = ( e: React.FormEvent ) => {
     e.preventDefault()
-    if ( !values.stringInput ) { return null }
-    setIsSubmitActive( true )
-    const arr: Symbol[] = values.stringInput.split( '' ).map( ( symbol ) => ( {
-      symbol,
-      state: ElementStates.Default,
-    } ) )
-    if ( arr.length === 1 ) {
-      arr[ 0 ].state = ElementStates.Modified
-      setSymbolsArr( arr )
-      return null
-    }
-    else if ( arr.length > 1 ) {
-      setSymbolsArr( arr )
-      setIsFormActive( false )
-      setTimeout( () => expandString( arr ), 800 )
-    }
+    validateForm()
+      .then( ( res ) => {
+        if ( !res ) { return null }
+        setIsSubmitActive( true )
+        const arr: Symbol[] = values.stringInput.split( '' ).map( ( symbol ) => ( {
+          symbol,
+          state: ElementStates.Default,
+        } ) )
+        if ( arr.length === 1 ) {
+          arr[ 0 ].state = ElementStates.Modified
+          setSymbolsArr( arr )
+          return null
+        } else if ( arr.length > 1 ) {
+          setSymbolsArr( arr )
+          setIsFormActive( false )
+          setTimeout( () => expandString( arr ), 800 )
+        }
+      } )
+      .catch( err => console.log( err ) )
   }
 
   return (
     <SolutionLayout title='Строка'>
-      <form
-        className={ styles.formWrapper }
-        onSubmit={ handleSubmit }
-      >
+      <form className={ styles.formWrapper } onSubmit={ handleSubmit }>
         <Input
           placeholder='Введите текст'
           isLimitText={ true }
-          maxLength={ 11 }
+          limitText={ errors.stringInput ? errors.stringInput : 'Максимум — 11 символов' }
           value={ values.stringInput }
           name='stringInput'
           onChange={ handleChange }
           onFocus={ () => { setSymbolsArr( [] ) } }
-          disabled={ isFormActive ? false : true }
+          disabled={ !isFormActive }
         />
         <Button
-          isLoader={ isFormActive ? false : true }
+          isLoader={ !isFormActive }
           text={ isFormActive ? 'Развернуть' : '' }
           type='submit'
           linkedList='small'
