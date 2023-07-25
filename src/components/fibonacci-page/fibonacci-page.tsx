@@ -30,25 +30,26 @@ export const FibonacciPage: React.FC = () => {
 
   async function animate ( num: number ) {
 
-    let arrNumbers: number[] = []
-    const memo: OnlyNumberObjType = {}
-
-    function fillArrNumbersFib ( a: number, b: number, limit: number, memo: OnlyNumberObjType ): void {
-      arrNumbers.push( a )
-      if ( limit === 0 ) {
-        return
+    function getFibonacciNumbers ( arr: number[], num: number ) {
+      const memo: OnlyNumberObjType = {}
+      function fillArrNumbers ( a: number, b: number, limit: number, memo: OnlyNumberObjType ): void {
+        arr.push( a )
+        if ( limit === 0 ) {
+          return
+        }
+        const memoKey = `${ a }_${ b }_${ limit }`
+        if ( memo[ memoKey ] !== undefined ) {
+          return
+        }
+        fillArrNumbers( b, a + b, limit - 1, memo )
+        memo[ memoKey ] = arr[ arr.length - 1 ]
       }
-      const memoKey = `${ a }_${ b }_${ limit }`
-      if ( memo[ memoKey ] !== undefined ) {
-        return
-      }
-      fillArrNumbersFib( b, a + b, limit - 1, memo )
-      memo[ memoKey ] = arrNumbers[ arrNumbers.length - 1 ]
+      fillArrNumbers( 1, 1, num, memo )
+      return arr
     }
 
     for ( let i = 0; i <= num; i++ ) {
-      arrNumbers = []
-      fillArrNumbersFib( 1, 1, i, memo )
+      const arrNumbers = getFibonacciNumbers( [], i )
       setSymbolsArr( arrNumbers )
       if ( i < num ) { await delay( 500 ) }
       else { setIsFormDisabled( false ) }
