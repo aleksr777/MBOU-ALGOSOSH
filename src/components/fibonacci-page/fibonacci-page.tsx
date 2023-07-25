@@ -30,8 +30,9 @@ export const FibonacciPage: React.FC = () => {
 
   async function animate ( num: number ) {
 
+    const memo: OnlyNumberObjType = {}
+
     function getFibonacciNumbers ( arr: number[], num: number ) {
-      const memo: OnlyNumberObjType = {}
       function fillArrNumbers ( a: number, b: number, limit: number, memo: OnlyNumberObjType ): void {
         arr.push( a )
         if ( limit === 0 ) {
