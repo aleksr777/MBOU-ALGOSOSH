@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import styles from './button.module.css'
 import loaderIcon from '../../../images/icons/loader.svg'
 import { AscendingIcon } from '../icons/ascending-icon'
@@ -14,7 +14,7 @@ interface ButtonProps extends React.HTMLProps<HTMLButtonElement> {
   extraClass?: string
 }
 
-export const Button: React.FC<ButtonProps> = ( {
+const Button: React.FC<ButtonProps> = ( {
   text,
   extraClass = '',
   type = 'button',
@@ -48,3 +48,5 @@ export const Button: React.FC<ButtonProps> = ( {
     </button>
   )
 }
+
+export default memo( Button )

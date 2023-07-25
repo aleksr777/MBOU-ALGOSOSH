@@ -1,82 +1,109 @@
-import React, { useState } from 'react'
+import React, { useState, ChangeEvent } from 'react'
 import { SolutionLayout } from '../ui/solution-layout/solution-layout'
 import styles from './fibonacci-page.module.css'
 import { useForm } from '../../hooks/useForm'
 import { Input } from '../ui/input/input'
-import { Button } from '../ui/button/button'
-import { Circle } from '../ui/circle/circle'
+import Button from '../ui/button/button'
+import Circle from '../ui/circle/circle'
 import { ElementStates } from '../../types/element-states'
+import { delay } from '../../utils/delay'
+import { OnlyNumberObjType } from '../../types/types'
 
-type Symbol = {
-  symbol: string
-  state: ElementStates
-}
 
 export const FibonacciPage: React.FC = () => {
 
-  const { values, handleChange } = useForm( { fibonachiInput: '' } )
-  const [ isSubmitActive, setIsSubmitActive ] = useState( false )
-  const [ isFormActive, setIsFormActive ] = useState( true )
-  const [ symbolsArr, setSymbolsArr ] = useState<Symbol[]>( [] )
+  const validateConfig = {
+    fibonacciInput: {
+      pattern: /^[1-9]+$/,
+      checkIsEmptyValue: true,
+      defaultErrorMessage: 'Допустимо только число от 1 до 19!!!',
+    }
+  }
 
+  const { values, errors, isButtonDisabled, handleChange, isFormValid } = useForm( { fibonacciInput: '' }, validateConfig )
 
-  async function calculate ( arrSymbols: Symbol[] ) {
+  const [ isAnimating, setIsAnimating ] = useState( true )
+  const [ isFormDisabled, setIsFormDisabled ] = useState( false )
+  const [ symbolsArr, setSymbolsArr ] = useState<number[]>( [] )
 
+  let isNumValid = true
+
+  async function animate ( num: number ) {
+
+    let arrNumbers: number[] = []
+    const memo: OnlyNumberObjType = {}
+
+    function fillArrNumbersFib ( a: number, b: number, limit: number, memo: OnlyNumberObjType ): void {
+      arrNumbers.push( a )
+      if ( limit === 0 ) {
+        return
+      }
+      const memoKey = `${ a }_${ b }_${ limit }`
+      if ( memo[ memoKey ] !== undefined ) {
+        return
+      }
+      fillArrNumbersFib( b, a + b, limit - 1, memo )
+      memo[ memoKey ] = arrNumbers[ arrNumbers.length - 1 ]
+    }
+
+    for ( let i = 0; i <= num; i++ ) {
+      arrNumbers = []
+      fillArrNumbersFib( 1, 1, i, memo )
+      setSymbolsArr( arrNumbers )
+      if ( i < num ) { await delay( 500 ) }
+      else { setIsFormDisabled( false ) }
+    }
   }
 
   const handleSubmit = ( e: React.FormEvent ) => {
     e.preventDefault()
-    if ( !values.fibonachiInput ) { return null }
-    setIsSubmitActive( true )
-    const arr: Symbol[] = values.stringInput.split( '' ).map( ( symbol ) => ( {
-      symbol,
-      state: ElementStates.Default,
-    } ) )
-    if ( arr.length === 1 ) {
-      arr[ 0 ].state = ElementStates.Modified
-      setSymbolsArr( arr )
-      return null
+    const isValid = isFormValid()
+    if ( !isValid ) {
+      return
     }
-    else if ( arr.length > 1 ) {
-      setSymbolsArr( arr )
-      setIsFormActive( false )
-      setTimeout( () => calculate( arr ), 800 )
+    const number = parseInt( values.fibonacciInput )
+    if ( number && number <= 19 && number >= 1 ) {
+      setIsFormDisabled( true )
+      setIsAnimating( true )
+      setTimeout( () => animate( number ), 500 )
     }
   }
 
   return <SolutionLayout title='Последовательность Фибоначчи'>
 
-    <form
-      className={ styles.formWrapper }
-      onSubmit={ handleSubmit }
-    >
+    <form className={ styles.formWrapper } onSubmit={ handleSubmit }>
       <Input
-        type=''
         placeholder='Введите текст'
         isLimitText={ true }
-        max={ 19 }
-        value={ values.stringInput }
-        name='stringInput'
-        onChange={ handleChange }
-        onFocus={ () => { setSymbolsArr( [] ) } }
-        disabled={ isFormActive ? false : true }
+        limitText={ errors.fibonacciInput ? errors.fibonacciInput : 'Максимальное число — 19' }
+        value={ values.fibonacciInput }
+        name='fibonacciInput'
+        onChange={ ( e: ChangeEvent<HTMLInputElement> ) => {
+          const number = parseInt( e.target.value )
+          isNumValid = ( number && number < 20 && number > 0 ) ? true : false
+          handleChange( e, isNumValid )
+        } }
+        onFocus={ () => {
+          setIsAnimating( false )
+          setSymbolsArr( [] )
+        } }
+        maxLength={ 2 }
+        disabled={ isFormDisabled }
       />
       <Button
-        isLoader={ isFormActive ? false : true }
-        text={ isFormActive ? 'Рассчитать' : '' }
+        isLoader={ isFormDisabled }
+        text={ isFormDisabled ? '' : 'Рассчитать' }
         type='submit'
         linkedList='small'
+        disabled={ isButtonDisabled || !isNumValid }
       />
     </form>
 
     <div className={ styles.blockLetters }>
-      { isSubmitActive &&
-        //symbolsArr.map( ( symbol, index ) => (
-        ( <>
-          <Circle /* key={ index } */ tail={ '' } letter={ '1' } state={ ElementStates.Default } />
-          <Circle /* key={ index } */ tail={ '1' } letter={ '1' } state={ ElementStates.Default } />
-        </> )
-        //) )
+      { isAnimating &&
+        symbolsArr.map( ( symbol, index ) => (
+          <Circle key={ index } tail={ index.toString() } letter={ symbol.toString() } state={ ElementStates.Default } />
+        ) )
       }
     </div>
   </SolutionLayout>

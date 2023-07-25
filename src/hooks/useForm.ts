@@ -1,3 +1,14 @@
+/* const validateConfig = {
+  stringInput: {
+    pattern: /^[A-Za-zА-Яа-я]{1,20}$/, // Только простые регулярные выражения такого вида
+    errorMinCharsMessage: '',
+    errorMaxCharsMessage: '',
+    defaultErrorMessage: '',
+    checkIsEmptyValue: true/false,
+    emptyValueMessage: '',
+  }
+} */
+
 import { useState, ChangeEvent } from 'react'
 
 type OnlyStringObjType = {
@@ -19,10 +30,10 @@ type PatternsType = {
 
 type UseFormType = {
   values: OnlyStringObjType
-  handleChange: ( event: ChangeEvent<HTMLInputElement> ) => void
-  setValues: ( values: OnlyStringObjType ) => void
   errors: OnlyStringObjType
-  validateForm: () => Promise<boolean>
+  isButtonDisabled: boolean
+  handleChange: ( event: ChangeEvent<HTMLInputElement>, isBtnActive?: boolean ) => void
+  isFormValid: () => boolean
 }
 
 type MinMaxCharsType = { minChars: number | null; maxChars: number | null } | null
@@ -34,6 +45,7 @@ export function useForm (
 
   const [ values, setValues ] = useState<OnlyStringObjType>( inputValues )
   const [ errors, setErrors ] = useState<{ [ key: string ]: string }>( {} )
+  const [ isButtonDisabled, setIsButtonDisabled ] = useState( false )
 
   function getMinMaxChars ( regex: RegExp ): MinMaxCharsType {
     const regexStr = regex.source
@@ -78,36 +90,41 @@ export function useForm (
     }
   }
 
-  const handleChange = ( event: ChangeEvent<HTMLInputElement> ) => {
+  const handleChange = ( event: ChangeEvent<HTMLInputElement>, isBtnActive: boolean = true ) => {
+    // isBtnActive - необязательный аргумент для дополнительного влияния на кнопку
     if ( !event.target ) { return }
     let { value, name }: { value: string; name: string } = event.target
     setValues( { ...values, [ name ]: value } )
     if ( patterns && patterns[ name ] ) {
-      validateField( name, value )
+      validateField( name, value, isBtnActive )
     }
   }
 
-  const validateField = ( fieldName: string, value: string ) => {
+  const validateField = ( fieldName: string, value: string, isBtnActive: boolean = true ) => {
     const patternData = getPatternData( fieldName )
     if ( patternData ) {
       const { errorMaxCharsMessage, defaultErrorMessage, checkIsEmptyValue, emptyValueMessage, maxChars, patternWithoutCount } = patternData
       if ( checkIsEmptyValue && value.trim() === '' ) {
+        setIsButtonDisabled( true )
         setErrors( ( prevErrors ) => ( {
           ...prevErrors,
           [ fieldName ]: emptyValueMessage || 'Обязательно для заполнения!!!',
         } ) )
       } else if ( value && !patternWithoutCount.test( value ) ) {
+        setIsButtonDisabled( true )
         setErrors( ( prevErrors ) => ( {
           ...prevErrors,
           [ fieldName ]: defaultErrorMessage || 'Недопустимые символы!!!',
         } ) )
       } else if ( value && patternWithoutCount.test( value ) && maxChars && maxChars < value.length ) {
+        setIsButtonDisabled( true )
         setErrors( ( prevErrors ) => ( {
           ...prevErrors,
           [ fieldName ]: errorMaxCharsMessage || `Не более ${ maxChars } символов!!!`,
         } ) )
       }
       else {
+        setIsButtonDisabled( !isBtnActive )
         setErrors( ( prevErrors ) => ( {
           ...prevErrors,
           [ fieldName ]: '',
@@ -116,7 +133,7 @@ export function useForm (
     }
   }
 
-  async function validateForm () {
+  function isFormValid (): boolean {
     let isValid = true
     if ( patterns ) {
       for ( const fieldName in patterns ) {
@@ -125,30 +142,35 @@ export function useForm (
           const { errorMinCharsMessage, errorMaxCharsMessage, defaultErrorMessage, checkIsEmptyValue, emptyValueMessage, minChars, maxChars, patternWithoutCount } = patternData
           if ( checkIsEmptyValue && values[ fieldName ].trim() === '' ) {
             isValid = false
+            setIsButtonDisabled( true )
             setErrors( ( prevErrors ) => ( {
               ...prevErrors,
               [ fieldName ]: emptyValueMessage || 'Обязательно для заполнения!!!',
             } ) )
           } else if ( values[ fieldName ] && !patternWithoutCount.test( values[ fieldName ] ) ) {
             isValid = false
+            setIsButtonDisabled( true )
             setErrors( ( prevErrors ) => ( {
               ...prevErrors,
               [ fieldName ]: defaultErrorMessage || 'Недопустимые символы!!!',
             } ) )
           } else if ( values[ fieldName ] && patternWithoutCount.test( values[ fieldName ] ) && minChars && minChars > values[ fieldName ].length ) {
             isValid = false
+            setIsButtonDisabled( true )
             setErrors( ( prevErrors ) => ( {
               ...prevErrors,
               [ fieldName ]: errorMinCharsMessage || `Не менее ${ minChars } символов!!!`,
             } ) )
           } else if ( values[ fieldName ] && patternWithoutCount.test( values[ fieldName ] ) && maxChars && maxChars < values[ fieldName ].length ) {
             isValid = false
+            setIsButtonDisabled( true )
             setErrors( ( prevErrors ) => ( {
               ...prevErrors,
               [ fieldName ]: errorMaxCharsMessage || `Не более ${ maxChars } символов!!!`,
             } ) )
           }
           else {
+            setIsButtonDisabled( false )
             setErrors( ( prevErrors ) => ( {
               ...prevErrors,
               [ fieldName ]: '',
@@ -160,5 +182,5 @@ export function useForm (
     return isValid
   }
 
-  return { values, handleChange, setValues, errors, validateForm }
+  return { values, errors, isButtonDisabled, handleChange, isFormValid }
 }

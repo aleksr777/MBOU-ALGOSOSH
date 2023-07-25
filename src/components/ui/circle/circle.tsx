@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import styles from './circle.module.css'
 import { ElementStates } from '../../../types/element-states'
 
@@ -13,7 +13,7 @@ interface CircleProps {
   isSmall?: boolean
 }
 
-export const Circle: React.FC<CircleProps> = ( {
+const Circle: React.FC<CircleProps> = ( {
   state = ElementStates.Default,
   letter,
   head,
@@ -56,3 +56,5 @@ export const Circle: React.FC<CircleProps> = ( {
     </div>
   )
 }
+
+export default memo( Circle )

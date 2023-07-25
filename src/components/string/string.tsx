@@ -3,8 +3,8 @@ import styles from './string.module.css'
 import { useForm } from '../../hooks/useForm'
 import { SolutionLayout } from '../ui/solution-layout/solution-layout'
 import { Input } from '../ui/input/input'
-import { Button } from '../ui/button/button'
-import { Circle } from '../ui/circle/circle'
+import Button from '../ui/button/button'
+import Circle from '../ui/circle/circle'
 import { ElementStates } from '../../types/element-states'
 import { delay } from '../../utils/delay'
 import { swapElementsArr } from '../../utils/swapElementsArr'
@@ -18,15 +18,16 @@ export const StringComponent: React.FC = () => {
 
   const validateConfig = {
     stringInput: {
-      pattern: /^[A-Za-zА-Яа-я]{1,12}$/,
+      pattern: /^[a-zA-Zа-яА-Я0-9]{0,11}$/,
       checkIsEmptyValue: true,
+      defaultErrorMessage: 'Допустимы только буквы и цифры!!!',
     }
   }
 
-  const { values, handleChange, errors, validateForm } = useForm( { stringInput: '' }, validateConfig )
+  const { values, errors, isButtonDisabled, handleChange, isFormValid } = useForm( { stringInput: '' }, validateConfig )
 
-  const [ isSubmitActive, setIsSubmitActive ] = useState( false )
-  const [ isFormActive, setIsFormActive ] = useState( true )
+  const [ isAnimating, setIsAnimating ] = useState( true )
+  const [ isFormDisabled, setIsFormDisabled ] = useState( false )
   const [ symbolsArr, setSymbolsArr ] = useState<Symbol[]>( [] )
 
   async function expandString ( arrSymbols: Symbol[] ) {
@@ -56,30 +57,27 @@ export const StringComponent: React.FC = () => {
     } ) )
     setSymbolsArr( completedArr )
 
-    setIsFormActive( true )
+    setIsFormDisabled( false )
   }
 
   const handleSubmit = ( e: React.FormEvent ) => {
     e.preventDefault()
-    validateForm()
-      .then( ( res ) => {
-        if ( !res ) { return null }
-        setIsSubmitActive( true )
-        const arr: Symbol[] = values.stringInput.split( '' ).map( ( symbol ) => ( {
-          symbol,
-          state: ElementStates.Default,
-        } ) )
-        if ( arr.length === 1 ) {
-          arr[ 0 ].state = ElementStates.Modified
-          setSymbolsArr( arr )
-          return null
-        } else if ( arr.length > 1 ) {
-          setSymbolsArr( arr )
-          setIsFormActive( false )
-          setTimeout( () => expandString( arr ), 800 )
-        }
-      } )
-      .catch( err => console.log( err ) )
+    const isValid = isFormValid()
+    if ( !isValid ) { return }
+    setIsAnimating( true )
+    const arr: Symbol[] = values.stringInput.split( '' ).map( ( symbol ) => ( {
+      symbol,
+      state: ElementStates.Default,
+    } ) )
+    if ( arr.length === 1 ) {
+      arr[ 0 ].state = ElementStates.Modified
+      setSymbolsArr( arr )
+      return null
+    } else if ( arr.length > 1 ) {
+      setSymbolsArr( arr )
+      setIsFormDisabled( true )
+      setTimeout( () => expandString( arr ), 800 )
+    }
   }
 
   return (
@@ -92,19 +90,23 @@ export const StringComponent: React.FC = () => {
           value={ values.stringInput }
           name='stringInput'
           onChange={ handleChange }
-          onFocus={ () => { setSymbolsArr( [] ) } }
-          disabled={ !isFormActive }
+          onFocus={ () => {
+            setIsAnimating( false )
+            setSymbolsArr( [] )
+          } }
+          disabled={ isFormDisabled }
         />
         <Button
-          isLoader={ !isFormActive }
-          text={ isFormActive ? 'Развернуть' : '' }
+          isLoader={ isFormDisabled }
+          text={ isFormDisabled ? '' : 'Развернуть' }
           type='submit'
           linkedList='small'
+          disabled={ isButtonDisabled }
         />
       </form>
 
       <div className={ styles.blockLetters }>
-        { isSubmitActive &&
+        { isAnimating &&
           symbolsArr.map( ( symbol, index ) => (
             <Circle key={ index } letter={ symbol.symbol } state={ symbol.state } />
           ) ) }

@@ -18,8 +18,11 @@
 
 .blockLetters {
   margin: 0 auto;
+  width: 1000px;
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   column-gap: 16px;
+  row-gap: 78px;
   transition: all .3s ease 0s;
 }
