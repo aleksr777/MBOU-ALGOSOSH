@@ -28,11 +28,11 @@ export const FibonacciPage: React.FC = () => {
 
   let isNumValid = true
 
-  async function animate ( num: number ) {
+  function animate ( num: number ) {
 
-    const memo: OnlyNumberObjType = {}
-
-    function getFibonacciNumbers ( arr: number[], num: number ) {
+    function getFibonacciNumbers ( num: number ) {
+      const memo: OnlyNumberObjType = {}
+      const arr: number[] = []
       function fillArrNumbers ( a: number, b: number, limit: number, memo: OnlyNumberObjType ): void {
         arr.push( a )
         if ( limit === 0 ) {
@@ -49,12 +49,19 @@ export const FibonacciPage: React.FC = () => {
       return arr
     }
 
-    for ( let i = 0; i <= num; i++ ) {
-      const arrNumbers = getFibonacciNumbers( [], i )
-      setSymbolsArr( arrNumbers )
-      if ( i < num ) { await delay( 500 ) }
-      else { setIsFormDisabled( false ) }
+    async function renderNumbers ( arrNumbers: number[] ) {
+      for ( let i = 0; i < arrNumbers.length; i++ ) {
+        setSymbolsArr( arrNumbers.slice( 0, i + 1 ) )
+        if ( i < arrNumbers.length - 1 ) {
+          await delay( 500 )
+        } else {
+          setIsFormDisabled( false )
+        }
+      }
     }
+
+    const arrNumbers = getFibonacciNumbers( num )
+    renderNumbers( arrNumbers )
   }
 
   const handleSubmit = ( e: React.FormEvent ) => {
