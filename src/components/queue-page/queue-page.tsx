@@ -75,13 +75,13 @@ export const QueuePage: React.FC = () => {
     </form>
 
     <div className={ styles.blockAnimate }>
-      <Circle /* key={ index } */ tail={ '0' } head={ 'head' } letter={ '2' } state={ ElementStates.Default } />
-      <Circle /* key={ index } */ tail={ '1' } head={ '' } letter={ '5' } state={ ElementStates.Default } />
-      <Circle /* key={ index } */ tail={ '2' } head={ '' } letter={ '3' } state={ ElementStates.Default } />
-      <Circle /* key={ index } */ tail={ '3' } head={ '' } letter={ '' } state={ ElementStates.Changing } />
-      <Circle /* key={ index } */ tail={ '4' } head={ '' } letter={ '' } state={ ElementStates.Default } />
-      <Circle /* key={ index } */ tail={ '5' } head={ '' } letter={ '' } state={ ElementStates.Default } />
-      <Circle /* key={ index } */ tail={ '6' } head={ '' } letter={ '' } state={ ElementStates.Default } />
+      <Circle /* key={ index } */ index={ 0 } tail={ '' } head={ 'head' } letter={ '2' } state={ ElementStates.Default } />
+      <Circle /* key={ index } */ index={ 1 } tail={ '' } head={ '' } letter={ '5' } state={ ElementStates.Default } />
+      <Circle /* key={ index } */ index={ 2 } tail={ '' } head={ '' } letter={ '3' } state={ ElementStates.Default } />
+      <Circle /* key={ index } */ index={ 3 } tail={ '' } head={ '' } letter={ '' } state={ ElementStates.Changing } />
+      <Circle /* key={ index } */ index={ 4 } tail={ '' } head={ '' } letter={ '' } state={ ElementStates.Default } />
+      <Circle /* key={ index } */ index={ 5 } tail={ '' } head={ '' } letter={ '' } state={ ElementStates.Default } />
+      <Circle /* key={ index } */ index={ 6 } tail={ '' } head={ '' } letter={ '' } state={ ElementStates.Default } />
     </div>
   </SolutionLayout>
 }

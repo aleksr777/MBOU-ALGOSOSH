@@ -75,10 +75,10 @@ export const StackPage: React.FC = () => {
     </form>
 
     <div className={ styles.blockAnimate }>
-      <Circle /* key={ index } */ tail={ '0' } head={ '' } letter={ '1' } state={ ElementStates.Default } />
-      <Circle /* key={ index } */ tail={ '1' } head={ '' } letter={ '2' } state={ ElementStates.Default } />
-      <Circle /* key={ index } */ tail={ '2' } head={ '' } letter={ '3' } state={ ElementStates.Default } />
-      <Circle /* key={ index } */ tail={ '3' } head={ 'top' } letter={ '4' } state={ ElementStates.Changing } />
+      <Circle /* key={ index } */ index={ 0 } tail={ '' } head={ '' } letter={ '1' } state={ ElementStates.Default } />
+      <Circle /* key={ index } */ index={ 1 } tail={ '' } head={ '' } letter={ '2' } state={ ElementStates.Default } />
+      <Circle /* key={ index } */ index={ 2 } tail={ '' } head={ '' } letter={ '3' } state={ ElementStates.Default } />
+      <Circle /* key={ index } */ index={ 3 } tail={ '' } head={ 'top' } letter={ '4' } state={ ElementStates.Changing } />
     </div>
   </SolutionLayout>
 }

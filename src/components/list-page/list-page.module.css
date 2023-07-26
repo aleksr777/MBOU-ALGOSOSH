@@ -1,0 +1,44 @@
+* {
+  box-sizing: border-box;
+}
+
+.formWrapper {
+  width: 950px;
+  padding: 0;
+  margin: 0 auto 114px auto;
+}
+
+.blockHeadsTails {
+  display: flex;
+  column-gap: 12px;
+  margin-bottom: 10px;
+}
+
+.blockIndices {
+  display: flex;
+  column-gap: 12px;
+}
+
+.button_correct_small {
+  width: fit-content;
+  flex: 0 0 fit-content;
+  min-width: 175px;
+}
+
+.button_correct_large {
+  width: fit-content;
+  flex: 0 0 fit-content;
+  min-width: 362px;
+}
+
+.blockAnimate {
+  margin: 0 auto;
+  width: fit-content;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  column-gap: 16px;
+  row-gap: 78px;
+  transition: all .3s ease 0s;
+}
