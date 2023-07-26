@@ -74,6 +74,7 @@ export const FibonacciPage: React.FC = () => {
     if ( number && number <= 19 && number >= 1 ) {
       setIsFormDisabled( true )
       setIsAnimating( true )
+      setSymbolsArr( [] )
       setTimeout( () => animate( number ), 500 )
     }
   }
