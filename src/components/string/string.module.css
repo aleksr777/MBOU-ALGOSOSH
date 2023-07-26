@@ -11,7 +11,7 @@
   margin: 0 auto 119px auto;
 }
 
-.formWrapper > button {
+.button_correct {
   flex: 0 0 auto;
   display: flex;
 }

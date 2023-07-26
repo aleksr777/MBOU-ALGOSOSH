@@ -102,6 +102,7 @@ export const StringComponent: React.FC = () => {
           type='submit'
           linkedList='small'
           disabled={ isButtonDisabled }
+          extraClass={ styles.button_correct }
         />
       </form>
 
