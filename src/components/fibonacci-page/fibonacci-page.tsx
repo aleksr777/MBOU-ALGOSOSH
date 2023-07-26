@@ -14,7 +14,7 @@ export const FibonacciPage: React.FC = () => {
 
   const validateConfig = {
     fibonacciInput: {
-      pattern: /^[1-9]+$/,
+      pattern: /^[0-9]+$/,
       checkIsEmptyValue: true,
       defaultErrorMessage: 'Допустимо только число от 1 до 19!!!',
     }
