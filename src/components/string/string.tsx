@@ -44,7 +44,7 @@ export const StringComponent: React.FC = () => {
       arr = await changeStatus( ElementStates.Changing, left, right )
       setSymbolsArr( [ ...arr ] )
       await delay( 600 )
-      arr = await swapElementsArr( arr, left, right )
+      swapElementsArr( arr, left, right )
       arr = await changeStatus( ElementStates.Modified, left, right )
       setSymbolsArr( [ ...arr ] )
       left++
