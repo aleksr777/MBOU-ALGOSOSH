@@ -101,7 +101,9 @@ export const SortingPage: React.FC = () => {
       }
       arr[ i ].state = ElementStates.Modified
       setColumnsData( arr )
-      await delay( DELAY_TIME )
+      if ( i !== arr.length - 1 ) {
+        await delay( DELAY_TIME )
+      }
     }
     const completedArr = arr.map( ( column ) => ( { ...column, state: ElementStates.Modified, } ) )
     setColumnsData( completedArr )
@@ -134,7 +136,9 @@ export const SortingPage: React.FC = () => {
           isSwapedRight = true
         }
         setColumnsState( arr, i, j, ElementStates.Default )
-        await delay( DELAY_TIME )//добавил для лучшей визуализации
+        if ( i !== arr.length - 1 ) {
+          await delay( DELAY_TIME )
+        }
       }
       arr[ right ].state = ElementStates.Modified
       setColumnsData( arr )
@@ -151,7 +155,9 @@ export const SortingPage: React.FC = () => {
             isSwapedLeft = true
           }
           setColumnsState( arr, i, j, ElementStates.Default )
-          await delay( DELAY_TIME )//добавил для лучшей визуализации
+          if ( i !== arr.length - 1 ) {
+            await delay( DELAY_TIME )
+          }
         }
         arr[ left ].state = ElementStates.Modified
         setColumnsData( arr )
