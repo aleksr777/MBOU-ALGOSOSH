@@ -99,11 +99,9 @@ export const SortingPage: React.FC = () => {
       if ( minOrMaxIndex !== i ) {
         swapElementsArr( arr, i, minOrMaxIndex )
       }
-      arr[ i ].state = ElementStates.Default
-      setColumnsData( arr )
-      await delay( DELAY_TIME )//добавил для лучшей визуализации
       arr[ i ].state = ElementStates.Modified
       setColumnsData( arr )
+      await delay( DELAY_TIME )
     }
     const completedArr = arr.map( ( column ) => ( { ...column, state: ElementStates.Modified, } ) )
     setColumnsData( completedArr )
