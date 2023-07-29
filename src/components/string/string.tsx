@@ -87,10 +87,11 @@ export const StringComponent: React.FC = () => {
 
         <Input
           placeholder='Введите текст'
+          name='stringInput'
+          maxLength={ 11 }
           isLimitText={ true }
           limitText={ errors.stringInput ? errors.stringInput : 'Максимум — 11 символов' }
           value={ values.stringInput }
-          name='stringInput'
           onChange={ handleChange }
           onFocus={ () => {
             setSymbolsArr( [] )

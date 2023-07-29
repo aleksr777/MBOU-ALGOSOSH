@@ -17,9 +17,9 @@ export const StackPage: React.FC = () => {
 
   const validateConfig = {
     stackInput: {
-      pattern: /^[0-9]+$/,
+      pattern: /^[a-zA-Zа-яА-Я0-9]{0,4}$/,
       checkIsEmptyValue: true,
-      defaultErrorMessage: 'Допустимы только числа!!!',
+      defaultErrorMessage: 'Допустимы только буквы и цифры!!!',
     }
   }
 
@@ -50,8 +50,7 @@ export const StackPage: React.FC = () => {
     } ) )
     const newStack = new Stack<string>()
     stack.getElements().forEach( ( element ) => newStack.push( element ) )
-    const value = String( parseInt( values.stackInput ) ) // для исключения лишних нулей
-    newStack.push( value )
+    newStack.push( values.stackInput )
     setStack( newStack )
     setValues( ( prevValues ) => ( { ...prevValues, stackInput: '' } ) )
     setHighlightedIndex( stack.size() ) // подсветка нового элемента (последний, top)
@@ -101,12 +100,6 @@ export const StackPage: React.FC = () => {
     handlePush()
   }
 
-  const onChangeHandler = ( e: ChangeEvent<HTMLInputElement> ) => {
-    const number = parseInt( e.target.value )
-    const isInputValid = ( !isNaN( number ) ) ? true : false
-    handleChange( e, isInputValid )
-  }
-
   return <SolutionLayout title='Стек'>
 
     <form className={ styles.formWrapper } onSubmit={ handleSubmit }    >
@@ -118,7 +111,7 @@ export const StackPage: React.FC = () => {
         limitText={ errors.stackInput ? errors.stackInput : 'Максимум — 4 символа' }
         value={ values.stackInput }
         maxLength={ 4 }
-        onChange={ onChangeHandler }
+        onChange={ handleChange }
         disabled={ isFormDisabled }
       />
 
