@@ -1,5 +1,5 @@
 import styles from './stack-page.module.css'
-import React, { useState, ChangeEvent } from 'react'
+import React, { useState } from 'react'
 import { SolutionLayout } from '../ui/solution-layout/solution-layout'
 import { useForm } from '../../hooks/useForm'
 import { Input } from '../ui/input/input'
@@ -24,7 +24,7 @@ export const StackPage: React.FC = () => {
   }
 
   const {
-    values, setValues,
+    values,
     errors,
     isFormValid,
     handleChange,
@@ -164,6 +164,7 @@ export const StackPage: React.FC = () => {
           />
         ) ) }
       </div>
+      
     </SolutionLayout>
   )
 }
