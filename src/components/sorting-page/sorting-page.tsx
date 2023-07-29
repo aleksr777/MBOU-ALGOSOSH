@@ -200,12 +200,11 @@ export const SortingPage: React.FC = () => {
     }, 700 )
   }
 
+  const handleSubmit = ( e: React.FormEvent ) => { e.preventDefault() }
+
   return <SolutionLayout title='Сортировка массива'>
 
-    <form
-      className={ styles.formWrapper }
-      onSubmit={ ( e: React.FormEvent ) => e.preventDefault() }
-    >
+    <form className={ styles.formWrapper } onSubmit={ handleSubmit }>
 
       <RadioInput
         label={ 'Выбор' }

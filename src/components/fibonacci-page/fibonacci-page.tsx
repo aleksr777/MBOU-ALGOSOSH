@@ -20,7 +20,7 @@ export const FibonacciPage: React.FC = () => {
     }
   }
 
-  const { values, errors, isButtonDisabled, handleChange, isFormValid } = useForm( { fibonacciInput: '' }, validateConfig )
+  const { values, errors, isFormValid, handleChange, checkIsFormValid } = useForm( { fibonacciInput: '' }, validateConfig )
 
   const [ isAnimating, setIsAnimating ] = useState( true )
   const [ isFormDisabled, setIsFormDisabled ] = useState( false )
@@ -64,10 +64,7 @@ export const FibonacciPage: React.FC = () => {
 
   const handleSubmit = ( e: React.FormEvent ) => {
     e.preventDefault()
-    const isValid = isFormValid()
-    if ( !isValid ) {
-      return
-    }
+    if ( !checkIsFormValid() ) { return }
     const number = parseInt( values.fibonacciInput )
     if ( number && number <= 19 && number >= 1 ) {
       setIsFormDisabled( true )
@@ -75,6 +72,12 @@ export const FibonacciPage: React.FC = () => {
       setSymbolsArr( [] )
       setTimeout( () => animate( number ), 500 )
     }
+  }
+
+  const onChangeHandler = ( e: ChangeEvent<HTMLInputElement> ) => {
+    const number = parseInt( e.target.value )
+    const isInputValid = ( number && number < 20 && number > 0 ) ? true : false
+    handleChange( e, isInputValid )
   }
 
   return <SolutionLayout title='Последовательность Фибоначчи'>
@@ -86,11 +89,7 @@ export const FibonacciPage: React.FC = () => {
         limitText={ errors.fibonacciInput ? errors.fibonacciInput : 'Максимальное число — 19' }
         value={ values.fibonacciInput }
         name='fibonacciInput'
-        onChange={ ( e: ChangeEvent<HTMLInputElement> ) => {
-          const number = parseInt( e.target.value )
-          const isInputValid = ( number && number < 20 && number > 0 ) ? true : false
-          handleChange( e, isInputValid )
-        } }
+        onChange={ onChangeHandler }
         onFocus={ () => {
           setIsAnimating( false )
           setSymbolsArr( [] )
@@ -103,7 +102,7 @@ export const FibonacciPage: React.FC = () => {
         text={ isFormDisabled ? '' : 'Рассчитать' }
         type='submit'
         linkedList='small'
-        disabled={ isButtonDisabled }
+        disabled={ !isFormValid }
       />
     </form>
 

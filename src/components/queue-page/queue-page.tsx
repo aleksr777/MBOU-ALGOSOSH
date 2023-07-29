@@ -10,7 +10,7 @@ import { delay } from '../../utils/delay'
 
 export const QueuePage: React.FC = () => {
 
-  const { values, errors, isButtonDisabled, handleChange, isFormValid } = useForm( { queueInput: '' } )
+  const { values, errors, isFormValid, handleChange, checkIsFormValid } = useForm( { queueInput: '' } )
 
   const [ isAnimating, setIsAnimating ] = useState( true )
   const [ isFormDisabled, setIsFormDisabled ] = useState( false )
@@ -51,7 +51,7 @@ export const QueuePage: React.FC = () => {
         type='button'
         linkedList='small'
         extraClass={ styles.button_correct_medium }
-      //disabled={ isButtonDisabled }
+      //disabled={ !isFormValid }
       />
 
       <Button
@@ -60,7 +60,7 @@ export const QueuePage: React.FC = () => {
         type='button'
         linkedList='small'
         extraClass={ `${ styles.button_correct_small } ${ styles.button_correct_mr }` }
-      //disabled={ isButtonDisabled }
+      //disabled={ !isFormValid }
       />
 
       <Button
@@ -69,7 +69,7 @@ export const QueuePage: React.FC = () => {
         type='button'
         linkedList='small'
         extraClass={ styles.button_correct_medium }
-      //disabled={ isButtonDisabled }
+      //disabled={ !isFormValid }
       />
 
     </form>

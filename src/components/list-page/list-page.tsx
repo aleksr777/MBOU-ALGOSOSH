@@ -12,7 +12,7 @@ import { delay } from '../../utils/delay'
 
 export const ListPage: React.FC = () => {
 
-  const { values, errors, isButtonDisabled, handleChange, isFormValid } = useForm( {
+  const { values, errors, isFormValid, handleChange, checkIsFormValid } = useForm( {
     headsTailsInput: '',
     indicesInput: ''
   } )
@@ -57,7 +57,7 @@ export const ListPage: React.FC = () => {
           type='button'
           linkedList='small'
           extraClass={ styles.button_correct_small }
-        //disabled={ isButtonDisabled }
+        //disabled={ !isFormValid }
         />
 
         <Button
@@ -66,7 +66,7 @@ export const ListPage: React.FC = () => {
           type='button'
           linkedList='small'
           extraClass={ styles.button_correct_small }
-        //disabled={ isButtonDisabled }
+        //disabled={ !isFormValid }
         />
         <Button
           //isLoader={ isFormDisabled }
@@ -74,7 +74,7 @@ export const ListPage: React.FC = () => {
           type='button'
           linkedList='small'
           extraClass={ styles.button_correct_small }
-        //disabled={ isButtonDisabled }
+        //disabled={ !isFormValid }
         />
 
         <Button
@@ -83,7 +83,7 @@ export const ListPage: React.FC = () => {
           type='button'
           linkedList='small'
           extraClass={ styles.button_correct_small }
-        //disabled={ isButtonDisabled }
+        //disabled={ !isFormValid }
         />
 
       </div>
@@ -112,7 +112,7 @@ export const ListPage: React.FC = () => {
           type='button'
           linkedList='big'
           extraClass={ styles.button_correct_large }
-        //disabled={ isButtonDisabled }
+        //disabled={ !isFormValid }
         />
 
         <Button
@@ -121,7 +121,7 @@ export const ListPage: React.FC = () => {
           type='button'
           linkedList='big'
           extraClass={ styles.button_correct_large }
-        //disabled={ isButtonDisabled }
+        //disabled={ !isFormValid }
         />
       </div>
 

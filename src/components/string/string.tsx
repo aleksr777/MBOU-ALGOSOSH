@@ -26,7 +26,7 @@ export const StringComponent: React.FC = () => {
     }
   }
 
-  const { values, errors, isButtonDisabled, handleChange, isFormValid } = useForm( { stringInput: '' }, validateConfig )
+  const { values, errors, isFormValid, handleChange, checkIsFormValid } = useForm( { stringInput: '' }, validateConfig )
 
   const [ isFormDisabled, setIsFormDisabled ] = useState( false )
   const [ symbolsArr, setSymbolsArr ] = useState<Symbol[]>( [] )
@@ -62,9 +62,8 @@ export const StringComponent: React.FC = () => {
   }
 
   const handleSubmit = ( e: React.FormEvent ) => {
-    e.preventDefault()
-    const isValid = isFormValid()
-    if ( !isValid ) { return }
+    e.preventDefault()    
+    if ( !checkIsFormValid() ) { return }
     const arr: Symbol[] = values.stringInput.split( '' ).map( ( symbol ) => ( {
       symbol,
       state: ElementStates.Default,
@@ -81,8 +80,11 @@ export const StringComponent: React.FC = () => {
   }
 
   return (
+
     <SolutionLayout title='Строка'>
+
       <form className={ styles.formWrapper } onSubmit={ handleSubmit }>
+
         <Input
           placeholder='Введите текст'
           isLimitText={ true }
@@ -95,14 +97,16 @@ export const StringComponent: React.FC = () => {
           } }
           disabled={ isFormDisabled }
         />
+
         <Button
-          isLoader={ isFormDisabled }
-          text={ isFormDisabled ? '' : 'Развернуть' }
           type='submit'
           linkedList='small'
-          disabled={ isButtonDisabled }
           extraClass={ styles.button_correct }
+          text={ isFormDisabled ? '' : 'Развернуть' }
+          isLoader={ isFormDisabled }
+          disabled={ !isFormValid || isFormDisabled }
         />
+
       </form>
 
       <div className={ styles.blockLetters }>
@@ -110,6 +114,7 @@ export const StringComponent: React.FC = () => {
           <Circle key={ index } letter={ symbol.symbol } state={ symbol.state } />
         ) ) }
       </div>
+
     </SolutionLayout>
   )
 }

@@ -26,9 +26,9 @@ export const StackPage: React.FC = () => {
   const {
     values, setValues,
     errors,
-    isButtonDisabled,
+    isFormValid,
     handleChange,
-    isFormValid
+    checkIsFormValid
   } = useForm( { stackInput: '' }, validateConfig )
 
   const [ highlightedIndex, setHighlightedIndex ] = useState<number | null>( null )
@@ -42,9 +42,7 @@ export const StackPage: React.FC = () => {
   } )
 
   const handlePush = async () => {
-    if ( !isFormValid() ) {
-      return
-    }
+    if ( !checkIsFormValid() ) { return }
     setIsFormDisabled( true )
     setButtonsState( ( {
       ...buttonsState,
@@ -98,15 +96,20 @@ export const StackPage: React.FC = () => {
     setButtonsState( ( { ...buttonsState, clear: { isLoading: false } } ) )
   }
 
+  const handleSubmit = ( e: React.FormEvent ) => {
+    e.preventDefault()
+    handlePush()
+  }
+
+  const onChangeHandler = ( e: ChangeEvent<HTMLInputElement> ) => {
+    const number = parseInt( e.target.value )
+    const isInputValid = ( !isNaN( number ) ) ? true : false
+    handleChange( e, isInputValid )
+  }
+
   return <SolutionLayout title='Стек'>
 
-    <form
-      className={ styles.formWrapper }
-      onSubmit={ ( e: React.FormEvent ) => {
-        e.preventDefault()
-        handlePush()
-      } }
-    >
+    <form className={ styles.formWrapper } onSubmit={ handleSubmit }    >
 
       <Input
         name='stackInput'
@@ -115,11 +118,7 @@ export const StackPage: React.FC = () => {
         limitText={ errors.stackInput ? errors.stackInput : 'Максимум — 4 символа' }
         value={ values.stackInput }
         maxLength={ 4 }
-        onChange={ ( e: ChangeEvent<HTMLInputElement> ) => {
-          const number = parseInt( e.target.value )
-          const isInputValid = ( !isNaN( number ) ) ? true : false
-          handleChange( e, isInputValid )
-        } }
+        onChange={ onChangeHandler }
         disabled={ isFormDisabled }
       />
 
@@ -129,7 +128,7 @@ export const StackPage: React.FC = () => {
         text={ buttonsState.push.isLoading ? '' : 'Добавить' }
         extraClass={ styles.button_correct_medium }
         isLoader={ buttonsState.push.isLoading ? true : false }
-        disabled={ isFormDisabled && !buttonsState.push.isLoading || isButtonDisabled }
+        disabled={ isFormDisabled && !buttonsState.push.isLoading || !isFormValid }
         onClick={ handlePush }
       />
 
