@@ -12,12 +12,12 @@
 
 .button_correct_small {
   width: 108px;
-  min-width: fit-content;
+  min-width: 108px;
 }
 
 .button_correct_medium {
-  width: 120px;
-  min-width: fit-content;
+  width: 121px;
+  min-width: 121px;
 }
 
 .button_correct_mr {

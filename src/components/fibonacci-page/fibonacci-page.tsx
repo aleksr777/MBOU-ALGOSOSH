@@ -26,8 +26,6 @@ export const FibonacciPage: React.FC = () => {
   const [ isFormDisabled, setIsFormDisabled ] = useState( false )
   const [ symbolsArr, setSymbolsArr ] = useState<number[]>( [] )
 
-  let isNumValid = true
-
   function animate ( num: number ) {
 
     function getFibonacciNumbers ( num: number ) {
@@ -90,8 +88,8 @@ export const FibonacciPage: React.FC = () => {
         name='fibonacciInput'
         onChange={ ( e: ChangeEvent<HTMLInputElement> ) => {
           const number = parseInt( e.target.value )
-          isNumValid = ( number && number < 20 && number > 0 ) ? true : false
-          handleChange( e, isNumValid )
+          const isInputValid = ( number && number < 20 && number > 0 ) ? true : false
+          handleChange( e, isInputValid )
         } }
         onFocus={ () => {
           setIsAnimating( false )
@@ -105,7 +103,7 @@ export const FibonacciPage: React.FC = () => {
         text={ isFormDisabled ? '' : 'Рассчитать' }
         type='submit'
         linkedList='small'
-        disabled={ isButtonDisabled || !isNumValid }
+        disabled={ isButtonDisabled }
       />
     </form>
 

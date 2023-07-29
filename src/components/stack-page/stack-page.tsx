@@ -1,84 +1,175 @@
+import styles from './stack-page.module.css'
 import React, { useState, ChangeEvent } from 'react'
 import { SolutionLayout } from '../ui/solution-layout/solution-layout'
-import styles from './stack-page.module.css'
 import { useForm } from '../../hooks/useForm'
 import { Input } from '../ui/input/input'
 import Button from '../ui/button/button'
 import Circle from '../ui/circle/circle'
 import { ElementStates } from '../../types/element-states'
 import { delay } from '../../utils/delay'
+import { Stack } from '../../utils/stack'
+import { ButtonsHookState } from '../../types/types'
+
 
 export const StackPage: React.FC = () => {
 
-  const { values, errors, isButtonDisabled, handleChange, isFormValid } = useForm( { stackInput: '' } )
+  const DELAY_TIME = 500
 
-  const [ isAnimating, setIsAnimating ] = useState( true )
-  const [ isFormDisabled, setIsFormDisabled ] = useState( false )
-  const [ symbolsArr, setSymbolsArr ] = useState<number[]>( [] )
-
-  async function animate () {
-    console.log( 'ok' )
+  const validateConfig = {
+    stackInput: {
+      pattern: /^[0-9]+$/,
+      checkIsEmptyValue: true,
+      defaultErrorMessage: 'Допустимы только числа!!!',
+    }
   }
 
-  const handleSubmit = ( e: React.FormEvent ) => {
-    e.preventDefault()
-    setTimeout( () => animate(), 800 )
+  const {
+    values, setValues,
+    errors,
+    isButtonDisabled,
+    handleChange,
+    isFormValid
+  } = useForm( { stackInput: '' }, validateConfig )
+
+  const [ highlightedIndex, setHighlightedIndex ] = useState<number | null>( null )
+  const [ isAllHighlighted, setIsAllHighlighted ] = useState( false )
+  const [ isFormDisabled, setIsFormDisabled ] = useState( false )
+  const [ stack, setStack ] = useState( new Stack<string>() )
+  const [ buttonsState, setButtonsState ] = useState<ButtonsHookState>( {
+    push: { isLoading: false },
+    pop: { isLoading: false },
+    clear: { isLoading: false }
+  } )
+
+  const handlePush = async () => {
+    if ( !isFormValid() ) {
+      return
+    }
+    setIsFormDisabled( true )
+    setButtonsState( ( {
+      ...buttonsState,
+      push: { isLoading: true }
+    } ) )
+    const newStack = new Stack<string>()
+    stack.getElements().forEach( ( element ) => newStack.push( element ) )
+    const value = String( parseInt( values.stackInput ) ) // для исключения лишних нулей
+    newStack.push( value )
+    setStack( newStack )
+    setValues( ( prevValues ) => ( { ...prevValues, stackInput: '' } ) )
+    setHighlightedIndex( stack.size() ) // подсветка нового элемента (последний, top)
+    await delay( DELAY_TIME )
+    setHighlightedIndex( null )
+    setIsFormDisabled( false )
+    setButtonsState( ( {
+      ...buttonsState,
+      push: { isLoading: false }
+    } ) )
+  }
+
+
+  const handlePop = async () => {
+    if ( stack.isEmpty() ) {
+      return
+    }
+    setIsFormDisabled( true )
+    setButtonsState( ( { ...buttonsState, pop: { isLoading: true } } ) )
+    const newStack = new Stack<string>()
+    stack.getElements().forEach( ( element ) => newStack.push( element ) )
+    newStack.pop()
+    setHighlightedIndex( stack.size() - 1 ) // подсветка последнего элемента (top)
+    await delay( DELAY_TIME )
+    setStack( newStack )
+    setHighlightedIndex( null )
+    setIsFormDisabled( false )
+    setButtonsState( ( { ...buttonsState, pop: { isLoading: false } } ) )
+  }
+
+  const handleClear = async () => {
+    if ( stack.isEmpty() ) {
+      return
+    }
+    setIsFormDisabled( true )
+    setIsAllHighlighted( true ) // подсвечиваем все элементы
+    setButtonsState( ( { ...buttonsState, clear: { isLoading: true } } ) )
+    await delay( DELAY_TIME )
+    stack.clear()
+    setIsFormDisabled( false )
+    setIsAllHighlighted( false )
+    setButtonsState( ( { ...buttonsState, clear: { isLoading: false } } ) )
   }
 
   return <SolutionLayout title='Стек'>
 
-    <form className={ styles.formWrapper } onSubmit={ handleSubmit }>
+    <form
+      className={ styles.formWrapper }
+      onSubmit={ ( e: React.FormEvent ) => {
+        e.preventDefault()
+        handlePush()
+      } }
+    >
 
       <Input
+        name='stackInput'
         placeholder='Введите значение'
         isLimitText={ true }
         limitText={ errors.stackInput ? errors.stackInput : 'Максимум — 4 символа' }
         value={ values.stackInput }
-        name='stackInput'
+        maxLength={ 4 }
         onChange={ ( e: ChangeEvent<HTMLInputElement> ) => {
-          handleChange( e )
-        } }
-        onFocus={ () => {
-          setIsAnimating( false )
-          setSymbolsArr( [] )
+          const number = parseInt( e.target.value )
+          const isInputValid = ( !isNaN( number ) ) ? true : false
+          handleChange( e, isInputValid )
         } }
         disabled={ isFormDisabled }
       />
 
       <Button
-        //isLoader={ isFormDisabled }
-        text={ isFormDisabled ? '' : 'Добавить' }
         type='button'
         linkedList='small'
+        text={ buttonsState.push.isLoading ? '' : 'Добавить' }
         extraClass={ styles.button_correct_medium }
-      //disabled={ isButtonDisabled }
+        isLoader={ buttonsState.push.isLoading ? true : false }
+        disabled={ isFormDisabled && !buttonsState.push.isLoading || isButtonDisabled }
+        onClick={ handlePush }
       />
 
       <Button
-        //isLoader={ isFormDisabled }
-        text={ isFormDisabled ? '' : 'Удалить' }
         type='button'
         linkedList='small'
+        text={ buttonsState.pop.isLoading ? '' : 'Удалить' }
         extraClass={ `${ styles.button_correct_small } ${ styles.button_correct_mr }` }
-      //disabled={ isButtonDisabled }
+        isLoader={ buttonsState.pop.isLoading ? true : false }
+        disabled={ isFormDisabled && !buttonsState.pop.isLoading || stack.isEmpty() }
+        onClick={ handlePop }
       />
 
       <Button
-        //isLoader={ isFormDisabled }
-        text={ isFormDisabled ? '' : 'Очистить' }
         type='button'
         linkedList='small'
+        text={ buttonsState.clear.isLoading ? '' : 'Очистить' }
         extraClass={ styles.button_correct_medium }
-      //disabled={ isButtonDisabled }
+        isLoader={ buttonsState.clear.isLoading ? true : false }
+        disabled={ isFormDisabled && !buttonsState.clear.isLoading || stack.isEmpty() }
+        onClick={ handleClear }
       />
 
     </form>
 
     <div className={ styles.blockAnimate }>
-      <Circle /* key={ index } */ index={ 0 } tail={ '' } head={ '' } letter={ '1' } state={ ElementStates.Default } />
-      <Circle /* key={ index } */ index={ 1 } tail={ '' } head={ '' } letter={ '2' } state={ ElementStates.Default } />
-      <Circle /* key={ index } */ index={ 2 } tail={ '' } head={ '' } letter={ '3' } state={ ElementStates.Default } />
-      <Circle /* key={ index } */ index={ 3 } tail={ '' } head={ 'top' } letter={ '4' } state={ ElementStates.Changing } />
+      { stack.getElements().map( ( element, index ) => (
+        <Circle
+          key={ index }
+          index={ index }
+          tail=""
+          head={ index === stack.size() - 1 ? "top" : "" }
+          letter={ element }
+          state={
+            ( index === highlightedIndex || isAllHighlighted )
+              ? ElementStates.Changing
+              : ElementStates.Default
+          }
+        />
+      ) ) }
     </div>
   </SolutionLayout>
 }

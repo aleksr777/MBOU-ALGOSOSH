@@ -16,6 +16,8 @@ type Symbol = {
 
 export const StringComponent: React.FC = () => {
 
+  const DELAY_TIME = 600
+
   const validateConfig = {
     stringInput: {
       pattern: /^[a-zA-Zа-яА-Я0-9]{0,11}$/,
@@ -26,7 +28,6 @@ export const StringComponent: React.FC = () => {
 
   const { values, errors, isButtonDisabled, handleChange, isFormValid } = useForm( { stringInput: '' }, validateConfig )
 
-  const [ isAnimating, setIsAnimating ] = useState( true )
   const [ isFormDisabled, setIsFormDisabled ] = useState( false )
   const [ symbolsArr, setSymbolsArr ] = useState<Symbol[]>( [] )
 
@@ -40,15 +41,15 @@ export const StringComponent: React.FC = () => {
       return arr
     }
     while ( left < right ) {
-      await delay( 600 )
       arr = await changeStatus( ElementStates.Changing, left, right )
       setSymbolsArr( [ ...arr ] )
-      await delay( 600 )
+      await delay( DELAY_TIME )
       swapElementsArr( arr, left, right )
       arr = await changeStatus( ElementStates.Modified, left, right )
       setSymbolsArr( [ ...arr ] )
       left++
       right--
+      if ( left < right ) { await delay( DELAY_TIME ) }
     }
 
     const completedArr = arr.map( ( symbol ) => ( {
@@ -64,7 +65,6 @@ export const StringComponent: React.FC = () => {
     e.preventDefault()
     const isValid = isFormValid()
     if ( !isValid ) { return }
-    setIsAnimating( true )
     const arr: Symbol[] = values.stringInput.split( '' ).map( ( symbol ) => ( {
       symbol,
       state: ElementStates.Default,
@@ -76,7 +76,7 @@ export const StringComponent: React.FC = () => {
     } else if ( arr.length > 1 ) {
       setSymbolsArr( arr )
       setIsFormDisabled( true )
-      setTimeout( () => expandString( arr ), 800 )
+      setTimeout( () => expandString( arr ), DELAY_TIME )
     }
   }
 
@@ -91,7 +91,6 @@ export const StringComponent: React.FC = () => {
           name='stringInput'
           onChange={ handleChange }
           onFocus={ () => {
-            setIsAnimating( false )
             setSymbolsArr( [] )
           } }
           disabled={ isFormDisabled }
@@ -107,10 +106,9 @@ export const StringComponent: React.FC = () => {
       </form>
 
       <div className={ styles.blockLetters }>
-        { isAnimating &&
-          symbolsArr.map( ( symbol, index ) => (
-            <Circle key={ index } letter={ symbol.symbol } state={ symbol.state } />
-          ) ) }
+        { symbolsArr.map( ( symbol, index ) => (
+          <Circle key={ index } letter={ symbol.symbol } state={ symbol.state } />
+        ) ) }
       </div>
     </SolutionLayout>
   )

@@ -9,18 +9,11 @@ import { ElementStates } from '../../types/element-states'
 import { delay } from '../../utils/delay'
 import { Direction } from '../../types/direction'
 import { swapElementsArr } from '../../utils/swapElementsArr'
+import { ButtonsHookState } from '../../types/types'
 
 type ColumnDataType = {
   number: number
   state: ElementStates
-}
-
-type ButtonStateType = { isLoading: boolean }
-
-type ButtonsHookState = {
-  newColumns: ButtonStateType
-  ascending: ButtonStateType
-  descending: ButtonStateType
 }
 
 

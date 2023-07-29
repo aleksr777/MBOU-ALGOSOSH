@@ -30,6 +30,7 @@ type PatternsType = {
 
 type UseFormType = {
   values: OnlyStringObjType
+  setValues: React.Dispatch<React.SetStateAction<OnlyStringObjType>>
   errors: OnlyStringObjType
   isButtonDisabled: boolean
   handleChange: ( event: ChangeEvent<HTMLInputElement>, isBtnActive?: boolean ) => void
@@ -182,5 +183,5 @@ export function useForm (
     return isValid
   }
 
-  return { values, errors, isButtonDisabled, handleChange, isFormValid }
+  return { values, setValues, errors, isButtonDisabled, handleChange, isFormValid }
 }
