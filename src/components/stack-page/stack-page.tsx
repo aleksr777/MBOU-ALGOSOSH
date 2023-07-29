@@ -28,7 +28,8 @@ export const StackPage: React.FC = () => {
     errors,
     isFormValid,
     handleChange,
-    checkIsFormValid
+    checkIsFormValid,
+    resetField
   } = useForm( { stackInput: '' }, validateConfig )
 
   const [ highlightedIndex, setHighlightedIndex ] = useState<number | null>( null )
@@ -41,53 +42,56 @@ export const StackPage: React.FC = () => {
     clear: { isLoading: false }
   } )
 
-  const handlePush = async () => {
-    if ( !checkIsFormValid() ) { return }
+  function blockForm ( buttonName: string ) {
     setIsFormDisabled( true )
-    setButtonsState( ( {
-      ...buttonsState,
-      push: { isLoading: true }
-    } ) )
+    setButtonsState( ( { ...buttonsState, [ buttonName ]: { isLoading: true } } ) )
+  }
+
+  function activateForm ( buttonName: string ) {
+    setIsFormDisabled( false)
+    setButtonsState( ( { ...buttonsState, [ buttonName ]: { isLoading: false } } ) )
+  }
+
+  function getNewStack ( stack: Stack<string> ) {
     const newStack = new Stack<string>()
     stack.getElements().forEach( ( element ) => newStack.push( element ) )
+    return newStack
+  }
+
+  const handlePush = async () => {
+    if ( !checkIsFormValid() ) { return }
+    blockForm( 'push' )
+    const newStack = getNewStack( stack )
     newStack.push( values.stackInput )
     setStack( newStack )
-    setValues( ( prevValues ) => ( { ...prevValues, stackInput: '' } ) )
+    resetField( 'stackInput' )
     setHighlightedIndex( stack.size() )
     await delay( DELAY_TIME )
     setHighlightedIndex( null )
-    setIsFormDisabled( false )
-    setButtonsState( ( { ...buttonsState, push: { isLoading: false } } ) )
+    activateForm( 'push' )
   }
 
 
   const handlePop = async () => {
     if ( stack.isEmpty() ) { return }
-    setIsFormDisabled( true )
-    setButtonsState( ( { ...buttonsState, pop: { isLoading: true } } ) )
-    const newStack = new Stack<string>()
-    stack.getElements().forEach( ( element ) => newStack.push( element ) )
+    blockForm( 'pop' )
+    const newStack = getNewStack( stack )
     newStack.pop()
     setHighlightedIndex( stack.size() - 1 )
     await delay( DELAY_TIME )
     setStack( newStack )
     setHighlightedIndex( null )
-    setIsFormDisabled( false )
-    setButtonsState( ( { ...buttonsState, pop: { isLoading: false } } ) )
+    activateForm( 'pop' )
   }
 
   const handleClear = async () => {
-    if ( stack.isEmpty() ) {
-      return
-    }
-    setIsFormDisabled( true )
+    if ( stack.isEmpty() ) { return }
+    blockForm( 'clear' )
     setIsAllHighlighted( true )
-    setButtonsState( ( { ...buttonsState, clear: { isLoading: true } } ) )
     await delay( DELAY_TIME )
     stack.clear()
-    setIsFormDisabled( false )
     setIsAllHighlighted( false )
-    setButtonsState( ( { ...buttonsState, clear: { isLoading: false } } ) )
+    activateForm( 'clear' )
   }
 
   const handleSubmit = ( e: React.FormEvent ) => {

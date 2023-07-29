@@ -35,9 +35,11 @@ type UseFormType = {
   isFormValid: boolean
   handleChange: ( event: ChangeEvent<HTMLInputElement>, isValid?: boolean ) => void
   checkIsFormValid: () => boolean
+  resetField: ( fieldName: string ) => void
 }
 
 type MinMaxCharsType = { minChars: number | null; maxChars: number | null } | null
+
 
 export function useForm (
   inputValues: OnlyStringObjType = {},
@@ -101,6 +103,11 @@ export function useForm (
     }
   }
 
+  const resetField = ( fieldName: string ) => {
+    setValues( prevValues => ( { ...prevValues, [ fieldName ]: '' } ) )
+    setErrors( prevErrors => ( { ...prevErrors, [ fieldName ]: '' } ) )
+  }
+
   const validateField = ( fieldName: string, value: string, isValid: boolean = true ) => {
     const patternData = getPatternData( fieldName )
     if ( patternData ) {
@@ -126,10 +133,7 @@ export function useForm (
       }
       else {
         setIsFormValid( isValid )
-        setErrors( ( prevErrors ) => ( {
-          ...prevErrors,
-          [ fieldName ]: '',
-        } ) )
+        setErrors( ( prevErrors ) => ( { ...prevErrors, [ fieldName ]: '' } ) )
       }
     }
   }
@@ -183,5 +187,5 @@ export function useForm (
     return isValid
   }
 
-  return { values, setValues, errors, isFormValid, handleChange, checkIsFormValid }
+  return { values, setValues, errors, isFormValid, handleChange, checkIsFormValid, resetField }
 }
