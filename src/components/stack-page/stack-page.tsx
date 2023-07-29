@@ -53,27 +53,22 @@ export const StackPage: React.FC = () => {
     newStack.push( values.stackInput )
     setStack( newStack )
     setValues( ( prevValues ) => ( { ...prevValues, stackInput: '' } ) )
-    setHighlightedIndex( stack.size() ) // подсветка нового элемента (последний, top)
+    setHighlightedIndex( stack.size() )
     await delay( DELAY_TIME )
     setHighlightedIndex( null )
     setIsFormDisabled( false )
-    setButtonsState( ( {
-      ...buttonsState,
-      push: { isLoading: false }
-    } ) )
+    setButtonsState( ( { ...buttonsState, push: { isLoading: false } } ) )
   }
 
 
   const handlePop = async () => {
-    if ( stack.isEmpty() ) {
-      return
-    }
+    if ( stack.isEmpty() ) { return }
     setIsFormDisabled( true )
     setButtonsState( ( { ...buttonsState, pop: { isLoading: true } } ) )
     const newStack = new Stack<string>()
     stack.getElements().forEach( ( element ) => newStack.push( element ) )
     newStack.pop()
-    setHighlightedIndex( stack.size() - 1 ) // подсветка последнего элемента (top)
+    setHighlightedIndex( stack.size() - 1 )
     await delay( DELAY_TIME )
     setStack( newStack )
     setHighlightedIndex( null )
@@ -86,7 +81,7 @@ export const StackPage: React.FC = () => {
       return
     }
     setIsFormDisabled( true )
-    setIsAllHighlighted( true ) // подсвечиваем все элементы
+    setIsAllHighlighted( true )
     setButtonsState( ( { ...buttonsState, clear: { isLoading: true } } ) )
     await delay( DELAY_TIME )
     stack.clear()
@@ -100,68 +95,71 @@ export const StackPage: React.FC = () => {
     handlePush()
   }
 
-  return <SolutionLayout title='Стек'>
+  return (
 
-    <form className={ styles.formWrapper } onSubmit={ handleSubmit }    >
+    <SolutionLayout title='Стек'>
 
-      <Input
-        name='stackInput'
-        placeholder='Введите значение'
-        isLimitText={ true }
-        limitText={ errors.stackInput ? errors.stackInput : 'Максимум — 4 символа' }
-        value={ values.stackInput }
-        maxLength={ 4 }
-        onChange={ handleChange }
-        disabled={ isFormDisabled }
-      />
+      <form className={ styles.formWrapper } onSubmit={ handleSubmit }    >
 
-      <Button
-        type='button'
-        linkedList='small'
-        text={ buttonsState.push.isLoading ? '' : 'Добавить' }
-        extraClass={ styles.button_correct_medium }
-        isLoader={ buttonsState.push.isLoading ? true : false }
-        disabled={ isFormDisabled && !buttonsState.push.isLoading || !isFormValid }
-        onClick={ handlePush }
-      />
-
-      <Button
-        type='button'
-        linkedList='small'
-        text={ buttonsState.pop.isLoading ? '' : 'Удалить' }
-        extraClass={ `${ styles.button_correct_small } ${ styles.button_correct_mr }` }
-        isLoader={ buttonsState.pop.isLoading ? true : false }
-        disabled={ isFormDisabled && !buttonsState.pop.isLoading || stack.isEmpty() }
-        onClick={ handlePop }
-      />
-
-      <Button
-        type='button'
-        linkedList='small'
-        text={ buttonsState.clear.isLoading ? '' : 'Очистить' }
-        extraClass={ styles.button_correct_medium }
-        isLoader={ buttonsState.clear.isLoading ? true : false }
-        disabled={ isFormDisabled && !buttonsState.clear.isLoading || stack.isEmpty() }
-        onClick={ handleClear }
-      />
-
-    </form>
-
-    <div className={ styles.blockAnimate }>
-      { stack.getElements().map( ( element, index ) => (
-        <Circle
-          key={ index }
-          index={ index }
-          tail=""
-          head={ index === stack.size() - 1 ? "top" : "" }
-          letter={ element }
-          state={
-            ( index === highlightedIndex || isAllHighlighted )
-              ? ElementStates.Changing
-              : ElementStates.Default
-          }
+        <Input
+          name='stackInput'
+          placeholder='Введите значение'
+          isLimitText={ true }
+          limitText={ errors.stackInput ? errors.stackInput : 'Максимум — 4 символа' }
+          value={ values.stackInput }
+          maxLength={ 4 }
+          onChange={ handleChange }
+          disabled={ isFormDisabled }
         />
-      ) ) }
-    </div>
-  </SolutionLayout>
+
+        <Button
+          type='button'
+          linkedList='small'
+          text={ buttonsState.push.isLoading ? '' : 'Добавить' }
+          extraClass={ styles.button_correct_medium }
+          isLoader={ buttonsState.push.isLoading ? true : false }
+          disabled={ isFormDisabled && !buttonsState.push.isLoading || !isFormValid }
+          onClick={ handlePush }
+        />
+
+        <Button
+          type='button'
+          linkedList='small'
+          text={ buttonsState.pop.isLoading ? '' : 'Удалить' }
+          extraClass={ `${ styles.button_correct_small } ${ styles.button_correct_mr }` }
+          isLoader={ buttonsState.pop.isLoading ? true : false }
+          disabled={ isFormDisabled && !buttonsState.pop.isLoading || stack.isEmpty() }
+          onClick={ handlePop }
+        />
+
+        <Button
+          type='button'
+          linkedList='small'
+          text={ buttonsState.clear.isLoading ? '' : 'Очистить' }
+          extraClass={ styles.button_correct_medium }
+          isLoader={ buttonsState.clear.isLoading ? true : false }
+          disabled={ isFormDisabled && !buttonsState.clear.isLoading || stack.isEmpty() }
+          onClick={ handleClear }
+        />
+
+      </form>
+
+      <div className={ styles.blockAnimate }>
+        { stack.getElements().map( ( element, index ) => (
+          <Circle
+            key={ index }
+            index={ index }
+            tail=""
+            head={ index === stack.size() - 1 ? "top" : "" }
+            letter={ element }
+            state={
+              ( index === highlightedIndex || isAllHighlighted )
+                ? ElementStates.Changing
+                : ElementStates.Default
+            }
+          />
+        ) ) }
+      </div>
+    </SolutionLayout>
+  )
 }

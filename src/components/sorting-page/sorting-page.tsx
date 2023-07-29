@@ -202,70 +202,73 @@ export const SortingPage: React.FC = () => {
 
   const handleSubmit = ( e: React.FormEvent ) => { e.preventDefault() }
 
-  return <SolutionLayout title='Сортировка массива'>
+  return (
 
-    <form className={ styles.formWrapper } onSubmit={ handleSubmit }>
+    <SolutionLayout title='Сортировка массива'>
 
-      <RadioInput
-        label={ 'Выбор' }
-        name='sortingRadio'
-        extraClass={ styles.radioContent_mr }
-        disabled={ isFormDisabled }
-        value={ CHOICE }
-        checked={ values.sortingRadio === CHOICE }
-        onChange={ handleChange }
-      />
+      <form className={ styles.formWrapper } onSubmit={ handleSubmit }>
 
-      <RadioInput
-        label={ 'Пузырёк' }
-        name='sortingRadio'
-        disabled={ isFormDisabled }
-        value={ BUBBLE }
-        checked={ values.sortingRadio === BUBBLE }
-        onChange={ handleChange }
-      />
+        <RadioInput
+          label={ 'Выбор' }
+          name='sortingRadio'
+          extraClass={ styles.radioContent_mr }
+          disabled={ isFormDisabled }
+          value={ CHOICE }
+          checked={ values.sortingRadio === CHOICE }
+          onChange={ handleChange }
+        />
 
-      <div className={ styles.boxButtons }>
+        <RadioInput
+          label={ 'Пузырёк' }
+          name='sortingRadio'
+          disabled={ isFormDisabled }
+          value={ BUBBLE }
+          checked={ values.sortingRadio === BUBBLE }
+          onChange={ handleChange }
+        />
+
+        <div className={ styles.boxButtons }>
+
+          <Button
+            type='button'
+            linkedList='small'
+            sorting={ Direction.Ascending }
+            extraClass={ styles.button_correctSize }
+            text={ buttonsState.ascending.isLoading ? '' : 'По возрастанию' }
+            isLoader={ buttonsState.ascending.isLoading ? true : false }
+            disabled={ isFormDisabled && !buttonsState.ascending.isLoading }
+            onClick={ animateAscendingSort }
+          />
+          <Button
+            type='button'
+            linkedList='small'
+            sorting={ Direction.Descending }
+            extraClass={ styles.button_correctSize }
+            text={ buttonsState.descending.isLoading ? '' : 'По убыванию' }
+            isLoader={ buttonsState.descending.isLoading ? true : false }
+            disabled={ isFormDisabled && !buttonsState.descending.isLoading }
+            onClick={ animateDescendingSort }
+          />
+
+        </div>
 
         <Button
           type='button'
           linkedList='small'
-          sorting={ Direction.Ascending }
           extraClass={ styles.button_correctSize }
-          text={ buttonsState.ascending.isLoading ? '' : 'По возрастанию' }
-          isLoader={ buttonsState.ascending.isLoading ? true : false }
-          disabled={ isFormDisabled && !buttonsState.ascending.isLoading }
-          onClick={ animateAscendingSort }
+          text={ buttonsState.newColumns.isLoading ? '' : 'Новый массив' }
+          isLoader={ buttonsState.newColumns.isLoading ? true : false }
+          disabled={ isFormDisabled && !buttonsState.newColumns.isLoading }
+          onClick={ getNewColumns }
         />
-        <Button
-          type='button'
-          linkedList='small'
-          sorting={ Direction.Descending }
-          extraClass={ styles.button_correctSize }
-          text={ buttonsState.descending.isLoading ? '' : 'По убыванию' }
-          isLoader={ buttonsState.descending.isLoading ? true : false }
-          disabled={ isFormDisabled && !buttonsState.descending.isLoading }
-          onClick={ animateDescendingSort }
-        />
+      </form>
 
+      <div className={ styles.blockAnimate }>
+        { columnsData.map( ( column, index ) => (
+          <Column key={ index } index={ column.number } state={ column.state } />
+        ) ) }
       </div>
 
-      <Button
-        type='button'
-        linkedList='small'
-        extraClass={ styles.button_correctSize }
-        text={ buttonsState.newColumns.isLoading ? '' : 'Новый массив' }
-        isLoader={ buttonsState.newColumns.isLoading ? true : false }
-        disabled={ isFormDisabled && !buttonsState.newColumns.isLoading }
-        onClick={ getNewColumns }
-      />
-    </form>
-
-    <div className={ styles.blockAnimate }>
-      { columnsData.map( ( column, index ) => (
-        <Column key={ index } index={ column.number } state={ column.state } />
-      ) ) }
-    </div>
-
-  </SolutionLayout>
+    </SolutionLayout>
+  )
 }

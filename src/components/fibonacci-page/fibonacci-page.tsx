@@ -80,38 +80,41 @@ export const FibonacciPage: React.FC = () => {
     handleChange( e, isInputValid )
   }
 
-  return <SolutionLayout title='Последовательность Фибоначчи'>
+  return (
 
-    <form className={ styles.formWrapper } onSubmit={ handleSubmit }>
-      <Input
-        placeholder='Введите текст'
-        isLimitText={ true }
-        limitText={ errors.fibonacciInput ? errors.fibonacciInput : 'Максимальное число — 19' }
-        value={ values.fibonacciInput }
-        name='fibonacciInput'
-        onChange={ onChangeHandler }
-        onFocus={ () => {
-          setIsAnimating( false )
-          setSymbolsArr( [] )
-        } }
-        maxLength={ 2 }
-        disabled={ isFormDisabled }
-      />
-      <Button
-        isLoader={ isFormDisabled }
-        text={ isFormDisabled ? '' : 'Рассчитать' }
-        type='submit'
-        linkedList='small'
-        disabled={ !isFormValid }
-      />
-    </form>
+    <SolutionLayout title='Последовательность Фибоначчи'>
 
-    <div className={ styles.blockLetters }>
-      { isAnimating &&
-        symbolsArr.map( ( symbol, index ) => (
-          <Circle key={ index } tail={ index.toString() } letter={ symbol.toString() } state={ ElementStates.Default } />
-        ) )
-      }
-    </div>
-  </SolutionLayout>
+      <form className={ styles.formWrapper } onSubmit={ handleSubmit }>
+        <Input
+          placeholder='Введите текст'
+          isLimitText={ true }
+          limitText={ errors.fibonacciInput ? errors.fibonacciInput : 'Максимальное число — 19' }
+          value={ values.fibonacciInput }
+          name='fibonacciInput'
+          onChange={ onChangeHandler }
+          onFocus={ () => {
+            setIsAnimating( false )
+            setSymbolsArr( [] )
+          } }
+          maxLength={ 2 }
+          disabled={ isFormDisabled }
+        />
+        <Button
+          isLoader={ isFormDisabled }
+          text={ isFormDisabled ? '' : 'Рассчитать' }
+          type='submit'
+          linkedList='small'
+          disabled={ !isFormValid }
+        />
+      </form>
+
+      <div className={ styles.blockLetters }>
+        { isAnimating &&
+          symbolsArr.map( ( symbol, index ) => (
+            <Circle key={ index } tail={ index.toString() } letter={ symbol.toString() } state={ ElementStates.Default } />
+          ) )
+        }
+      </div>
+    </SolutionLayout>
+  )
 }
