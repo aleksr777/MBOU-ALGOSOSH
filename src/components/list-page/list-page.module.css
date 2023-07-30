@@ -35,6 +35,12 @@
   margin-top: 5px;
 }
 
+.blockCircle {
+  display: flex;
+  align-items: center;
+  column-gap: 16px;
+}
+
 .blockAnimate {
   margin: 0 auto;
   width: fit-content;
