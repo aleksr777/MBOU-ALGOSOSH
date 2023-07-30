@@ -9,11 +9,10 @@ import { ElementStates } from '../../types/element-states'
 import { delay } from '../../utils/delay'
 import { Stack } from './stack-class'
 import { ButtonsHookState } from '../../types/types'
+import { SHORT_DELAY_IN_MS } from '../../constants/delays'
 
 
 export const StackPage: React.FC = () => {
-
-  const DELAY_TIME = 500
 
   const validateConfig = {
     stackInput: {
@@ -66,7 +65,7 @@ export const StackPage: React.FC = () => {
     setStack( newStack )
     resetField( 'stackInput' )
     setHighlightedIndex( stack.size() )
-    await delay( DELAY_TIME )
+    await delay( SHORT_DELAY_IN_MS )
     setHighlightedIndex( null )
     activateForm( 'push' )
   }
@@ -78,7 +77,7 @@ export const StackPage: React.FC = () => {
     const newStack = getNewStack( stack )
     newStack.pop()
     setHighlightedIndex( stack.size() - 1 )
-    await delay( DELAY_TIME )
+    await delay( SHORT_DELAY_IN_MS )
     setStack( newStack )
     setHighlightedIndex( null )
     activateForm( 'pop' )
@@ -88,7 +87,7 @@ export const StackPage: React.FC = () => {
     if ( stack.isEmpty() ) { return }
     blockForm( 'clear' )
     setIsAllHighlighted( true )
-    await delay( DELAY_TIME )
+    await delay( SHORT_DELAY_IN_MS )
     stack.clear()
     setIsAllHighlighted( false )
     activateForm( 'clear' )
@@ -153,8 +152,8 @@ export const StackPage: React.FC = () => {
           <Circle
             key={ index }
             index={ index }
-            tail=""
-            head={ index === stack.size() - 1 ? "top" : "" }
+            tail=''
+            head={ index === stack.size() - 1 ? 'top' : '' }
             letter={ element }
             state={
               ( index === highlightedIndex || isAllHighlighted )

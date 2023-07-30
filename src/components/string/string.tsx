@@ -8,6 +8,7 @@ import Circle from '../ui/circle/circle'
 import { ElementStates } from '../../types/element-states'
 import { delay } from '../../utils/delay'
 import { swapElementsArr } from '../../utils/swapElementsArr'
+import { DELAY_IN_MS, SHORT_DELAY_IN_MS } from '../../constants/delays'
 
 type Symbol = {
   symbol: string
@@ -15,8 +16,6 @@ type Symbol = {
 }
 
 export const StringComponent: React.FC = () => {
-
-  const DELAY_TIME = 600
 
   const validateConfig = {
     stringInput: {
@@ -43,13 +42,13 @@ export const StringComponent: React.FC = () => {
     while ( left < right ) {
       arr = await changeStatus( ElementStates.Changing, left, right )
       setSymbolsArr( [ ...arr ] )
-      await delay( DELAY_TIME )
+      await delay( SHORT_DELAY_IN_MS )
       swapElementsArr( arr, left, right )
       arr = await changeStatus( ElementStates.Modified, left, right )
       setSymbolsArr( [ ...arr ] )
       left++
       right--
-      if ( left < right ) { await delay( DELAY_TIME ) }
+      if ( left < right ) { await delay( SHORT_DELAY_IN_MS ) }
     }
 
     const completedArr = arr.map( ( symbol ) => ( {
@@ -62,7 +61,7 @@ export const StringComponent: React.FC = () => {
   }
 
   const handleSubmit = ( e: React.FormEvent ) => {
-    e.preventDefault()    
+    e.preventDefault()
     if ( !checkIsFormValid() ) { return }
     const arr: Symbol[] = values.stringInput.split( '' ).map( ( symbol ) => ( {
       symbol,
@@ -75,7 +74,7 @@ export const StringComponent: React.FC = () => {
     } else if ( arr.length > 1 ) {
       setSymbolsArr( arr )
       setIsFormDisabled( true )
-      setTimeout( () => expandString( arr ), DELAY_TIME )
+      setTimeout( () => expandString( arr ), DELAY_IN_MS )
     }
   }
 

@@ -31,6 +31,10 @@
   min-width: 362px;
 }
 
+.circle_correct_mb {
+  margin-top: 5px;
+}
+
 .blockAnimate {
   margin: 0 auto;
   width: fit-content;

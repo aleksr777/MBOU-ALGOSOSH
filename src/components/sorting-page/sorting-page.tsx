@@ -10,20 +10,19 @@ import { delay } from '../../utils/delay'
 import { Direction } from '../../types/direction'
 import { swapElementsArr } from '../../utils/swapElementsArr'
 import { ButtonsHookState } from '../../types/types'
+import { SHORT_DELAY_IN_MS } from '../../constants/delays'
 
 type ColumnDataType = {
   number: number
   state: ElementStates
 }
 
-
 export const SortingPage: React.FC = () => {
 
-  const DELAY_TIME = 400
   const BUBBLE = 'BUBBLE'
   const CHOICE = 'CHOICE'
-  const ASCENDING = 'ASCENDING'
-  const DESCENDING = 'DESCENDING'
+  const ASCENDING = Direction.Ascending
+  const DESCENDING = Direction.Descending
 
   const { values, handleChange } = useForm( { sortingRadio: CHOICE } )
 
@@ -82,7 +81,7 @@ export const SortingPage: React.FC = () => {
       let minOrMaxIndex = i
       for ( let j = i + 1; j < arr.length; j++ ) {
         setColumnsState( arr, i, j, ElementStates.Changing )
-        await delay( DELAY_TIME )
+        await delay( SHORT_DELAY_IN_MS )
         if ( direction === ASCENDING && arr[ j ].number < arr[ minOrMaxIndex ].number ||
           direction === DESCENDING && arr[ j ].number > arr[ minOrMaxIndex ].number ) {
           minOrMaxIndex = j
@@ -95,7 +94,7 @@ export const SortingPage: React.FC = () => {
       arr[ i ].state = ElementStates.Modified
       setColumnsData( arr )
       if ( i !== arr.length - 1 ) {
-        await delay( DELAY_TIME )
+        await delay( SHORT_DELAY_IN_MS )
       }
     }
     const completedArr = arr.map( ( column ) => ( { ...column, state: ElementStates.Modified, } ) )
@@ -122,7 +121,7 @@ export const SortingPage: React.FC = () => {
       for ( let i = left; i < right; i++ ) {
         let j = i + 1
         setColumnsState( arr, i, j, ElementStates.Changing )
-        await delay( DELAY_TIME )
+        await delay( SHORT_DELAY_IN_MS )
         if ( ( direction === ASCENDING && arr[ i ].number > arr[ j ].number ) ||
           ( direction === DESCENDING && arr[ i ].number < arr[ j ].number ) ) {
           swapElementsArr( arr, i, j )
@@ -130,7 +129,7 @@ export const SortingPage: React.FC = () => {
         }
         setColumnsState( arr, i, j, ElementStates.Default )
         if ( i !== arr.length - 1 ) {
-          await delay( DELAY_TIME )
+          await delay( SHORT_DELAY_IN_MS )
         }
       }
       arr[ right ].state = ElementStates.Modified
@@ -141,7 +140,7 @@ export const SortingPage: React.FC = () => {
         for ( let i = right; i > left; i-- ) {
           let j = i - 1
           setColumnsState( arr, i, j, ElementStates.Changing )
-          await delay( DELAY_TIME )
+          await delay( SHORT_DELAY_IN_MS )
           if ( ( direction === ASCENDING && arr[ j ].number > arr[ i ].number ) ||
             ( direction === DESCENDING && arr[ j ].number < arr[ i ].number ) ) {
             swapElementsArr( arr, i, j )
@@ -149,7 +148,7 @@ export const SortingPage: React.FC = () => {
           }
           setColumnsState( arr, i, j, ElementStates.Default )
           if ( i !== arr.length - 1 ) {
-            await delay( DELAY_TIME )
+            await delay( SHORT_DELAY_IN_MS )
           }
         }
         arr[ left ].state = ElementStates.Modified
@@ -232,7 +231,7 @@ export const SortingPage: React.FC = () => {
           <Button
             type='button'
             linkedList='small'
-            sorting={ Direction.Ascending }
+            sorting={ ASCENDING }
             extraClass={ styles.button_correctSize }
             text={ buttonsState.ascending.isLoading ? '' : 'По возрастанию' }
             isLoader={ buttonsState.ascending.isLoading ? true : false }
@@ -242,7 +241,7 @@ export const SortingPage: React.FC = () => {
           <Button
             type='button'
             linkedList='small'
-            sorting={ Direction.Descending }
+            sorting={ DESCENDING }
             extraClass={ styles.button_correctSize }
             text={ buttonsState.descending.isLoading ? '' : 'По убыванию' }
             isLoader={ buttonsState.descending.isLoading ? true : false }

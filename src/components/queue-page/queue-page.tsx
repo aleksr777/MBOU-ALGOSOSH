@@ -9,11 +9,12 @@ import { ElementStates } from '../../types/element-states'
 import { Queue } from './queue-class'
 import { delay } from '../../utils/delay'
 import { ButtonsHookState } from '../../types/types'
+import { HEAD, TAIL } from '../../constants/element-captions'
+import { SHORT_DELAY_IN_MS } from '../../constants/delays'
 
 
 export const QueuePage: React.FC = () => {
 
-  const DELAY_TIME = 500
   const QUEUE_LENGTH = 7
 
   const validateConfig = {
@@ -63,7 +64,7 @@ export const QueuePage: React.FC = () => {
     setPrevData( { ...prevData, tail: queue.tail } )
     blockForm( 'add' )
     setHighlightedIndex( queue.tail )
-    await delay( DELAY_TIME )
+    await delay( SHORT_DELAY_IN_MS )
     queue.enqueue( values.queueInput )
     resetField( 'queueInput' )
     setQueue( queue )
@@ -76,7 +77,7 @@ export const QueuePage: React.FC = () => {
     setPrevData( { ...prevData, head: queue.head } )
     blockForm( 'remove' )
     setHighlightedIndex( queue.head )
-    await delay( DELAY_TIME )
+    await delay( SHORT_DELAY_IN_MS )
     queue.dequeue()
     setQueue( queue )
     setHighlightedIndex( null )
@@ -88,7 +89,7 @@ export const QueuePage: React.FC = () => {
     setPrevData( { head: 0, tail: 0 } )
     blockForm( 'clear' )
     setIsAllHighlighted( true )
-    await delay( DELAY_TIME )
+    await delay( SHORT_DELAY_IN_MS )
     queue.clear()
     setQueue( queue )
     setIsAllHighlighted( false )
@@ -151,12 +152,12 @@ export const QueuePage: React.FC = () => {
             key={ index }
             index={ index }
             tail={
-              !queue.isEmpty && index === ( queue.tail - 1 + queue.elements.length ) % queue.elements.length ? 'tail' : ''
+              !queue.isEmpty && index === ( queue.tail - 1 + queue.elements.length ) % queue.elements.length ? TAIL : ''
             }
             head={ ( index === queue.head && !queue.isEmpty ) ||
               ( queue.isEmpty && index !== 0 && index === queue.head ) ||
               ( isMaxHeadIndex && index === QUEUE_LENGTH - 1 )
-              ? 'head'
+              ? HEAD
               : '' }
             letter={ el }
             state={

@@ -8,6 +8,7 @@ import Circle from '../ui/circle/circle'
 import { ElementStates } from '../../types/element-states'
 import { delay } from '../../utils/delay'
 import { OnlyNumberObjType } from '../../types/types'
+import { DELAY_IN_MS, SHORT_DELAY_IN_MS } from '../../constants/delays'
 
 
 export const FibonacciPage: React.FC = () => {
@@ -51,7 +52,7 @@ export const FibonacciPage: React.FC = () => {
       for ( let i = 0; i < arrNumbers.length; i++ ) {
         setSymbolsArr( arrNumbers.slice( 0, i + 1 ) )
         if ( i < arrNumbers.length - 1 ) {
-          await delay( 500 )
+          await delay( SHORT_DELAY_IN_MS )
         } else {
           setIsFormDisabled( false )
         }
@@ -70,7 +71,7 @@ export const FibonacciPage: React.FC = () => {
       setIsFormDisabled( true )
       setIsAnimating( true )
       setSymbolsArr( [] )
-      setTimeout( () => animate( number ), 500 )
+      setTimeout( () => animate( number ), DELAY_IN_MS )
     }
   }
 
