@@ -6,7 +6,7 @@ import { Input } from '../ui/input/input'
 import Button from '../ui/button/button'
 import Circle from '../ui/circle/circle'
 import { ElementStates } from '../../types/element-states'
-import { Queue } from '../../utils/queue'
+import { Queue } from './queue-class'
 import { delay } from '../../utils/delay'
 import { ButtonsHookState } from '../../types/types'
 

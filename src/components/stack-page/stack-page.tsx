@@ -7,7 +7,7 @@ import Button from '../ui/button/button'
 import Circle from '../ui/circle/circle'
 import { ElementStates } from '../../types/element-states'
 import { delay } from '../../utils/delay'
-import { Stack } from '../../utils/stack'
+import { Stack } from './stack-class'
 import { ButtonsHookState } from '../../types/types'
 
 
