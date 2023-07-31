@@ -7,7 +7,7 @@ import Button from '../ui/button/button'
 import Circle from '../ui/circle/circle'
 import { ElementStates } from '../../types/element-states'
 import { delay } from '../../utils/delay'
-import { OnlyNumberObjType } from '../../types/types'
+import { getFibonacciNumbers } from '../../utils/get-fibonacci-numbers'
 import { DELAY_IN_MS, SHORT_DELAY_IN_MS } from '../../constants/delays'
 
 
@@ -28,26 +28,6 @@ export const FibonacciPage: React.FC = () => {
   const [ symbolsArr, setSymbolsArr ] = useState<number[]>( [] )
 
   function animate ( num: number ) {
-
-    function getFibonacciNumbers ( num: number ) {
-      const memo: OnlyNumberObjType = {}
-      const arr: number[] = []
-      function fillArrNumbers ( a: number, b: number, limit: number, memo: OnlyNumberObjType ): void {
-        arr.push( a )
-        if ( limit === 0 ) {
-          return
-        }
-        const memoKey = `${ a }_${ b }_${ limit }`
-        if ( memo[ memoKey ] !== undefined ) {
-          return
-        }
-        fillArrNumbers( b, a + b, limit - 1, memo )
-        memo[ memoKey ] = arr[ arr.length - 1 ]
-      }
-      fillArrNumbers( 1, 1, num, memo )
-      return arr
-    }
-
     async function renderNumbers ( arrNumbers: number[] ) {
       for ( let i = 0; i < arrNumbers.length; i++ ) {
         setSymbolsArr( arrNumbers.slice( 0, i + 1 ) )
@@ -58,7 +38,6 @@ export const FibonacciPage: React.FC = () => {
         }
       }
     }
-
     const arrNumbers = getFibonacciNumbers( num )
     renderNumbers( arrNumbers )
   }

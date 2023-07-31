@@ -8,6 +8,9 @@ import Button from '../ui/button/button'
 import Circle from '../ui/circle/circle'
 import { ElementStates } from '../../types/element-states'
 import { delay } from '../../utils/delay'
+import { handleSubmitDefault } from '../../utils/handle-submit-default'
+import { blockForm, activateForm } from '../../utils/block-activate-form'
+import { getAndCheckIndex } from '../../utils/get-check-index-arr'
 import { HEAD, TAIL } from '../../constants/element-captions'
 import { SHORT_DELAY_IN_MS } from '../../constants/delays'
 import LinkedList from './linked-list-class'
@@ -66,32 +69,10 @@ export const ListPage: React.FC = () => {
     deleteByIndex: btnObj,
   } )
 
-  function resetInputs () {
+  function setDefaultFormStates ( buttonName: string ) {
+    activateForm( buttonName, setIsFormDisabled, setButtonsState, buttonsState )
     resetField( indicesInput )
     resetField( headsTailsInput )
-  }
-
-  function blockForm ( buttonName: string ) {
-    setIsFormDisabled( true )
-    setButtonsState( ( { ...buttonsState, [ buttonName ]: { isLoading: true } } ) )
-  }
-
-  function activateForm ( buttonName: string ) {
-    setIsFormDisabled( false )
-    setButtonsState( ( { ...buttonsState, [ buttonName ]: { isLoading: false } } ) )
-  }
-
-  function isIndexValid ( index: number, arrLength: number ) {
-    if ( index === 0 ) { return true }
-    else if ( !index || index > arrLength - 1 || index < 0 ) {
-      return false
-    }
-    return true
-  }
-
-  function getAndCheckIndex ( indexFromInput: string, arrLength: number ) {
-    const index = parseInt( indexFromInput )
-    return isIndexValid( index, arrLength ) ? index : false
   }
 
   function cloneList<T> ( list: LinkedList<T> ): LinkedList<T> {
@@ -103,7 +84,7 @@ export const ListPage: React.FC = () => {
 
   const handleAddHead = async () => {
     if ( !values.headsTailsInput ) { return }
-    blockForm( 'addHead' )
+    blockForm( 'addHead', setIsFormDisabled, setButtonsState, buttonsState )
     const newList = cloneList( list )
     if ( list.head ) {
       await delay( SHORT_DELAY_IN_MS )
@@ -116,13 +97,12 @@ export const ListPage: React.FC = () => {
     setMiniCircle( null )
     await delay( SHORT_DELAY_IN_MS )
     setModifiedCircleIndex( null )
-    activateForm( 'addHead' )
-    resetInputs()
+    setDefaultFormStates( 'addHead' )
   }
 
   const handleAddTail = async ( arrLength: number ) => {
     if ( !values.headsTailsInput ) { return }
-    blockForm( 'addTail' )
+    blockForm( 'addTail', setIsFormDisabled, setButtonsState, buttonsState )
     const newList = cloneList( list )
     if ( list.head ) {
       await delay( SHORT_DELAY_IN_MS )
@@ -135,13 +115,12 @@ export const ListPage: React.FC = () => {
     setModifiedCircleIndex( arrLength )
     await delay( SHORT_DELAY_IN_MS )
     setModifiedCircleIndex( null )
-    activateForm( 'addHead' )
-    resetInputs()
+    setDefaultFormStates( 'addTail' )
   }
 
   const handleDeleteHead = async () => {
     if ( !list.head ) { return }
-    blockForm( 'deleteHead' )
+    blockForm( 'deleteHead', setIsFormDisabled, setButtonsState, buttonsState )
     const newList = cloneList( list )
     await delay( SHORT_DELAY_IN_MS )
     newList.updateByIndex( 0, '' )
@@ -151,13 +130,12 @@ export const ListPage: React.FC = () => {
     newList.deleteHead()
     setList( newList )
     setMiniCircle( null )
-    activateForm( 'deleteHead' )
-    resetInputs()
+    setDefaultFormStates( 'deleteHead' )
   }
 
   const handleDeleteTail = async ( arrLength: number ) => {
     if ( !list.head?.next ) { return }
-    blockForm( 'deleteTail' )
+    blockForm( 'deleteTail', setIsFormDisabled, setButtonsState, buttonsState )
     const newList = cloneList( list )
     await delay( SHORT_DELAY_IN_MS )
     setMiniCircle( { letter: list.tail?.value as string, index: arrLength - 1, position: TAIL } )
@@ -167,14 +145,13 @@ export const ListPage: React.FC = () => {
     newList.deleteTail()
     setList( newList )
     setMiniCircle( null )
-    activateForm( 'deleteTail' )
-    resetInputs()
+    setDefaultFormStates( 'deleteTail' )
   }
 
   const handleAddByIndex = async ( arrLength: number ) => {
     const indexValue = getAndCheckIndex( values.indicesInput, arrLength )
     if ( indexValue === false || !values.headsTailsInput || !values.indicesInput ) { return }
-    blockForm( 'addByIndex' )
+    blockForm( 'addByIndex', setIsFormDisabled, setButtonsState, buttonsState )
     const newList = cloneList( list )
     const arr = []
     for ( let i = 0; i <= parseInt( values.indicesInput ); i++ ) {
@@ -190,14 +167,13 @@ export const ListPage: React.FC = () => {
     setChangingCircleIndices( null )
     await delay( SHORT_DELAY_IN_MS )
     setModifiedCircleIndex( null )
-    resetInputs()
-    activateForm( 'addByIndex' )
+    setDefaultFormStates( 'addByIndex' )
   }
 
   const handleDeleteByIndex = async ( arrLength: number ) => {
     const indexValue = getAndCheckIndex( values.indicesInput, arrLength )
     if ( indexValue === false || !values.indicesInput ) { return }
-    blockForm( 'deleteByIndex' )
+    blockForm( 'deleteByIndex', setIsFormDisabled, setButtonsState, buttonsState )
     const newList = cloneList( list )
     const indexNum = parseInt( values.indicesInput )
     const arr = []
@@ -217,11 +193,8 @@ export const ListPage: React.FC = () => {
     setList( newList )
     setChangingCircleIndices( null )
     setMiniCircle( null )
-    activateForm( 'deleteByIndex' )
-    resetInputs()
+    setDefaultFormStates( 'deleteByIndex' )
   }
-
-  const handleSubmit = ( e: React.FormEvent ) => { e.preventDefault() }
 
   function getMiniCircle ( miniCircle: MiniCircleType ) {
     return <Circle tail={ '' } head={ '' } letter={ miniCircle.letter } state={ ElementStates.Changing } isSmall={ true } extraClass={ styles.circle_correct_mb } />
@@ -261,7 +234,6 @@ export const ListPage: React.FC = () => {
     if ( isMounted ) {
       setList( newList )
     }
-
     return () => {
       isMounted = false
     }
@@ -273,7 +245,7 @@ export const ListPage: React.FC = () => {
 
     <SolutionLayout title='Связный список'>
 
-      <form className={ styles.formWrapper } onSubmit={ handleSubmit }>
+      <form className={ styles.formWrapper } onSubmit={ handleSubmitDefault }>
 
         <div className={ styles.blockHeadsTails }>
 

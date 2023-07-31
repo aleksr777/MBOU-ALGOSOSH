@@ -7,6 +7,7 @@ import Button from '../ui/button/button'
 import Circle from '../ui/circle/circle'
 import { ElementStates } from '../../types/element-states'
 import { delay } from '../../utils/delay'
+import { blockForm, activateForm } from '../../utils/block-activate-form'
 import { Stack } from './stack-class'
 import { ButtonsHookState } from '../../types/types'
 import { SHORT_DELAY_IN_MS } from '../../constants/delays'
@@ -41,16 +42,6 @@ export const StackPage: React.FC = () => {
     clear: { isLoading: false }
   } )
 
-  function blockForm ( buttonName: string ) {
-    setIsFormDisabled( true )
-    setButtonsState( ( { ...buttonsState, [ buttonName ]: { isLoading: true } } ) )
-  }
-
-  function activateForm ( buttonName: string ) {
-    setIsFormDisabled( false)
-    setButtonsState( ( { ...buttonsState, [ buttonName ]: { isLoading: false } } ) )
-  }
-
   function getNewStack ( stack: Stack<string> ) {
     const newStack = new Stack<string>()
     stack.getElements().forEach( ( element ) => newStack.push( element ) )
@@ -59,7 +50,7 @@ export const StackPage: React.FC = () => {
 
   const handlePush = async () => {
     if ( !checkIsFormValid() ) { return }
-    blockForm( 'push' )
+    blockForm( 'push', setIsFormDisabled, setButtonsState, buttonsState )
     const newStack = getNewStack( stack )
     newStack.push( values.stackInput )
     setStack( newStack )
@@ -67,30 +58,30 @@ export const StackPage: React.FC = () => {
     setHighlightedIndex( stack.size() )
     await delay( SHORT_DELAY_IN_MS )
     setHighlightedIndex( null )
-    activateForm( 'push' )
+    activateForm( 'push', setIsFormDisabled, setButtonsState, buttonsState )
   }
 
 
   const handlePop = async () => {
     if ( stack.isEmpty() ) { return }
-    blockForm( 'pop' )
+    blockForm( 'pop', setIsFormDisabled, setButtonsState, buttonsState )
     const newStack = getNewStack( stack )
     newStack.pop()
     setHighlightedIndex( stack.size() - 1 )
     await delay( SHORT_DELAY_IN_MS )
     setStack( newStack )
     setHighlightedIndex( null )
-    activateForm( 'pop' )
+    activateForm( 'pop', setIsFormDisabled, setButtonsState, buttonsState )
   }
 
   const handleClear = async () => {
     if ( stack.isEmpty() ) { return }
-    blockForm( 'clear' )
+    blockForm( 'clear', setIsFormDisabled, setButtonsState, buttonsState )
     setIsAllHighlighted( true )
     await delay( SHORT_DELAY_IN_MS )
     stack.clear()
     setIsAllHighlighted( false )
-    activateForm( 'clear' )
+    activateForm( 'clear', setIsFormDisabled, setButtonsState, buttonsState )
   }
 
   const handleSubmit = ( e: React.FormEvent ) => {
@@ -163,7 +154,7 @@ export const StackPage: React.FC = () => {
           />
         ) ) }
       </div>
-      
+
     </SolutionLayout>
   )
 }

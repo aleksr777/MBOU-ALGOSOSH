@@ -8,6 +8,7 @@ import Circle from '../ui/circle/circle'
 import { ElementStates } from '../../types/element-states'
 import { Queue } from './queue-class'
 import { delay } from '../../utils/delay'
+import { blockForm, activateForm } from '../../utils/block-activate-form'
 import { ButtonsHookState } from '../../types/types'
 import { HEAD, TAIL } from '../../constants/element-captions'
 import { SHORT_DELAY_IN_MS } from '../../constants/delays'
@@ -37,23 +38,13 @@ export const QueuePage: React.FC = () => {
   const [ queue, setQueue ] = useState( new Queue<string>( QUEUE_LENGTH ) )
   const [ highlightedIndex, setHighlightedIndex ] = useState<number | null>( null )
   const [ isAllHighlighted, setIsAllHighlighted ] = useState( false )
-  const [ prevData, setPrevData ] = useState( { head: 0, tail: 0 } ) 
+  const [ prevData, setPrevData ] = useState( { head: 0, tail: 0 } )
   const [ isFormDisabled, setIsFormDisabled ] = useState( false )
   const [ buttonsState, setButtonsState ] = useState<ButtonsHookState>( {
     add: { isLoading: false },
     remove: { isLoading: false },
     clear: { isLoading: false }
   } )
-
-  function blockForm ( buttonName: string ) {
-    setIsFormDisabled( true )
-    setButtonsState( ( { ...buttonsState, [ buttonName ]: { isLoading: true } } ) )
-  }
-
-  function activateForm ( buttonName: string ) {
-    setIsFormDisabled( false )
-    setButtonsState( ( { ...buttonsState, [ buttonName ]: { isLoading: false } } ) )
-  }
 
   // Эти константы нужны, чтобы не допустить зацикливание
   const isMaxTailIndex = prevData.tail === QUEUE_LENGTH - 1
@@ -62,38 +53,38 @@ export const QueuePage: React.FC = () => {
   const handleAdd = async () => {
     if ( !checkIsFormValid() || isMaxTailIndex ) { return }
     setPrevData( { ...prevData, tail: queue.tail } )
-    blockForm( 'add' )
+    blockForm( 'add', setIsFormDisabled, setButtonsState, buttonsState )
     setHighlightedIndex( queue.tail )
     await delay( SHORT_DELAY_IN_MS )
     queue.enqueue( values.queueInput )
-    resetField( 'queueInput' )
     setQueue( queue )
     setHighlightedIndex( null )
-    activateForm( 'add' )
+    resetField( 'queueInput' )
+    activateForm( 'add', setIsFormDisabled, setButtonsState, buttonsState )
   }
 
   const handleRemove = async () => {
     if ( isMaxHeadIndex ) { return }
     setPrevData( { ...prevData, head: queue.head } )
-    blockForm( 'remove' )
+    blockForm( 'remove', setIsFormDisabled, setButtonsState, buttonsState )
     setHighlightedIndex( queue.head )
     await delay( SHORT_DELAY_IN_MS )
     queue.dequeue()
     setQueue( queue )
     setHighlightedIndex( null )
-    activateForm( 'remove' )
+    activateForm( 'remove', setIsFormDisabled, setButtonsState, buttonsState )
   }
 
   const handleClear = async () => {
     if ( queue.isEmpty && !isMaxHeadIndex ) { return }
     setPrevData( { head: 0, tail: 0 } )
-    blockForm( 'clear' )
+    blockForm( 'clear', setIsFormDisabled, setButtonsState, buttonsState )
     setIsAllHighlighted( true )
     await delay( SHORT_DELAY_IN_MS )
     queue.clear()
     setQueue( queue )
     setIsAllHighlighted( false )
-    activateForm( 'clear' )
+    activateForm( 'clear', setIsFormDisabled, setButtonsState, buttonsState )
   }
 
   const handleSubmit = ( e: React.FormEvent ) => {

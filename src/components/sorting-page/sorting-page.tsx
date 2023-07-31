@@ -7,6 +7,8 @@ import Button from '../ui/button/button'
 import Column from '../ui/column/column'
 import { ElementStates } from '../../types/element-states'
 import { delay } from '../../utils/delay'
+import { randomArr } from '../../utils/random-arr'
+import { handleSubmitDefault } from '../../utils/handle-submit-default'
 import { Direction } from '../../types/direction'
 import { swapElementsArr } from '../../utils/swapElementsArr'
 import { ButtonsHookState } from '../../types/types'
@@ -36,20 +38,6 @@ export const SortingPage: React.FC = () => {
   } )
 
   let arrColumnsInfo: ColumnDataType[]
-
-  function randomArr (): number[] {
-    const minLen = 3
-    const maxLen = 17
-    const maxVal = 100
-    // Генерируем случайное значение для длины массива
-    const arrLen = Math.floor( Math.random() * ( maxLen - minLen + 1 ) ) + minLen
-    // Генерируем случайные элементы для массива в заданном диапазоне
-    const arr: number[] = []
-    for ( let i = 0; i < arrLen; i++ ) {
-      arr.push( Math.floor( Math.random() * ( maxVal + 1 ) ) )
-    }
-    return arr
-  }
 
   function getArrColumnsInfo ( arrNum: number[] ): ColumnDataType[] {
     return arrNum.map( ( num ) => ( {
@@ -192,20 +180,18 @@ export const SortingPage: React.FC = () => {
     setButtonsState( { ...buttonsState, newColumns: { isLoading: true, } } )
     setColumnsData( [] )
     setTimeout( () => { /* Задержка ради визуального эффекта */
-      arrColumnsInfo = getArrColumnsInfo( randomArr() )
+      arrColumnsInfo = getArrColumnsInfo( randomArr( 3, 17, 100 ) )
       setColumnsData( arrColumnsInfo )
       setIsFormDisabled( false )
       setButtonsState( { ...buttonsState, newColumns: { isLoading: false } } )
     }, 700 )
   }
 
-  const handleSubmit = ( e: React.FormEvent ) => { e.preventDefault() }
-
   return (
 
     <SolutionLayout title='Сортировка массива'>
 
-      <form className={ styles.formWrapper } onSubmit={ handleSubmit }>
+      <form className={ styles.formWrapper } onSubmit={ handleSubmitDefault }>
 
         <RadioInput
           label={ 'Выбор' }
