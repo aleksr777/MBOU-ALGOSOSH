@@ -252,12 +252,19 @@ export const ListPage: React.FC = () => {
   }
 
   useEffect( () => {
+    let isMounted = true
     const newList = new LinkedList()
     for ( let i = 0; i < 6; i++ ) {
       const randomValue = Math.floor( Math.random() * 100 ) + 1
       newList.append( randomValue.toString() )
     }
-    setList( newList )
+    if ( isMounted ) {
+      setList( newList )
+    }
+
+    return () => {
+      isMounted = false
+    }
   }, [] )
 
   const listArr = list.toArray()

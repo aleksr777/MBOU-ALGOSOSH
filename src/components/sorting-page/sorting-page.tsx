@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { SolutionLayout } from '../ui/solution-layout/solution-layout'
 import styles from './sorting-page.module.css'
 import { useForm } from '../../hooks/useForm'
