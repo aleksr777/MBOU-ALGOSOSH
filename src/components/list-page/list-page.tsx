@@ -28,6 +28,13 @@ export const ListPage: React.FC = () => {
 
   const indicesInput = 'indicesInput'
   const headsTailsInput = 'headsTailsInput'
+  
+  const btnAddHead = 'addHead'
+  const btnAddTail = 'addTail'
+  const btnDeleteHead = 'deleteHead'
+  const btnDeleteTail = 'deleteTail'
+  const btnAddByIndex = 'addByIndex'
+  const btnDeleteByIndex = 'deleteByIndex'
 
   const validateConfig = {
     headsTailsInput: {
@@ -87,7 +94,7 @@ export const ListPage: React.FC = () => {
 
   const handleAddHead = async () => {
     if ( !values.headsTailsInput ) { return }
-    blockForm( 'addHead', formUseStates )
+    blockForm( btnAddHead, formUseStates )
     const newList = cloneList( list )
     if ( list.head ) {
       await delay( SHORT_DELAY_IN_MS )
@@ -100,12 +107,12 @@ export const ListPage: React.FC = () => {
     setMiniCircle( null )
     await delay( SHORT_DELAY_IN_MS )
     setModifiedCircleIndex( null )
-    setDefaultFormStates( 'addHead' )
+    setDefaultFormStates( btnAddHead )
   }
 
   const handleAddTail = async ( arrLength: number ) => {
     if ( !values.headsTailsInput ) { return }
-    blockForm( 'addTail', formUseStates )
+    blockForm( btnAddTail, formUseStates )
     const newList = cloneList( list )
     if ( list.head ) {
       await delay( SHORT_DELAY_IN_MS )
@@ -118,12 +125,12 @@ export const ListPage: React.FC = () => {
     setModifiedCircleIndex( arrLength )
     await delay( SHORT_DELAY_IN_MS )
     setModifiedCircleIndex( null )
-    setDefaultFormStates( 'addTail' )
+    setDefaultFormStates( btnAddTail )
   }
 
   const handleDeleteHead = async () => {
     if ( !list.head ) { return }
-    blockForm( 'deleteHead', formUseStates )
+    blockForm( btnDeleteHead, formUseStates )
     const newList = cloneList( list )
     await delay( SHORT_DELAY_IN_MS )
     newList.updateByIndex( 0, '' )
@@ -133,12 +140,12 @@ export const ListPage: React.FC = () => {
     newList.deleteHead()
     setList( newList )
     setMiniCircle( null )
-    setDefaultFormStates( 'deleteHead' )
+    setDefaultFormStates( btnDeleteHead )
   }
 
   const handleDeleteTail = async ( arrLength: number ) => {
     if ( !list.head?.next ) { return }
-    blockForm( 'deleteTail', formUseStates )
+    blockForm( btnDeleteTail, formUseStates )
     const newList = cloneList( list )
     await delay( SHORT_DELAY_IN_MS )
     setMiniCircle( { letter: list.tail?.value as string, index: arrLength - 1, position: TAIL } )
@@ -148,13 +155,13 @@ export const ListPage: React.FC = () => {
     newList.deleteTail()
     setList( newList )
     setMiniCircle( null )
-    setDefaultFormStates( 'deleteTail' )
+    setDefaultFormStates( btnDeleteTail )
   }
 
   const handleAddByIndex = async ( arrLength: number ) => {
     const indexValue = getAndCheckIndex( values.indicesInput, arrLength )
     if ( indexValue === false || !values.headsTailsInput || !values.indicesInput ) { return }
-    blockForm( 'addByIndex', formUseStates )
+    blockForm( btnAddByIndex, formUseStates )
     const newList = cloneList( list )
     const arr = []
     for ( let i = 0; i <= parseInt( values.indicesInput ); i++ ) {
@@ -170,13 +177,13 @@ export const ListPage: React.FC = () => {
     setChangingCircleIndices( null )
     await delay( SHORT_DELAY_IN_MS )
     setModifiedCircleIndex( null )
-    setDefaultFormStates( 'addByIndex' )
+    setDefaultFormStates( btnAddByIndex )
   }
 
   const handleDeleteByIndex = async ( arrLength: number ) => {
     const indexValue = getAndCheckIndex( values.indicesInput, arrLength )
     if ( indexValue === false || !values.indicesInput ) { return }
-    blockForm( 'deleteByIndex', formUseStates )
+    blockForm( btnDeleteByIndex, formUseStates )
     const newList = cloneList( list )
     const indexNum = parseInt( values.indicesInput )
     const arr = []
@@ -196,7 +203,7 @@ export const ListPage: React.FC = () => {
     setList( newList )
     setChangingCircleIndices( null )
     setMiniCircle( null )
-    setDefaultFormStates( 'deleteByIndex' )
+    setDefaultFormStates( btnDeleteByIndex )
   }
 
   function getMiniCircle ( miniCircle: MiniCircleType ) {
