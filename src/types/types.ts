@@ -13,3 +13,8 @@ export type ButtonState = {
 export type ButtonsHookState = {
   [ key: string ]: ButtonState
 }
+
+export type StateIndeces = {
+  changing: null | [ number, number ]
+  modified: null | [ number, number ]
+}

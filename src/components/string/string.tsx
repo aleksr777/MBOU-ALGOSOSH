@@ -1,19 +1,17 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styles from './string.module.css'
 import { useForm } from '../../hooks/useForm'
 import { SolutionLayout } from '../ui/solution-layout/solution-layout'
 import { Input } from '../ui/input/input'
 import Button from '../ui/button/button'
 import Circle from '../ui/circle/circle'
-import { ElementStates } from '../../types/element-states'
 import { delay } from '../../utils/delay'
 import { swapElementsArr } from '../../utils/swapElementsArr'
-import { DELAY_IN_MS, SHORT_DELAY_IN_MS } from '../../constants/delays'
-
-type Symbol = {
-  symbol: string
-  state: ElementStates
-}
+import { getReversingStringSteps, getSymbolState } from '../../utils/string-component-utils'
+import { SHORT_DELAY_IN_MS } from '../../constants/delays'
+import { blockForm, activateForm } from '../../utils/block-activate-form'
+import { ButtonsHookState, StateIndeces } from '../../types/types'
+import { buttonDefaultState } from '../../constants/button-default-state'
 
 export const StringComponent: React.FC = () => {
 
@@ -28,54 +26,67 @@ export const StringComponent: React.FC = () => {
   const { values, errors, isFormValid, handleChange, checkIsFormValid } = useForm( { stringInput: '' }, validateConfig )
 
   const [ isFormDisabled, setIsFormDisabled ] = useState( false )
-  const [ symbolsArr, setSymbolsArr ] = useState<Symbol[]>( [] )
+  const [ symbolsArr, setSymbolsArr ] = useState<string[]>( [] )
+  const [ stateIndeces, setStateIndeces ] = useState<StateIndeces>( {
+    changing: null,
+    modified: null
+  } )
+  const [ buttonsState, setButtonsState ] = useState<ButtonsHookState>( { reversString: buttonDefaultState } )
+  // Для блокировки-разблокировки формы
+  const formUseStates = { setIsFormDisabled, setButtonsState, buttonsState }
 
-  async function expandString ( arrSymbols: Symbol[] ) {
-    let arr = arrSymbols
-    let left = 0
-    let right = arr.length - 1
-    async function changeStatus ( state: ElementStates, left: number, right: number ) {
-      arr[ left ].state = state
-      arr[ right ].state = state
-      return arr
-    }
-    while ( left < right ) {
-      arr = await changeStatus( ElementStates.Changing, left, right )
-      setSymbolsArr( [ ...arr ] )
-      await delay( SHORT_DELAY_IN_MS )
-      swapElementsArr( arr, left, right )
-      arr = await changeStatus( ElementStates.Modified, left, right )
-      setSymbolsArr( [ ...arr ] )
-      left++
-      right--
-      if ( left < right ) { await delay( SHORT_DELAY_IN_MS ) }
+  async function renderSymbols ( value: string ) {
+
+    blockForm( 'reversString', formUseStates )
+
+    let arrSymbols = value.split( "" )
+
+    if ( !arrSymbols.length ) {
+      return activateForm( 'reversString', formUseStates )
     }
 
-    const completedArr = arr.map( ( symbol ) => ( {
-      ...symbol,
-      state: ElementStates.Modified,
-    } ) )
-    setSymbolsArr( completedArr )
+    if ( arrSymbols.length < 2 ) {
+      setSymbolsArr( [ ...arrSymbols ] )
+      activateForm( 'reversString', formUseStates )
+      return setStateIndeces( {
+        changing: null,
+        modified: [ -1, -1 ]
+      } )
+    }
 
-    setIsFormDisabled( false )
+    const steps = await getReversingStringSteps( arrSymbols )
+
+    for ( let i = 0; i < steps.length; i++ ) {
+      let arr = steps[ i ]
+      let left = i
+      let right = arr.length - left - 1
+      if ( left < right ) {
+        setSymbolsArr( [ ...arr ] )
+        setStateIndeces( {
+          changing: [ left, right ],
+          modified: [ left - 1, right + 1 ]
+        } )
+        await delay( SHORT_DELAY_IN_MS )
+        swapElementsArr( arr, left, right )
+        setSymbolsArr( [ ...arr ] )
+        setStateIndeces( {
+          changing: null,
+          modified: [ left, right ]
+        } )
+        await delay( SHORT_DELAY_IN_MS )
+      } else {
+        setStateIndeces( {
+          changing: null,
+          modified: [ -1, -1 ]
+        } )
+      }
+    }
+    activateForm( 'reversString', formUseStates )
   }
 
   const handleSubmit = ( e: React.FormEvent ) => {
     e.preventDefault()
-    if ( !checkIsFormValid() ) { return }
-    const arr: Symbol[] = values.stringInput.split( '' ).map( ( symbol ) => ( {
-      symbol,
-      state: ElementStates.Default,
-    } ) )
-    if ( arr.length === 1 ) {
-      arr[ 0 ].state = ElementStates.Modified
-      setSymbolsArr( arr )
-      return null
-    } else if ( arr.length > 1 ) {
-      setSymbolsArr( arr )
-      setIsFormDisabled( true )
-      setTimeout( () => expandString( arr ), DELAY_IN_MS )
-    }
+    setTimeout( () => renderSymbols( values.stringInput ), SHORT_DELAY_IN_MS )
   }
 
   return (
@@ -83,7 +94,6 @@ export const StringComponent: React.FC = () => {
     <SolutionLayout title='Строка'>
 
       <form className={ styles.formWrapper } onSubmit={ handleSubmit }>
-
         <Input
           placeholder='Введите текст'
           name='stringInput'
@@ -102,16 +112,16 @@ export const StringComponent: React.FC = () => {
           type='submit'
           linkedList='small'
           extraClass={ styles.button_correct }
-          text={ isFormDisabled ? '' : 'Развернуть' }
-          isLoader={ isFormDisabled }
-          disabled={ !isFormValid || isFormDisabled }
+          text={ buttonsState.reversString.isLoading ? '' : 'Развернуть' }
+          isLoader={ buttonsState.reversString.isLoading ? true : false }
+          disabled={ isFormDisabled && !buttonsState.reversString.isLoading || !isFormValid }
         />
 
       </form>
 
       <div className={ styles.blockLetters }>
         { symbolsArr.map( ( symbol, index ) => (
-          <Circle key={ index } letter={ symbol.symbol } state={ symbol.state } />
+          <Circle key={ index } letter={ symbol } state={ getSymbolState( stateIndeces, index ) } />
         ) ) }
       </div>
 
