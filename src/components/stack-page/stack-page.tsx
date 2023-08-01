@@ -44,7 +44,7 @@ export const StackPage: React.FC = () => {
   } )
 
   // Для блокировки-разблокировки формы
-  const statesForm = { setIsFormDisabled, setButtonsState, buttonsState }
+  const formUseStates = { setIsFormDisabled, setButtonsState, buttonsState }
 
   function getNewStack ( stack: Stack<string> ) {
     const newStack = new Stack<string>()
@@ -54,7 +54,7 @@ export const StackPage: React.FC = () => {
 
   const handlePush = async () => {
     if ( !checkIsFormValid() ) { return }
-    blockForm( 'push', statesForm )
+    blockForm( 'push', formUseStates )
     const newStack = getNewStack( stack )
     newStack.push( values.stackInput )
     setStack( newStack )
@@ -62,30 +62,30 @@ export const StackPage: React.FC = () => {
     setHighlightedIndex( stack.size() )
     await delay( SHORT_DELAY_IN_MS )
     setHighlightedIndex( null )
-    activateForm( 'push', statesForm )
+    activateForm( 'push', formUseStates )
   }
 
 
   const handlePop = async () => {
     if ( stack.isEmpty() ) { return }
-    blockForm( 'pop', statesForm )
+    blockForm( 'pop', formUseStates )
     const newStack = getNewStack( stack )
     newStack.pop()
     setHighlightedIndex( stack.size() - 1 )
     await delay( SHORT_DELAY_IN_MS )
     setStack( newStack )
     setHighlightedIndex( null )
-    activateForm( 'pop', statesForm )
+    activateForm( 'pop', formUseStates )
   }
 
   const handleClear = async () => {
     if ( stack.isEmpty() ) { return }
-    blockForm( 'clear', statesForm )
+    blockForm( 'clear', formUseStates )
     setIsAllHighlighted( true )
     await delay( SHORT_DELAY_IN_MS )
     stack.clear()
     setIsAllHighlighted( false )
-    activateForm( 'clear', statesForm )
+    activateForm( 'clear', formUseStates )
   }
 
   const handleSubmit = ( e: React.FormEvent ) => {

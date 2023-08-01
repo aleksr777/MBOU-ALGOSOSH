@@ -1,13 +1,13 @@
 import { ButtonsHookState } from '../types/types'
 
-type StatesFormType = {
+type formUseStatesType = {
   setIsFormDisabled: React.Dispatch<React.SetStateAction<boolean>>
   setButtonsState: React.Dispatch<React.SetStateAction<ButtonsHookState>>
   buttonsState: ButtonsHookState
 }
 
-export function blockForm ( buttonName: string, statesForm: StatesFormType ) {
-  const { setIsFormDisabled, setButtonsState, buttonsState } = statesForm
+export function blockForm ( buttonName: string, formUseStates: formUseStatesType ) {
+  const { setIsFormDisabled, setButtonsState, buttonsState } = formUseStates
   setIsFormDisabled( true )
   setButtonsState( {
     ...buttonsState,
@@ -18,8 +18,8 @@ export function blockForm ( buttonName: string, statesForm: StatesFormType ) {
   } )
 }
 
-export function activateForm ( buttonName: string, statesForm: StatesFormType ) {
-  const { setIsFormDisabled, setButtonsState, buttonsState } = statesForm
+export function activateForm ( buttonName: string, formUseStates: formUseStatesType ) {
+  const { setIsFormDisabled, setButtonsState, buttonsState } = formUseStates
   setIsFormDisabled( false )
   setButtonsState( {
     ...buttonsState,

@@ -48,7 +48,7 @@ export const QueuePage: React.FC = () => {
   } )
 
   // Для блокировки-разблокировки формы
-  const statesForm = { setIsFormDisabled, setButtonsState, buttonsState }
+  const formUseStates = { setIsFormDisabled, setButtonsState, buttonsState }
 
   // Эти константы нужны, чтобы не допустить зацикливание
   const isMaxTailIndex = prevData.tail === QUEUE_LENGTH - 1
@@ -57,38 +57,38 @@ export const QueuePage: React.FC = () => {
   const handleAdd = async () => {
     if ( !checkIsFormValid() || isMaxTailIndex ) { return }
     setPrevData( { ...prevData, tail: queue.tail } )
-    blockForm( 'add', statesForm )
+    blockForm( 'add', formUseStates )
     setHighlightedIndex( queue.tail )
     await delay( SHORT_DELAY_IN_MS )
     queue.enqueue( values.queueInput )
     setQueue( queue )
     setHighlightedIndex( null )
     resetField( 'queueInput' )
-    activateForm( 'add', statesForm )
+    activateForm( 'add', formUseStates )
   }
 
   const handleRemove = async () => {
     if ( isMaxHeadIndex ) { return }
     setPrevData( { ...prevData, head: queue.head } )
-    blockForm( 'remove', statesForm )
+    blockForm( 'remove', formUseStates )
     setHighlightedIndex( queue.head )
     await delay( SHORT_DELAY_IN_MS )
     queue.dequeue()
     setQueue( queue )
     setHighlightedIndex( null )
-    activateForm( 'remove', statesForm )
+    activateForm( 'remove', formUseStates )
   }
 
   const handleClear = async () => {
     if ( queue.isEmpty && !isMaxHeadIndex ) { return }
     setPrevData( { head: 0, tail: 0 } )
-    blockForm( 'clear', statesForm )
+    blockForm( 'clear', formUseStates )
     setIsAllHighlighted( true )
     await delay( SHORT_DELAY_IN_MS )
     queue.clear()
     setQueue( queue )
     setIsAllHighlighted( false )
-    activateForm( 'clear', statesForm )
+    activateForm( 'clear', formUseStates )
   }
 
   const handleSubmit = ( e: React.FormEvent ) => {
