@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import styles from './string.module.css'
 import { useForm } from '../../hooks/useForm'
 import { SolutionLayout } from '../ui/solution-layout/solution-layout'
@@ -14,6 +14,7 @@ import { ButtonsHookState, StateIndeces } from '../../types/types'
 import { buttonDefaultState } from '../../constants/button-default-state'
 
 export const StringComponent: React.FC = () => {
+  const isMounted = useRef( true )
 
   const validateConfig = {
     stringInput: {
@@ -23,7 +24,7 @@ export const StringComponent: React.FC = () => {
     }
   }
 
-  const { values, errors, isFormValid, handleChange, checkIsFormValid } = useForm( { stringInput: '' }, validateConfig )
+  const { values, errors, isFormValid, handleChange } = useForm( { stringInput: '' }, validateConfig )
 
   const [ isFormDisabled, setIsFormDisabled ] = useState( false )
   const [ symbolsArr, setSymbolsArr ] = useState<string[]>( [] )
@@ -32,10 +33,10 @@ export const StringComponent: React.FC = () => {
     modified: null
   } )
   const [ buttonsState, setButtonsState ] = useState<ButtonsHookState>( { reversString: buttonDefaultState } )
-  // Для блокировки-разблокировки формы
   const formUseStates = { setIsFormDisabled, setButtonsState, buttonsState }
 
   async function renderSymbols ( value: string ) {
+    if ( !isMounted.current ) return
 
     blockForm( 'reversString', formUseStates )
 
@@ -89,10 +90,14 @@ export const StringComponent: React.FC = () => {
     setTimeout( () => renderSymbols( values.stringInput ), SHORT_DELAY_IN_MS )
   }
 
+  useEffect( () => {
+    return () => {
+      isMounted.current = false
+    }
+  }, [] )
+
   return (
-
     <SolutionLayout title='Строка'>
-
       <form className={ styles.formWrapper } onSubmit={ handleSubmit }>
         <Input
           placeholder='Введите текст'
