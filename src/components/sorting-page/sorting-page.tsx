@@ -13,6 +13,7 @@ import { Direction } from '../../types/direction'
 import { swapElementsArr } from '../../utils/swapElementsArr'
 import { ButtonsHookState } from '../../types/types'
 import { SHORT_DELAY_IN_MS } from '../../constants/delays'
+import { buttonDefaultState } from '../../constants/button-default-state'
 
 type ColumnDataType = {
   number: number
@@ -32,9 +33,9 @@ export const SortingPage: React.FC = () => {
   const [ isFormDisabled, setIsFormDisabled ] = useState( false )
   const [ isColumnsSorted, setIsColumnsSorted ] = useState( false )
   const [ buttonsState, setButtonsState ] = useState<ButtonsHookState>( {
-    newColumns: { isLoading: false },
-    ascending: { isLoading: false },
-    descending: { isLoading: false }
+    newColumns: buttonDefaultState,
+    ascending: buttonDefaultState,
+    descending: buttonDefaultState
   } )
 
   let arrColumnsInfo: ColumnDataType[]
@@ -90,8 +91,8 @@ export const SortingPage: React.FC = () => {
     setIsColumnsSorted( true )
     setIsFormDisabled( false )
     direction === ASCENDING
-      ? setButtonsState( { ...buttonsState, ascending: { isLoading: false } } )
-      : setButtonsState( { ...buttonsState, descending: { isLoading: false } } )
+      ? setButtonsState( { ...buttonsState, ascending: { ...buttonsState.ascending, isLoading: false } } )
+      : setButtonsState( { ...buttonsState, descending: { ...buttonsState.descending, isLoading: false } } )
   }
 
   // Вариант пузырьковой сортировки - шейкерная сортировка.
@@ -150,14 +151,14 @@ export const SortingPage: React.FC = () => {
     setIsColumnsSorted( true )
     setIsFormDisabled( false )
     direction === ASCENDING
-      ? setButtonsState( { ...buttonsState, ascending: { isLoading: false } } )
-      : setButtonsState( { ...buttonsState, descending: { isLoading: false } } )
+      ? setButtonsState( { ...buttonsState, ascending: { ...buttonsState.ascending, isLoading: false } } )
+      : setButtonsState( { ...buttonsState, descending: { ...buttonsState.descending, isLoading: false } } )
   }
 
   function animateAscendingSort () {
     if ( isFormDisabled ) { return }
     setIsFormDisabled( true )
-    setButtonsState( { ...buttonsState, ascending: { isLoading: true } } )
+    setButtonsState( { ...buttonsState, ascending: { ...buttonsState.ascending, isLoading: true } } )
     isColumnsSorted && setDefaultColumnsState( columnsData )
     values.sortingRadio === CHOICE && choiceSort( columnsData, ASCENDING )
     values.sortingRadio === BUBBLE && bubbleSort( columnsData, ASCENDING )
@@ -167,7 +168,7 @@ export const SortingPage: React.FC = () => {
   function animateDescendingSort () {
     if ( isFormDisabled ) { return }
     setIsFormDisabled( true )
-    setButtonsState( { ...buttonsState, descending: { isLoading: true } } )
+    setButtonsState( { ...buttonsState, descending: { ...buttonsState.descending, isLoading: true } } )
     isColumnsSorted && setDefaultColumnsState( columnsData )
     values.sortingRadio === CHOICE && choiceSort( columnsData, DESCENDING )
     values.sortingRadio === BUBBLE && bubbleSort( columnsData, DESCENDING )
@@ -177,13 +178,13 @@ export const SortingPage: React.FC = () => {
     if ( isFormDisabled ) { return }
     setIsColumnsSorted( false )
     setIsFormDisabled( true )
-    setButtonsState( { ...buttonsState, newColumns: { isLoading: true, } } )
+    setButtonsState( { ...buttonsState, newColumns: { ...buttonsState.newColumns, isLoading: true, } } )
     setColumnsData( [] )
     setTimeout( () => { /* Задержка ради визуального эффекта */
       arrColumnsInfo = getArrColumnsInfo( randomArr( 3, 17, 100 ) )
       setColumnsData( arrColumnsInfo )
       setIsFormDisabled( false )
-      setButtonsState( { ...buttonsState, newColumns: { isLoading: false } } )
+      setButtonsState( { ...buttonsState, newColumns: { ...buttonsState.newColumns, isLoading: false } } )
     }, 700 )
   }
 

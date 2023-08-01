@@ -13,6 +13,7 @@ import { blockForm, activateForm } from '../../utils/block-activate-form'
 import { getAndCheckIndex } from '../../utils/get-check-index-arr'
 import { HEAD, TAIL } from '../../constants/element-captions'
 import { SHORT_DELAY_IN_MS } from '../../constants/delays'
+import { buttonDefaultState } from '../../constants/button-default-state'
 import LinkedList from './linked-list-class'
 import { ButtonsHookState } from '../../types/types'
 
@@ -27,7 +28,6 @@ export const ListPage: React.FC = () => {
 
   const indicesInput = 'indicesInput'
   const headsTailsInput = 'headsTailsInput'
-  const btnObj = { isLoading: false }
 
   const validateConfig = {
     headsTailsInput: {
@@ -61,17 +61,17 @@ export const ListPage: React.FC = () => {
   const [ changingCircleIndices, setChangingCircleIndices ] = useState<number[] | null>( null )
   const [ isFormDisabled, setIsFormDisabled ] = useState( false )
   const [ buttonsState, setButtonsState ] = useState<ButtonsHookState>( {
-    addHead: btnObj,
-    addTail: btnObj,
-    deleteHead: btnObj,
-    deleteTail: btnObj,
-    addByIndex: btnObj,
-    deleteByIndex: btnObj,
+    addHead: buttonDefaultState,
+    addTail: buttonDefaultState,
+    deleteHead: buttonDefaultState,
+    deleteTail: buttonDefaultState,
+    addByIndex: buttonDefaultState,
+    deleteByIndex: buttonDefaultState,
   } )
 
   // Для блокировки-разблокировки формы
   const statesForm = { setIsFormDisabled, setButtonsState, buttonsState }
-  
+
   function setDefaultFormStates ( buttonName: string ) {
     activateForm( buttonName, statesForm )
     resetField( indicesInput )

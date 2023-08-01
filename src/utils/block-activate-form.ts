@@ -9,11 +9,23 @@ type StatesFormType = {
 export function blockForm ( buttonName: string, statesForm: StatesFormType ) {
   const { setIsFormDisabled, setButtonsState, buttonsState } = statesForm
   setIsFormDisabled( true )
-  setButtonsState( { ...buttonsState, [ buttonName ]: { isLoading: true } } )
+  setButtonsState( {
+    ...buttonsState,
+    [ buttonName ]: {
+      ...buttonsState[ buttonName ],
+      isLoading: true,
+    },
+  } )
 }
 
 export function activateForm ( buttonName: string, statesForm: StatesFormType ) {
   const { setIsFormDisabled, setButtonsState, buttonsState } = statesForm
   setIsFormDisabled( false )
-  setButtonsState( { ...buttonsState, [ buttonName ]: { isLoading: false } } )
+  setButtonsState( {
+    ...buttonsState,
+    [ buttonName ]: {
+      ...buttonsState[ buttonName ],
+      isLoading: false,
+    },
+  } )
 }

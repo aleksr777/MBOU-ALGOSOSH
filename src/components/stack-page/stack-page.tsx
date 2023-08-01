@@ -11,6 +11,7 @@ import { blockForm, activateForm } from '../../utils/block-activate-form'
 import { Stack } from './stack-class'
 import { ButtonsHookState } from '../../types/types'
 import { SHORT_DELAY_IN_MS } from '../../constants/delays'
+import { buttonDefaultState } from '../../constants/button-default-state'
 
 
 export const StackPage: React.FC = () => {
@@ -37,9 +38,9 @@ export const StackPage: React.FC = () => {
   const [ isFormDisabled, setIsFormDisabled ] = useState( false )
   const [ stack, setStack ] = useState( new Stack<string>() )
   const [ buttonsState, setButtonsState ] = useState<ButtonsHookState>( {
-    push: { isLoading: false },
-    pop: { isLoading: false },
-    clear: { isLoading: false }
+    push: buttonDefaultState,
+    pop: buttonDefaultState,
+    clear: buttonDefaultState
   } )
 
   // Для блокировки-разблокировки формы

@@ -6,6 +6,10 @@ export type OnlyNumberObjType = {
   [ key: string ]: number
 }
 
+export type ButtonState = {
+  isLoading: boolean
+}
+
 export type ButtonsHookState = {
-  [ key: string ]: { isLoading: boolean }
+  [ key: string ]: ButtonState
 }

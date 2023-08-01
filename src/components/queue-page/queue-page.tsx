@@ -12,6 +12,7 @@ import { blockForm, activateForm } from '../../utils/block-activate-form'
 import { ButtonsHookState } from '../../types/types'
 import { HEAD, TAIL } from '../../constants/element-captions'
 import { SHORT_DELAY_IN_MS } from '../../constants/delays'
+import { buttonDefaultState } from '../../constants/button-default-state'
 
 
 export const QueuePage: React.FC = () => {
@@ -41,9 +42,9 @@ export const QueuePage: React.FC = () => {
   const [ prevData, setPrevData ] = useState( { head: 0, tail: 0 } )
   const [ isFormDisabled, setIsFormDisabled ] = useState( false )
   const [ buttonsState, setButtonsState ] = useState<ButtonsHookState>( {
-    add: { isLoading: false },
-    remove: { isLoading: false },
-    clear: { isLoading: false }
+    add: buttonDefaultState,
+    remove: buttonDefaultState,
+    clear: buttonDefaultState
   } )
 
   // Для блокировки-разблокировки формы
