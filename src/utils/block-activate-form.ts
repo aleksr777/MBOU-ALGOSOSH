@@ -1,21 +1,19 @@
 import { ButtonsHookState } from '../types/types'
 
-export function blockForm (
-  buttonName: string,
-  setIsFormDisabled: React.Dispatch<React.SetStateAction<boolean>>,
-  setButtonsState: React.Dispatch<React.SetStateAction<ButtonsHookState>>,
+type StatesFormType = {
+  setIsFormDisabled: React.Dispatch<React.SetStateAction<boolean>>
+  setButtonsState: React.Dispatch<React.SetStateAction<ButtonsHookState>>
   buttonsState: ButtonsHookState
-) {
-  setIsFormDisabled( true )
-  setButtonsState( ( { ...buttonsState, [ buttonName ]: { isLoading: true } } ) )
 }
 
-export function activateForm (
-  buttonName: string,
-  setIsFormDisabled: React.Dispatch<React.SetStateAction<boolean>>,
-  setButtonsState: React.Dispatch<React.SetStateAction<ButtonsHookState>>,
-  buttonsState: ButtonsHookState
-) {
+export function blockForm ( buttonName: string, statesForm: StatesFormType ) {
+  const { setIsFormDisabled, setButtonsState, buttonsState } = statesForm
   setIsFormDisabled( true )
-  setButtonsState( ( { ...buttonsState, [ buttonName ]: { isLoading: false } } ) )
+  setButtonsState( { ...buttonsState, [ buttonName ]: { isLoading: true } } )
+}
+
+export function activateForm ( buttonName: string, statesForm: StatesFormType ) {
+  const { setIsFormDisabled, setButtonsState, buttonsState } = statesForm
+  setIsFormDisabled( false )
+  setButtonsState( { ...buttonsState, [ buttonName ]: { isLoading: false } } )
 }

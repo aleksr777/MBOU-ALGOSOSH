@@ -46,6 +46,9 @@ export const QueuePage: React.FC = () => {
     clear: { isLoading: false }
   } )
 
+  // Для блокировки-разблокировки формы
+  const statesForm = { setIsFormDisabled, setButtonsState, buttonsState }
+
   // Эти константы нужны, чтобы не допустить зацикливание
   const isMaxTailIndex = prevData.tail === QUEUE_LENGTH - 1
   const isMaxHeadIndex = prevData.head === QUEUE_LENGTH - 1
@@ -53,38 +56,38 @@ export const QueuePage: React.FC = () => {
   const handleAdd = async () => {
     if ( !checkIsFormValid() || isMaxTailIndex ) { return }
     setPrevData( { ...prevData, tail: queue.tail } )
-    blockForm( 'add', setIsFormDisabled, setButtonsState, buttonsState )
+    blockForm( 'add', statesForm )
     setHighlightedIndex( queue.tail )
     await delay( SHORT_DELAY_IN_MS )
     queue.enqueue( values.queueInput )
     setQueue( queue )
     setHighlightedIndex( null )
     resetField( 'queueInput' )
-    activateForm( 'add', setIsFormDisabled, setButtonsState, buttonsState )
+    activateForm( 'add', statesForm )
   }
 
   const handleRemove = async () => {
     if ( isMaxHeadIndex ) { return }
     setPrevData( { ...prevData, head: queue.head } )
-    blockForm( 'remove', setIsFormDisabled, setButtonsState, buttonsState )
+    blockForm( 'remove', statesForm )
     setHighlightedIndex( queue.head )
     await delay( SHORT_DELAY_IN_MS )
     queue.dequeue()
     setQueue( queue )
     setHighlightedIndex( null )
-    activateForm( 'remove', setIsFormDisabled, setButtonsState, buttonsState )
+    activateForm( 'remove', statesForm )
   }
 
   const handleClear = async () => {
     if ( queue.isEmpty && !isMaxHeadIndex ) { return }
     setPrevData( { head: 0, tail: 0 } )
-    blockForm( 'clear', setIsFormDisabled, setButtonsState, buttonsState )
+    blockForm( 'clear', statesForm )
     setIsAllHighlighted( true )
     await delay( SHORT_DELAY_IN_MS )
     queue.clear()
     setQueue( queue )
     setIsAllHighlighted( false )
-    activateForm( 'clear', setIsFormDisabled, setButtonsState, buttonsState )
+    activateForm( 'clear', statesForm )
   }
 
   const handleSubmit = ( e: React.FormEvent ) => {

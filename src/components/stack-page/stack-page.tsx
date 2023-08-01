@@ -42,6 +42,9 @@ export const StackPage: React.FC = () => {
     clear: { isLoading: false }
   } )
 
+  // Для блокировки-разблокировки формы
+  const statesForm = { setIsFormDisabled, setButtonsState, buttonsState }
+
   function getNewStack ( stack: Stack<string> ) {
     const newStack = new Stack<string>()
     stack.getElements().forEach( ( element ) => newStack.push( element ) )
@@ -50,7 +53,7 @@ export const StackPage: React.FC = () => {
 
   const handlePush = async () => {
     if ( !checkIsFormValid() ) { return }
-    blockForm( 'push', setIsFormDisabled, setButtonsState, buttonsState )
+    blockForm( 'push', statesForm )
     const newStack = getNewStack( stack )
     newStack.push( values.stackInput )
     setStack( newStack )
@@ -58,30 +61,30 @@ export const StackPage: React.FC = () => {
     setHighlightedIndex( stack.size() )
     await delay( SHORT_DELAY_IN_MS )
     setHighlightedIndex( null )
-    activateForm( 'push', setIsFormDisabled, setButtonsState, buttonsState )
+    activateForm( 'push', statesForm )
   }
 
 
   const handlePop = async () => {
     if ( stack.isEmpty() ) { return }
-    blockForm( 'pop', setIsFormDisabled, setButtonsState, buttonsState )
+    blockForm( 'pop', statesForm )
     const newStack = getNewStack( stack )
     newStack.pop()
     setHighlightedIndex( stack.size() - 1 )
     await delay( SHORT_DELAY_IN_MS )
     setStack( newStack )
     setHighlightedIndex( null )
-    activateForm( 'pop', setIsFormDisabled, setButtonsState, buttonsState )
+    activateForm( 'pop', statesForm )
   }
 
   const handleClear = async () => {
     if ( stack.isEmpty() ) { return }
-    blockForm( 'clear', setIsFormDisabled, setButtonsState, buttonsState )
+    blockForm( 'clear', statesForm )
     setIsAllHighlighted( true )
     await delay( SHORT_DELAY_IN_MS )
     stack.clear()
     setIsAllHighlighted( false )
-    activateForm( 'clear', setIsFormDisabled, setButtonsState, buttonsState )
+    activateForm( 'clear', statesForm )
   }
 
   const handleSubmit = ( e: React.FormEvent ) => {

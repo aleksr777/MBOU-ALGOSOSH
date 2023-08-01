@@ -69,8 +69,11 @@ export const ListPage: React.FC = () => {
     deleteByIndex: btnObj,
   } )
 
+  // Для блокировки-разблокировки формы
+  const statesForm = { setIsFormDisabled, setButtonsState, buttonsState }
+  
   function setDefaultFormStates ( buttonName: string ) {
-    activateForm( buttonName, setIsFormDisabled, setButtonsState, buttonsState )
+    activateForm( buttonName, statesForm )
     resetField( indicesInput )
     resetField( headsTailsInput )
   }
@@ -84,7 +87,7 @@ export const ListPage: React.FC = () => {
 
   const handleAddHead = async () => {
     if ( !values.headsTailsInput ) { return }
-    blockForm( 'addHead', setIsFormDisabled, setButtonsState, buttonsState )
+    blockForm( 'addHead', statesForm )
     const newList = cloneList( list )
     if ( list.head ) {
       await delay( SHORT_DELAY_IN_MS )
@@ -102,7 +105,7 @@ export const ListPage: React.FC = () => {
 
   const handleAddTail = async ( arrLength: number ) => {
     if ( !values.headsTailsInput ) { return }
-    blockForm( 'addTail', setIsFormDisabled, setButtonsState, buttonsState )
+    blockForm( 'addTail', statesForm )
     const newList = cloneList( list )
     if ( list.head ) {
       await delay( SHORT_DELAY_IN_MS )
@@ -120,7 +123,7 @@ export const ListPage: React.FC = () => {
 
   const handleDeleteHead = async () => {
     if ( !list.head ) { return }
-    blockForm( 'deleteHead', setIsFormDisabled, setButtonsState, buttonsState )
+    blockForm( 'deleteHead', statesForm )
     const newList = cloneList( list )
     await delay( SHORT_DELAY_IN_MS )
     newList.updateByIndex( 0, '' )
@@ -135,7 +138,7 @@ export const ListPage: React.FC = () => {
 
   const handleDeleteTail = async ( arrLength: number ) => {
     if ( !list.head?.next ) { return }
-    blockForm( 'deleteTail', setIsFormDisabled, setButtonsState, buttonsState )
+    blockForm( 'deleteTail', statesForm )
     const newList = cloneList( list )
     await delay( SHORT_DELAY_IN_MS )
     setMiniCircle( { letter: list.tail?.value as string, index: arrLength - 1, position: TAIL } )
@@ -151,7 +154,7 @@ export const ListPage: React.FC = () => {
   const handleAddByIndex = async ( arrLength: number ) => {
     const indexValue = getAndCheckIndex( values.indicesInput, arrLength )
     if ( indexValue === false || !values.headsTailsInput || !values.indicesInput ) { return }
-    blockForm( 'addByIndex', setIsFormDisabled, setButtonsState, buttonsState )
+    blockForm( 'addByIndex', statesForm )
     const newList = cloneList( list )
     const arr = []
     for ( let i = 0; i <= parseInt( values.indicesInput ); i++ ) {
@@ -173,7 +176,7 @@ export const ListPage: React.FC = () => {
   const handleDeleteByIndex = async ( arrLength: number ) => {
     const indexValue = getAndCheckIndex( values.indicesInput, arrLength )
     if ( indexValue === false || !values.indicesInput ) { return }
-    blockForm( 'deleteByIndex', setIsFormDisabled, setButtonsState, buttonsState )
+    blockForm( 'deleteByIndex', statesForm )
     const newList = cloneList( list )
     const indexNum = parseInt( values.indicesInput )
     const arr = []
