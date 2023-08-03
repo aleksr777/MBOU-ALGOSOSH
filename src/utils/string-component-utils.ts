@@ -1,4 +1,4 @@
-import { swapElementsArr } from './swapElementsArr'
+import { swapElementsArr } from './swap-elements-arr'
 import { ElementStates } from '../types/element-states'
 import { StateIndeces } from '../types/types'
 
@@ -23,7 +23,7 @@ export async function getReversingStringSteps ( arrSymbols: string[] ) {
 
 
 export function getSymbolState ( stateIndeces: StateIndeces, index: number ) {
-  
+
   const { changing, modified } = stateIndeces
 
   const isModified = (

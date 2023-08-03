@@ -18,3 +18,10 @@ export type StateIndeces = {
   changing: null | [ number, number ]
   modified: null | [ number, number ]
 }
+
+
+export type ArrChangingType = [ number | null, number | null ]
+
+export type ArrSortingType = ( number | number[] | ArrChangingType )[]
+
+export type StepsSortingType = ArrSortingType[]
