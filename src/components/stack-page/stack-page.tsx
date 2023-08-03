@@ -52,11 +52,8 @@ export const StackPage: React.FC = () => {
     return newStack
   }
 
-  const handlePush = async () => {
-    if ( !checkIsFormValid() ) { return }
+  async function renderPush ( newStack: Stack<string> ) {
     blockForm( 'push', formUseStates )
-    const newStack = getNewStack( stack )
-    newStack.push( values.stackInput )
     setStack( newStack )
     resetField( 'stackInput' )
     setHighlightedIndex( stack.size() )
@@ -65,12 +62,8 @@ export const StackPage: React.FC = () => {
     activateForm( 'push', formUseStates )
   }
 
-
-  const handlePop = async () => {
-    if ( stack.isEmpty() ) { return }
+  async function renderPop ( newStack: Stack<string> ) {
     blockForm( 'pop', formUseStates )
-    const newStack = getNewStack( stack )
-    newStack.pop()
     setHighlightedIndex( stack.size() - 1 )
     await delay( SHORT_DELAY_IN_MS )
     setStack( newStack )
@@ -78,14 +71,34 @@ export const StackPage: React.FC = () => {
     activateForm( 'pop', formUseStates )
   }
 
-  const handleClear = async () => {
-    if ( stack.isEmpty() ) { return }
+  async function renderClear ( newStack: Stack<string> ) {
     blockForm( 'clear', formUseStates )
     setIsAllHighlighted( true )
     await delay( SHORT_DELAY_IN_MS )
-    stack.clear()
+    setStack( newStack )
     setIsAllHighlighted( false )
     activateForm( 'clear', formUseStates )
+  }
+
+  const handlePush = () => {
+    if ( !checkIsFormValid() ) { return }
+    const newStack = getNewStack( stack )
+    newStack.push( values.stackInput )
+    renderPush( newStack )
+  }
+
+  const handlePop = () => {
+    if ( stack.isEmpty() ) { return }
+    const newStack = getNewStack( stack )
+    newStack.pop()
+    renderPop( newStack )
+  }
+
+  const handleClear = () => {
+    if ( stack.isEmpty() ) { return }
+    const newStack = getNewStack( stack )
+    newStack.clear()
+    renderClear( newStack )
   }
 
   const handleSubmit = ( e: React.FormEvent ) => {
