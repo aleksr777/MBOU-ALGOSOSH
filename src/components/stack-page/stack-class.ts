@@ -12,7 +12,7 @@ class Stack<T> {
   pop (): T | undefined {
     return this.elements.pop()
   }
-  
+
   clear (): void {
     this.elements = []
   }
@@ -27,6 +27,12 @@ class Stack<T> {
 
   getElements (): T[] {
     return [ ...this.elements ]
+  }
+
+  clone (): Stack<T> {
+    const newStack = new Stack<T>()
+    newStack.elements = [ ...this.elements ]
+    return newStack
   }
 }
 

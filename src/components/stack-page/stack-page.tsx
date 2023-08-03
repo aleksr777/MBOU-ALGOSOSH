@@ -46,12 +46,6 @@ export const StackPage: React.FC = () => {
   // Для блокировки-разблокировки формы
   const formUseStates = { setIsFormDisabled, setButtonsState, buttonsState }
 
-  function getNewStack ( stack: Stack<string> ) {
-    const newStack = new Stack<string>()
-    stack.getElements().forEach( ( element ) => newStack.push( element ) )
-    return newStack
-  }
-
   async function renderPush ( newStack: Stack<string> ) {
     blockForm( 'push', formUseStates )
     setStack( newStack )
@@ -82,21 +76,21 @@ export const StackPage: React.FC = () => {
 
   const handlePush = () => {
     if ( !checkIsFormValid() ) { return }
-    const newStack = getNewStack( stack )
+    const newStack = stack.clone()
     newStack.push( values.stackInput )
     renderPush( newStack )
   }
 
   const handlePop = () => {
     if ( stack.isEmpty() ) { return }
-    const newStack = getNewStack( stack )
+    const newStack = stack.clone()
     newStack.pop()
     renderPop( newStack )
   }
 
   const handleClear = () => {
     if ( stack.isEmpty() ) { return }
-    const newStack = getNewStack( stack )
+    const newStack = stack.clone()
     newStack.clear()
     renderClear( newStack )
   }
