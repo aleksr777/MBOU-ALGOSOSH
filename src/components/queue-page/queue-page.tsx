@@ -54,41 +54,56 @@ export const QueuePage: React.FC = () => {
   const isMaxTailIndex = prevData.tail === QUEUE_LENGTH - 1
   const isMaxHeadIndex = prevData.head === QUEUE_LENGTH - 1
 
-  const handleAdd = async () => {
-    if ( !checkIsFormValid() || isMaxTailIndex ) { return }
+  async function renderAdd ( queue: Queue<string>, newQueue: Queue<string> ) {
     setPrevData( { ...prevData, tail: queue.tail } )
     blockForm( 'add', formUseStates )
     setHighlightedIndex( queue.tail )
     await delay( SHORT_DELAY_IN_MS )
-    queue.enqueue( values.queueInput )
-    setQueue( queue )
+    setQueue( newQueue )
     setHighlightedIndex( null )
     resetField( 'queueInput' )
     activateForm( 'add', formUseStates )
   }
 
-  const handleRemove = async () => {
-    if ( isMaxHeadIndex ) { return }
+  async function renderRemove ( queue: Queue<string>, newQueue: Queue<string> ) {
     setPrevData( { ...prevData, head: queue.head } )
     blockForm( 'remove', formUseStates )
     setHighlightedIndex( queue.head )
     await delay( SHORT_DELAY_IN_MS )
-    queue.dequeue()
-    setQueue( queue )
+    setQueue( newQueue )
     setHighlightedIndex( null )
     activateForm( 'remove', formUseStates )
   }
 
-  const handleClear = async () => {
-    if ( queue.isEmpty && !isMaxHeadIndex ) { return }
+  async function renderClear ( queue: Queue<string>, newQueue: Queue<string> ) {
     setPrevData( { head: 0, tail: 0 } )
     blockForm( 'clear', formUseStates )
     setIsAllHighlighted( true )
     await delay( SHORT_DELAY_IN_MS )
-    queue.clear()
-    setQueue( queue )
+    setQueue( newQueue )
     setIsAllHighlighted( false )
     activateForm( 'clear', formUseStates )
+  }
+
+  const handleAdd = () => {
+    if ( !checkIsFormValid() || isMaxTailIndex || isFormDisabled ) { return }
+    const newQueue = queue.clone()
+    newQueue.enqueue( values.queueInput )
+    renderAdd( queue, newQueue )
+  }
+
+  const handleRemove = () => {
+    if ( isMaxHeadIndex || isFormDisabled ) { return }
+    const newQueue = queue.clone()
+    newQueue.dequeue()
+    renderRemove( queue, newQueue )
+  }
+
+  const handleClear = async () => {
+    if ( queue.isEmpty && !isMaxHeadIndex || isFormDisabled ) { return }
+    const newQueue = queue.clone()
+    newQueue.clear()
+    renderClear( queue, newQueue )
   }
 
   const handleSubmit = ( e: React.FormEvent ) => {

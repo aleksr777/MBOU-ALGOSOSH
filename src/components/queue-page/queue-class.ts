@@ -37,6 +37,14 @@ class Queue<T> {
   get elements (): ( T | undefined )[] {
     return this.data
   }
+
+  clone (): Queue<T> {
+    const newQueue = new Queue<T>( this.data.length )
+    newQueue.data = [ ...this.data ]
+    newQueue.head = this.head
+    newQueue.tail = this.tail
+    return newQueue
+  }
 }
 
 export { Queue }
