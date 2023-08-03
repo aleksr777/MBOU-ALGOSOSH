@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent } from 'react'
+import React, { useState, ChangeEvent, useMemo } from 'react'
 import { SolutionLayout } from '../ui/solution-layout/solution-layout'
 import styles from './fibonacci-page.module.css'
 import { useForm } from '../../hooks/useForm'
@@ -27,30 +27,30 @@ export const FibonacciPage: React.FC = () => {
   const [ isFormDisabled, setIsFormDisabled ] = useState( false )
   const [ symbolsArr, setSymbolsArr ] = useState<number[]>( [] )
 
-  function animate ( num: number ) {
-    async function renderNumbers ( arrNumbers: number[] ) {
-      for ( let i = 0; i < arrNumbers.length; i++ ) {
-        setSymbolsArr( arrNumbers.slice( 0, i + 1 ) )
-        if ( i < arrNumbers.length - 1 ) {
-          await delay( SHORT_DELAY_IN_MS )
-        } else {
-          setIsFormDisabled( false )
-        }
+  let number: number = parseInt( values.fibonacciInput )
+  number = ( number > 19 || number < 1 || !number ) ? 0 : number
+  const memoizedFibonacciNumbers = useMemo( () => getFibonacciNumbers( number ) || [], [ number ] )
+
+  async function renderNumbers ( arrNumbers: number[] ) {
+    for ( let i = 0; i < arrNumbers.length; i++ ) {
+      setSymbolsArr( arrNumbers.slice( 0, i + 1 ) )
+      if ( i < arrNumbers.length - 1 ) {
+        await delay( SHORT_DELAY_IN_MS )
+      } else {
+        setIsFormDisabled( false )
       }
     }
-    const arrNumbers = getFibonacciNumbers( num )
-    renderNumbers( arrNumbers )
   }
 
   const handleSubmit = ( e: React.FormEvent ) => {
     e.preventDefault()
     if ( !checkIsFormValid() ) { return }
-    const number = parseInt( values.fibonacciInput )
     if ( number && number <= 19 && number >= 1 ) {
       setIsFormDisabled( true )
       setIsAnimating( true )
       setSymbolsArr( [] )
-      setTimeout( () => animate( number ), DELAY_IN_MS )
+      const arrNumbers = memoizedFibonacciNumbers
+      setTimeout( () => renderNumbers( arrNumbers ), DELAY_IN_MS )
     }
   }
 

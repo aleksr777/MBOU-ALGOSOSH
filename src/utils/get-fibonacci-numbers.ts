@@ -4,6 +4,8 @@ import { OnlyNumberObjType } from '../types/types'
 
 export function getFibonacciNumbers ( num: number ) {
 
+  if ( !num ) { return }
+
   const memo: OnlyNumberObjType = {}
   const arr: number[] = []
 
