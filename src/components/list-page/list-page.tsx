@@ -6,18 +6,19 @@ import { Input } from '../ui/input/input'
 import ArrowIcon from '../ui/icons/arrow-icon'
 import Button from '../ui/button/button'
 import Circle from '../ui/circle/circle'
-import { ElementStates } from '../../types/element-states'
 import { delay } from '../../utils/delay'
 import { handleSubmitDefault } from '../../utils/handle-submit-default'
 import { blockForm, activateForm } from '../../utils/block-activate-form'
 import { getAndCheckIndex } from '../../utils/get-check-index-arr'
+import { getCircleState, getStepsDeleteHead, getStepsDeleteTail, getStepsDeleteByIndex } from '../../utils/list-page-utils'
 import { HEAD, TAIL } from '../../constants/element-captions'
 import { SHORT_DELAY_IN_MS } from '../../constants/delays'
 import { buttonDefaultState } from '../../constants/button-default-state'
 import LinkedList from './linked-list-class'
-import { ButtonsHookState } from '../../types/types'
+import { ButtonsHookState, ListType } from '../../types/types'
+import { ElementStates } from '../../types/element-states'
 
-type MiniCircleType = {
+type miniCircleDataType = {
   letter: string
   index: number
   position: string
@@ -28,7 +29,7 @@ export const ListPage: React.FC = () => {
 
   const indicesInput = 'indicesInput'
   const headsTailsInput = 'headsTailsInput'
-  
+
   const btnAddHead = 'addHead'
   const btnAddTail = 'addTail'
   const btnDeleteHead = 'deleteHead'
@@ -62,8 +63,8 @@ export const ListPage: React.FC = () => {
     indicesInput: ''
   }, validateConfig )
 
-  const [ list, setList ] = useState( new LinkedList() )
-  const [ miniCircle, setMiniCircle ] = useState<MiniCircleType | null>( null )
+  const [ list, setList ] = useState( new LinkedList<unknown | string>() )
+  const [ miniCircleData, setMiniCircleData ] = useState<miniCircleDataType | null>( null )
   const [ modifiedCircleIndex, setModifiedCircleIndex ] = useState<number | null>( null )
   const [ changingCircleIndices, setChangingCircleIndices ] = useState<number[] | null>( null )
   const [ isFormDisabled, setIsFormDisabled ] = useState( false )
@@ -79,100 +80,94 @@ export const ListPage: React.FC = () => {
   // Для блокировки-разблокировки формы
   const formUseStates = { setIsFormDisabled, setButtonsState, buttonsState }
 
+
+  function getMiniCircleElement ( miniCircleData: miniCircleDataType ) {
+    return <Circle tail={ '' } head={ '' } letter={ miniCircleData.letter } state={ ElementStates.Changing } isSmall={ true } extraClass={ styles.circle_correct_mb } />
+  }
+
+  function getHeadElement ( index: number, miniCircleData: miniCircleDataType | null ) {
+    if ( miniCircleData !== null && miniCircleData.index === index && miniCircleData.position === HEAD ) {
+      return getMiniCircleElement( miniCircleData )
+    }
+    return index === 0 ? HEAD : ''
+  }
+
+  function getTailElement ( index: number, miniCircleData: miniCircleDataType | null, arrLength: number ) {
+    if ( miniCircleData && miniCircleData.index === index && miniCircleData.position === TAIL ) {
+      return getMiniCircleElement( miniCircleData )
+    }
+    return index === arrLength - 1 ? TAIL : ''
+  }
+
   function setDefaultFormStates ( buttonName: string ) {
     activateForm( buttonName, formUseStates )
     resetField( indicesInput )
     resetField( headsTailsInput )
   }
 
-  function cloneList<T> ( list: LinkedList<T> ): LinkedList<T> {
-    const newList = new LinkedList<T>()
-    const arr = list.toArray()
-    arr.forEach( value => newList.append( value ) )
-    return newList
-  }
-
-  const handleAddHead = async () => {
-    if ( !values.headsTailsInput ) { return }
+  async function renderAddHead ( secondList: ListType ) {
     blockForm( btnAddHead, formUseStates )
-    const newList = cloneList( list )
-    if ( list.head ) {
-      await delay( SHORT_DELAY_IN_MS )
-      setMiniCircle( { letter: values.headsTailsInput, index: 0, position: HEAD } )
-    }
+    await delay( SHORT_DELAY_IN_MS )
+    setMiniCircleData( { letter: values.headsTailsInput, index: 0, position: HEAD } )
     await delay( SHORT_DELAY_IN_MS )
     setModifiedCircleIndex( 0 )
-    newList.prepend( values.headsTailsInput )
-    setList( newList )
-    setMiniCircle( null )
+    setList( secondList )
+    setMiniCircleData( null )
     await delay( SHORT_DELAY_IN_MS )
     setModifiedCircleIndex( null )
     setDefaultFormStates( btnAddHead )
   }
 
-  const handleAddTail = async ( arrLength: number ) => {
-    if ( !values.headsTailsInput ) { return }
+  async function renderAddTail (
+    secondList: ListType, arrLength: number ) {
     blockForm( btnAddTail, formUseStates )
-    const newList = cloneList( list )
-    if ( list.head ) {
-      await delay( SHORT_DELAY_IN_MS )
-      setMiniCircle( { letter: values.headsTailsInput, index: arrLength - 1, position: TAIL } )
-    }
     await delay( SHORT_DELAY_IN_MS )
-    newList.append( values.headsTailsInput )
-    setList( newList )
-    setMiniCircle( null )
+    setMiniCircleData( { letter: values.headsTailsInput, index: arrLength - 1, position: TAIL } )
+    await delay( SHORT_DELAY_IN_MS )
+    setList( secondList )
+    setMiniCircleData( null )
     setModifiedCircleIndex( arrLength )
     await delay( SHORT_DELAY_IN_MS )
     setModifiedCircleIndex( null )
     setDefaultFormStates( btnAddTail )
   }
 
-  const handleDeleteHead = async () => {
-    if ( !list.head ) { return }
+  async function renderDeleteHead ( steps: ListType[] ) {
     blockForm( btnDeleteHead, formUseStates )
-    const newList = cloneList( list )
     await delay( SHORT_DELAY_IN_MS )
-    newList.updateByIndex( 0, '' )
-    setList( newList )
-    setMiniCircle( { letter: list.head.value as string, index: 0, position: HEAD } )
+    setList( steps[ 1 ] )
+    setMiniCircleData( { letter: steps[ 0 ].head?.value as string, index: 0, position: HEAD } )
     await delay( SHORT_DELAY_IN_MS )
-    newList.deleteHead()
-    setList( newList )
-    setMiniCircle( null )
+    setList( steps[ 2 ] )
+    setMiniCircleData( null )
     setDefaultFormStates( btnDeleteHead )
   }
 
-  const handleDeleteTail = async ( arrLength: number ) => {
-    if ( !list.head?.next ) { return }
+  async function renderDeleteTail ( steps: ListType[], arrLength: number ) {
     blockForm( btnDeleteTail, formUseStates )
-    const newList = cloneList( list )
     await delay( SHORT_DELAY_IN_MS )
-    setMiniCircle( { letter: list.tail?.value as string, index: arrLength - 1, position: TAIL } )
-    newList.updateByIndex( arrLength - 1, '' )
-    setList( newList )
+    setMiniCircleData( { letter: steps[ 0 ].tail?.value as string, index: arrLength - 1, position: TAIL } )
+    setList( steps[ 1 ] )
     await delay( SHORT_DELAY_IN_MS )
-    newList.deleteTail()
-    setList( newList )
-    setMiniCircle( null )
+    setList( steps[ 2 ] )
+    setMiniCircleData( null )
     setDefaultFormStates( btnDeleteTail )
   }
 
-  const handleAddByIndex = async ( arrLength: number ) => {
-    const indexValue = getAndCheckIndex( values.indicesInput, arrLength )
-    if ( indexValue === false || !values.headsTailsInput || !values.indicesInput ) { return }
+  async function renderAddByIndex (
+    secondList: ListType,
+    indexValue: number
+  ) {
     blockForm( btnAddByIndex, formUseStates )
-    const newList = cloneList( list )
     const arr = []
     for ( let i = 0; i <= parseInt( values.indicesInput ); i++ ) {
-      setMiniCircle( { letter: values.headsTailsInput, index: i, position: HEAD } )
+      setMiniCircleData( { letter: values.headsTailsInput, index: i, position: HEAD } )
       i >= 0 && arr.push( i - 1 )
       setChangingCircleIndices( [ ...arr ] )
       await delay( SHORT_DELAY_IN_MS )
     }
-    setMiniCircle( null )
-    newList.addByIndex( values.headsTailsInput, indexValue )
-    setList( newList )
+    setMiniCircleData( null )
+    setList( secondList )
     setModifiedCircleIndex( indexValue )
     setChangingCircleIndices( null )
     await delay( SHORT_DELAY_IN_MS )
@@ -180,12 +175,9 @@ export const ListPage: React.FC = () => {
     setDefaultFormStates( btnAddByIndex )
   }
 
-  const handleDeleteByIndex = async ( arrLength: number ) => {
-    const indexValue = getAndCheckIndex( values.indicesInput, arrLength )
-    if ( indexValue === false || !values.indicesInput ) { return }
+  async function renderDeleteByIndex ( steps: ListType[], indexNum: number ) {
     blockForm( btnDeleteByIndex, formUseStates )
-    const newList = cloneList( list )
-    const indexNum = parseInt( values.indicesInput )
+    const valueByIndex = steps[ 0 ].getByIndex( indexNum )
     const arr = []
     for ( let i = 0; i <= indexNum; i++ ) {
       arr.push( i )
@@ -194,44 +186,56 @@ export const ListPage: React.FC = () => {
     }
     arr.pop()
     setChangingCircleIndices( [ ...arr ] )
-    const valueByIndex = newList.getByIndex( indexNum )
-    setMiniCircle( { letter: valueByIndex as string, index: indexNum, position: TAIL } )
-    newList.updateByIndex( indexNum, '' )
-    setList( newList )
+    setMiniCircleData( { letter: valueByIndex as string, index: indexNum, position: TAIL } )
+    setList( steps[ 1 ] )
     await delay( SHORT_DELAY_IN_MS )
-    newList.deleteByIndex( indexValue )
-    setList( newList )
+    setList( steps[ 2 ] )
     setChangingCircleIndices( null )
-    setMiniCircle( null )
+    setMiniCircleData( null )
     setDefaultFormStates( btnDeleteByIndex )
   }
 
-  function getMiniCircle ( miniCircle: MiniCircleType ) {
-    return <Circle tail={ '' } head={ '' } letter={ miniCircle.letter } state={ ElementStates.Changing } isSmall={ true } extraClass={ styles.circle_correct_mb } />
+
+  const handleAddHead = async () => {
+    if ( !values.headsTailsInput ) { return }
+    const secondList = list.clone() as ListType
+    secondList.prepend( values.headsTailsInput )
+    renderAddHead( secondList )
   }
 
-  function getHeadElement ( index: number, miniCircle: MiniCircleType | null ) {
-    if ( miniCircle !== null && miniCircle.index === index && miniCircle.position === HEAD ) {
-      return getMiniCircle( miniCircle )
-    }
-    return index === 0 ? HEAD : ''
+  const handleAddTail = async ( arrLength: number ) => {
+    if ( !values.headsTailsInput ) { return }
+    const secondList = list.clone() as ListType
+    secondList.append( values.headsTailsInput )
+    renderAddTail( secondList, arrLength )
   }
 
-  function getTailElement ( index: number, miniCircle: MiniCircleType | null, arrLength: number ) {
-    if ( miniCircle && miniCircle.index === index && miniCircle.position === TAIL ) {
-      return getMiniCircle( miniCircle )
-    }
-    return index === arrLength - 1 ? TAIL : ''
+  const handleDeleteHead = async () => {
+    if ( !list.head ) { return }
+    const steps = getStepsDeleteHead( list )
+    renderDeleteHead( steps )
   }
 
-  function getCircleState ( index: number, modifiedCircleIndex: number | null, changingCircleIndices: number[] | null ) {
-    if ( changingCircleIndices?.length && changingCircleIndices.indexOf( index ) !== -1 ) {
-      return ElementStates.Changing
-    }
-    if ( modifiedCircleIndex !== null ) {
-      return modifiedCircleIndex === index ? ElementStates.Modified : ElementStates.Default
-    }
-    return ElementStates.Default
+  const handleDeleteTail = async ( arrLength: number ) => {
+    if ( !list.head?.next ) { return }
+    const steps = getStepsDeleteTail( list, arrLength )
+    renderDeleteTail( steps, arrLength )
+  }
+
+  const handleAddByIndex = async ( arrLength: number ) => {
+    const indexValue = getAndCheckIndex( values.indicesInput, arrLength )
+    if ( indexValue === false || !values.headsTailsInput || !values.indicesInput ) { return }
+    const secondList = list.clone() as ListType
+    secondList.addByIndex( values.headsTailsInput, indexValue )
+    renderAddByIndex( secondList, indexValue )
+  }
+
+  const handleDeleteByIndex = async ( arrLength: number ) => {
+    const indexValue = getAndCheckIndex( values.indicesInput, arrLength )
+    if ( indexValue === false || !values.indicesInput ) { return }
+    const indexNum = parseInt( values.indicesInput )
+    const steps = getStepsDeleteByIndex( list, indexNum )
+    renderDeleteByIndex( steps, indexNum )
   }
 
   useEffect( () => {
@@ -353,9 +357,9 @@ export const ListPage: React.FC = () => {
           <div key={ index } className={ styles.blockCircle }>
             <Circle
               index={ index }
-              tail={ getTailElement( index, miniCircle, listArr.length ) }
-              head={ getHeadElement( index, miniCircle ) }
-              letter={ value as string }
+              tail={ getTailElement( index, miniCircleData, listArr.length ) }
+              head={ getHeadElement( index, miniCircleData ) }
+              letter={ typeof value === 'string' ? value : '' }
               state={ getCircleState( index, modifiedCircleIndex, changingCircleIndices ) } />
             { index === listArr.length - 1 ? null : <ArrowIcon fill='var(--default-color)' /> }
           </div>

@@ -110,7 +110,6 @@ class LinkedList<T> {
     this.tail = currentNode
   }
 
-
   updateByIndex ( index: number, newValue: T ) {
     let currentNode = this.head
     let i = 0
@@ -154,6 +153,18 @@ class LinkedList<T> {
       currentNode = currentNode.next
     }
     return result
+  }
+
+  clone () {
+    const newList = new LinkedList<T>()
+    let currentNode = this.head
+
+    while ( currentNode ) {
+      newList.append( currentNode.value )
+      currentNode = currentNode.next
+    }
+
+    return newList
   }
 }
 

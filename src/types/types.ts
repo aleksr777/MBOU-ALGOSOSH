@@ -1,3 +1,5 @@
+import LinkedList from '../components/list-page/linked-list-class'
+
 export type OnlyStringObjType = {
   [ key: string ]: string
 }
@@ -19,6 +21,7 @@ export type StateIndeces = {
   modified: null | [ number, number ]
 }
 
+export type ListType = LinkedList<unknown | string>
 
 export type ArrChangingType = [ number | null, number | null ]
 
