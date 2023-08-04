@@ -1,5 +1,4 @@
 import { ElementStates } from '../types/element-states'
-import LinkedList from '../components/list-page/linked-list-class'
 import { ListType } from '../types/types'
 
 
@@ -20,8 +19,8 @@ export function getStepsDeleteHead ( list: ListType ) {
 export function getStepsDeleteTail ( list: ListType, arrLength: number ) {
   const steps: ListType[] = []
   if ( !list.head?.next ) { return steps }
+  steps.push( list )
   let copyList = list.clone() as ListType
-  steps.push( copyList )
   copyList.updateByIndex( arrLength - 1, '' )
   steps.push( copyList )
   copyList = copyList.clone() as ListType
@@ -30,20 +29,17 @@ export function getStepsDeleteTail ( list: ListType, arrLength: number ) {
   return steps
 }
 
-export function getStepsDeleteByIndex (
-  list: ListType,
-  indexNum: number
-) {
+export function getStepsDeleteByIndex ( list: ListType, indexNum: number ) {
   const steps: ListType[] = []
   if ( !list.head?.next ) { return steps }
-  const secondList = list.clone() as ListType
-  steps.push( secondList )
-  const thirdList = secondList.clone() as ListType
-  thirdList.updateByIndex( indexNum, '' )
-  steps.push( thirdList )
-  const fourthList = thirdList.clone() as ListType
-  fourthList.deleteByIndex( indexNum )
-  steps.push( fourthList )
+  let copyList = list.clone() as ListType
+  steps.push( copyList )
+  copyList = copyList.clone() as ListType
+  copyList.updateByIndex( indexNum, '' )
+  steps.push( copyList )
+  copyList = copyList.clone() as ListType
+  copyList.deleteByIndex( indexNum )
+  steps.push( copyList )
   return steps
 }
 

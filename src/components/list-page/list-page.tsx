@@ -154,10 +154,7 @@ export const ListPage: React.FC = () => {
     setDefaultFormStates( btnDeleteTail )
   }
 
-  async function renderAddByIndex (
-    secondList: ListType,
-    indexValue: number
-  ) {
+  async function renderAddByIndex ( secondList: ListType, indexValue: number ) {
     blockForm( btnAddByIndex, formUseStates )
     const arr = []
     for ( let i = 0; i <= parseInt( values.indicesInput ); i++ ) {
@@ -194,7 +191,6 @@ export const ListPage: React.FC = () => {
     setMiniCircleData( null )
     setDefaultFormStates( btnDeleteByIndex )
   }
-
 
   const handleAddHead = async () => {
     if ( !values.headsTailsInput ) { return }
