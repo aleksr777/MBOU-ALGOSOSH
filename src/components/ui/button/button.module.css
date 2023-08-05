@@ -33,7 +33,7 @@
 }
 
 .small {
-  width: 175px;
+  width: 178px;
 }
 
 .loader:disabled {
@@ -48,6 +48,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }

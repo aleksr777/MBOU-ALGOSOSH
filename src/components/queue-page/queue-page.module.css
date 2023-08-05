@@ -1,0 +1,36 @@
+* {
+  box-sizing: border-box;
+}
+
+.formWrapper {
+  display: flex;
+  column-gap: 12px;
+  width: 830px;
+  padding: 0;
+  margin: 0 auto 50px auto;
+}
+
+.button_correct_small {
+  width: 108px;
+  min-width: 108px;
+}
+
+.button_correct_medium {
+  width: 121px;
+  min-width: 121px;
+}
+
+.button_correct_mr {
+  margin-right: 68px;
+}
+
+.blockAnimate {
+  margin: 0 auto;
+  width: 1000px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  column-gap: 16px;
+  row-gap: 78px;
+  transition: all .3s ease 0s;
+}

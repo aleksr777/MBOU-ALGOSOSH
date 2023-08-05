@@ -1,0 +1,40 @@
+* {
+  box-sizing: border-box;
+}
+
+.formWrapper {
+  display: flex;
+  align-items: center;
+  column-gap: 12px;
+  width: fit-content;
+  padding: 0 28px 0 0;
+  margin: 0 auto 47px auto;
+}
+
+.boxButtons {
+  display: flex;
+  column-gap: 12px;
+  width: fit-content;
+  padding: 0 121px 0 41px;
+}
+
+.button_correctSize {
+  display: flex;
+  flex: 0 0 205px;
+}
+
+.radioContent_mr {
+  margin-right: 30px;
+}
+
+.blockAnimate {
+  margin: 0 auto;
+  width: fit-content;
+  height: fit-content;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-end;
+  column-gap: 10px;
+  transition: all .3s ease 0s;
+}

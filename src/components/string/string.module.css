@@ -1,0 +1,25 @@
+* {
+  box-sizing: border-box;
+}
+
+.formWrapper {
+  display: flex;
+  justify-content: space-between;
+  column-gap: 12px;
+  max-width: 567px;
+  padding: 0;
+  margin: 0 auto 119px auto;
+}
+
+.button_correct {
+  flex: 0 0 auto;
+  display: flex;
+}
+
+.blockLetters {
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  column-gap: 16px;
+  transition: all .3s ease 0s;
+}
