@@ -3,9 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^5.16.2",
-    "@testing-library/react": "^12.1.2",
-    "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.4.0",
     "@types/node": "^16.11.22",
     "@types/react": "^17.0.39",
@@ -33,18 +30,24 @@
   },
   "browserslist": {
     "production": [
-      ">0.2%",
+      ">0.5%",
       "not dead",
       "not op_mini all"
     ],
     "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
+      "last 3 chrome version",
+      "last 3 firefox version",
+      "last 3 safari version"
     ]
   },
   "devDependencies": {
     "@types/react-router-dom": "^5.3.3",
-    "prettier": "^3.0.0"
+    "fetch-mock": "^9.11.0",
+    "jest": "^27.5.1",
+    "prettier": "^3.0.0",
+    "redux-mock-store": "^1.5.4",
+    "@testing-library/jest-dom": "^5.16.2",
+    "@testing-library/react": "^12.1.2",
+    "@testing-library/user-event": "^13.5.0"
   }
 }
