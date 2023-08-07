@@ -1,5 +1,5 @@
 import styles from './stack-page.module.css'
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { SolutionLayout } from '../ui/solution-layout/solution-layout'
 import { useForm } from '../../hooks/useForm'
 import { Input } from '../ui/input/input'
@@ -43,32 +43,43 @@ export const StackPage: React.FC = () => {
     clear: buttonDefaultState
   } )
 
+  const isMounted = useRef( true )
+  useEffect( () => {
+    return () => { isMounted.current = false }
+  }, [] )
+
   // Для блокировки-разблокировки формы
   const formUseStates = { setIsFormDisabled, setButtonsState, buttonsState }
 
+  const controller = new AbortController()
+  const signal = controller.signal
+
   async function renderPush ( newStack: Stack<string> ) {
+    if ( !isMounted.current ) return
     blockForm( 'push', formUseStates )
     setStack( newStack )
     resetField( 'stackInput' )
     setHighlightedIndex( stack.size() )
-    await delay( SHORT_DELAY_IN_MS )
+    await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     setHighlightedIndex( null )
     activateForm( 'push', formUseStates )
   }
 
   async function renderPop ( newStack: Stack<string> ) {
+    if ( !isMounted.current ) return
     blockForm( 'pop', formUseStates )
     setHighlightedIndex( stack.size() - 1 )
-    await delay( SHORT_DELAY_IN_MS )
+    await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     setStack( newStack )
     setHighlightedIndex( null )
     activateForm( 'pop', formUseStates )
   }
 
   async function renderClear ( newStack: Stack<string> ) {
+    if ( !isMounted.current ) return
     blockForm( 'clear', formUseStates )
     setIsAllHighlighted( true )
-    await delay( SHORT_DELAY_IN_MS )
+    await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     setStack( newStack )
     setIsAllHighlighted( false )
     activateForm( 'clear', formUseStates )

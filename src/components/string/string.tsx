@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react'
 import styles from './string.module.css'
+import React, { useState, useEffect, useRef } from 'react'
 import { useForm } from '../../hooks/useForm'
 import { SolutionLayout } from '../ui/solution-layout/solution-layout'
 import { Input } from '../ui/input/input'
@@ -14,7 +14,6 @@ import { ButtonsHookState, StateIndeces } from '../../types/types'
 import { buttonDefaultState } from '../../constants/button-default-state'
 
 export const StringComponent: React.FC = () => {
-  const isMounted = useRef( true )
 
   const validateConfig = {
     stringInput: {
@@ -35,7 +34,16 @@ export const StringComponent: React.FC = () => {
   const [ buttonsState, setButtonsState ] = useState<ButtonsHookState>( { reversString: buttonDefaultState } )
   const formUseStates = { setIsFormDisabled, setButtonsState, buttonsState }
 
+  const isMounted = useRef( true )
+  useEffect( () => {
+    return () => { isMounted.current = false }
+  }, [] )
+
+  const controller = new AbortController()
+  const signal = controller.signal
+
   async function renderSymbols ( value: string ) {
+
     if ( !isMounted.current ) return
 
     blockForm( 'reversString', formUseStates )
@@ -58,6 +66,7 @@ export const StringComponent: React.FC = () => {
     const steps = await getReversingStringSteps( arrSymbols )
 
     for ( let i = 0; i < steps.length; i++ ) {
+      if ( !isMounted.current ) return
       let arr = steps[ i ]
       let left = i
       let right = arr.length - left - 1
@@ -67,15 +76,16 @@ export const StringComponent: React.FC = () => {
           changing: [ left, right ],
           modified: [ left - 1, right + 1 ]
         } )
-        await delay( SHORT_DELAY_IN_MS )
+        await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
         swapElementsArr( arr, left, right )
         setSymbolsArr( [ ...arr ] )
         setStateIndeces( {
           changing: null,
           modified: [ left, right ]
         } )
-        await delay( SHORT_DELAY_IN_MS )
+        await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
       } else {
+        if ( !isMounted.current ) return
         setStateIndeces( {
           changing: null,
           modified: [ -1, -1 ]
@@ -89,12 +99,6 @@ export const StringComponent: React.FC = () => {
     e.preventDefault()
     setTimeout( () => renderSymbols( values.stringInput ), SHORT_DELAY_IN_MS )
   }
-
-  useEffect( () => {
-    return () => {
-      isMounted.current = false
-    }
-  }, [] )
 
   return (
     <SolutionLayout title='Строка'>

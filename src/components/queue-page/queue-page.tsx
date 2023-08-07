@@ -1,5 +1,5 @@
 import styles from './queue-page.module.css'
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { useForm } from '../../hooks/useForm'
 import { SolutionLayout } from '../ui/solution-layout/solution-layout'
 import { Input } from '../ui/input/input'
@@ -47,18 +47,27 @@ export const QueuePage: React.FC = () => {
     clear: buttonDefaultState
   } )
 
+  const isMounted = useRef( true )
+  useEffect( () => {
+    return () => { isMounted.current = false }
+  }, [] )
+
   // Для блокировки-разблокировки формы
   const formUseStates = { setIsFormDisabled, setButtonsState, buttonsState }
+
+  const controller = new AbortController()
+  const signal = controller.signal
 
   // Эти константы нужны, чтобы не допустить зацикливание
   const isMaxTailIndex = prevData.tail === QUEUE_LENGTH - 1
   const isMaxHeadIndex = prevData.head === QUEUE_LENGTH - 1
 
   async function renderAdd ( queue: Queue<string>, newQueue: Queue<string> ) {
+    if ( !isMounted.current ) return
     setPrevData( { ...prevData, tail: queue.tail } )
     blockForm( 'add', formUseStates )
     setHighlightedIndex( queue.tail )
-    await delay( SHORT_DELAY_IN_MS )
+    await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     setQueue( newQueue )
     setHighlightedIndex( null )
     resetField( 'queueInput' )
@@ -66,20 +75,22 @@ export const QueuePage: React.FC = () => {
   }
 
   async function renderRemove ( queue: Queue<string>, newQueue: Queue<string> ) {
+    if ( !isMounted.current ) return
     setPrevData( { ...prevData, head: queue.head } )
     blockForm( 'remove', formUseStates )
     setHighlightedIndex( queue.head )
-    await delay( SHORT_DELAY_IN_MS )
+    await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     setQueue( newQueue )
     setHighlightedIndex( null )
     activateForm( 'remove', formUseStates )
   }
 
   async function renderClear ( queue: Queue<string>, newQueue: Queue<string> ) {
+    if ( !isMounted.current ) return
     setPrevData( { head: 0, tail: 0 } )
     blockForm( 'clear', formUseStates )
     setIsAllHighlighted( true )
-    await delay( SHORT_DELAY_IN_MS )
+    await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     setQueue( newQueue )
     setIsAllHighlighted( false )
     activateForm( 'clear', formUseStates )

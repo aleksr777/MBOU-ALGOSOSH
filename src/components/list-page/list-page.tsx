@@ -1,5 +1,5 @@
 import styles from './list-page.module.css'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { SolutionLayout } from '../ui/solution-layout/solution-layout'
 import { useForm } from '../../hooks/useForm'
 import { Input } from '../ui/input/input'
@@ -77,9 +77,16 @@ export const ListPage: React.FC = () => {
     deleteByIndex: buttonDefaultState,
   } )
 
+  const isMounted = useRef( true )
+  useEffect( () => {
+    return () => { isMounted.current = false }
+  }, [] )
+
   // Для блокировки-разблокировки формы
   const formUseStates = { setIsFormDisabled, setButtonsState, buttonsState }
 
+  const controller = new AbortController()
+  const signal = controller.signal
 
   function getMiniCircleElement ( miniCircleData: miniCircleDataType ) {
     return <Circle tail={ '' } head={ '' } letter={ miniCircleData.letter } state={ ElementStates.Changing } isSmall={ true } extraClass={ styles.circle_correct_mb } />
@@ -106,86 +113,92 @@ export const ListPage: React.FC = () => {
   }
 
   async function renderAddHead ( secondList: ListType ) {
+    if ( !isMounted.current ) return
     blockForm( btnAddHead, formUseStates )
-    await delay( SHORT_DELAY_IN_MS )
+    await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     setMiniCircleData( { letter: values.headsTailsInput, index: 0, position: HEAD } )
-    await delay( SHORT_DELAY_IN_MS )
+    await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     setModifiedCircleIndex( 0 )
     setList( secondList )
     setMiniCircleData( null )
-    await delay( SHORT_DELAY_IN_MS )
+    await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     setModifiedCircleIndex( null )
     setDefaultFormStates( btnAddHead )
   }
 
-  async function renderAddTail (
-    secondList: ListType, arrLength: number ) {
+  async function renderAddTail ( secondList: ListType, arrLength: number ) {
+    if ( !isMounted.current ) return
     blockForm( btnAddTail, formUseStates )
-    await delay( SHORT_DELAY_IN_MS )
+    await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     setMiniCircleData( { letter: values.headsTailsInput, index: arrLength - 1, position: TAIL } )
-    await delay( SHORT_DELAY_IN_MS )
+    await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     setList( secondList )
     setMiniCircleData( null )
     setModifiedCircleIndex( arrLength )
-    await delay( SHORT_DELAY_IN_MS )
+    await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     setModifiedCircleIndex( null )
     setDefaultFormStates( btnAddTail )
   }
 
   async function renderDeleteHead ( steps: ListType[] ) {
+    if ( !isMounted.current ) return
     blockForm( btnDeleteHead, formUseStates )
-    await delay( SHORT_DELAY_IN_MS )
+    await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     setList( steps[ 1 ] )
     setMiniCircleData( { letter: steps[ 0 ].head?.value as string, index: 0, position: HEAD } )
-    await delay( SHORT_DELAY_IN_MS )
+    await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     setList( steps[ 2 ] )
     setMiniCircleData( null )
     setDefaultFormStates( btnDeleteHead )
   }
 
   async function renderDeleteTail ( steps: ListType[], arrLength: number ) {
+    if ( !isMounted.current ) return
     blockForm( btnDeleteTail, formUseStates )
-    await delay( SHORT_DELAY_IN_MS )
+    await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     setMiniCircleData( { letter: steps[ 0 ].tail?.value as string, index: arrLength - 1, position: TAIL } )
     setList( steps[ 1 ] )
-    await delay( SHORT_DELAY_IN_MS )
+    await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     setList( steps[ 2 ] )
     setMiniCircleData( null )
     setDefaultFormStates( btnDeleteTail )
   }
 
   async function renderAddByIndex ( secondList: ListType, indexValue: number ) {
+    if ( !isMounted.current ) return
     blockForm( btnAddByIndex, formUseStates )
     const arr = []
     for ( let i = 0; i <= parseInt( values.indicesInput ); i++ ) {
       setMiniCircleData( { letter: values.headsTailsInput, index: i, position: HEAD } )
       i >= 0 && arr.push( i - 1 )
       setChangingCircleIndices( [ ...arr ] )
-      await delay( SHORT_DELAY_IN_MS )
+      await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     }
     setMiniCircleData( null )
     setList( secondList )
     setModifiedCircleIndex( indexValue )
     setChangingCircleIndices( null )
-    await delay( SHORT_DELAY_IN_MS )
+    await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     setModifiedCircleIndex( null )
     setDefaultFormStates( btnAddByIndex )
   }
 
   async function renderDeleteByIndex ( steps: ListType[], indexNum: number ) {
+    if ( !isMounted.current ) return
     blockForm( btnDeleteByIndex, formUseStates )
     const valueByIndex = steps[ 0 ].getByIndex( indexNum )
     const arr = []
     for ( let i = 0; i <= indexNum; i++ ) {
+      if ( !isMounted.current ) return
       arr.push( i )
       setChangingCircleIndices( [ ...arr ] )
-      await delay( SHORT_DELAY_IN_MS )
+      await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     }
     arr.pop()
     setChangingCircleIndices( [ ...arr ] )
     setMiniCircleData( { letter: valueByIndex as string, index: indexNum, position: TAIL } )
     setList( steps[ 1 ] )
-    await delay( SHORT_DELAY_IN_MS )
+    await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     setList( steps[ 2 ] )
     setChangingCircleIndices( null )
     setMiniCircleData( null )

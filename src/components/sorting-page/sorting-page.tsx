@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
-import { SolutionLayout } from '../ui/solution-layout/solution-layout'
 import styles from './sorting-page.module.css'
+import React, { useState, useRef, useEffect } from 'react'
+import { SolutionLayout } from '../ui/solution-layout/solution-layout'
 import { useForm } from '../../hooks/useForm'
 import { RadioInput } from '../ui/radio-input/radio-input'
 import Button from '../ui/button/button'
@@ -36,7 +36,15 @@ export const SortingPage: React.FC = () => {
     descending: buttonDefaultState
   } )
 
+  const isMounted = useRef( true )
+  useEffect( () => {
+    return () => { isMounted.current = false }
+  }, [] )
+
   const formUseStates = { setIsFormDisabled, setButtonsState, buttonsState }
+
+  const controller = new AbortController()
+  const signal = controller.signal
 
   function resetStatesData () {
     setModifiedIndixes( [] )
@@ -49,6 +57,7 @@ export const SortingPage: React.FC = () => {
     direction: string,
     sortingRadio: string
   ) {
+    if ( !isMounted.current ) return
     const btnName = ( direction === ASCENDING ) ? 'ascending' : 'descending'
     blockForm( btnName, formUseStates )
     let arrSteps: StepsSortingType = []
@@ -56,16 +65,18 @@ export const SortingPage: React.FC = () => {
     else if ( sortingRadio === BUBBLE ) { arrSteps = await getStepsSortingBubble( columnsNumbers, direction ) }
     for ( let i = 0; i < arrSteps.length; i++ ) {
       const copyArr = [ ...arrSteps[ i ] ]
-      await delay( SHORT_DELAY_IN_MS )
-      const numbersArray = copyArr.slice( 0, -2 ) as number[]
-      const sortedIndexes = copyArr[ copyArr.length - 2 ] as number[]
-      const checkedIndexes = copyArr[ copyArr.length - 1 ] as ArrChangingType
-      setChangingIndixes( [ checkedIndexes[ 0 ], checkedIndexes[ 1 ] ] )
-      setModifiedIndixes( [ ...sortedIndexes ] )
-      setColumnsNumbers( [ ...numbersArray ] )
+      await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
+      if ( isMounted.current ) {
+        const numbersArray = copyArr.slice( 0, -2 ) as number[]
+        const sortedIndexes = copyArr[ copyArr.length - 2 ] as number[]
+        const checkedIndexes = copyArr[ copyArr.length - 1 ] as ArrChangingType
+        setChangingIndixes( [ checkedIndexes[ 0 ], checkedIndexes[ 1 ] ] )
+        setModifiedIndixes( [ ...sortedIndexes ] )
+        setColumnsNumbers( [ ...numbersArray ] )
+      }
     }
     setChangingIndixes( [ null, null ] )
-    await delay( SHORT_DELAY_IN_MS )
+    await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     setIsColumnsSorted( true )
     activateForm( btnName, formUseStates )
   }
