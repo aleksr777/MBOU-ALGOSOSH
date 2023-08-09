@@ -1,0 +1,90 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`отрисовывает кнопку с иконкой сортировки по возрастанию 1`] = `
+<button
+  class="text text_type_button text_color_primary button undefined false "
+  type="button"
+>
+  <svg
+    fill="inherit"
+    height="12"
+    viewBox="0 0 20 12"
+    width="20"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M1 0C0.447715 0 0 0.447715 0 1C0 1.55228 0.447715 2 1 2H11C11.5523 2 12 1.55228 12 1C12 0.447715 11.5523 0 11 0H1ZM0 6C0 5.44772 0.447715 5 1 5H15C15.5523 5 16 5.44772 16 6C16 6.55228 15.5523 7 15 7H1C0.447715 7 0 6.55228 0 6ZM0 11C0 10.4477 0.447715 10 1 10H19C19.5523 10 20 10.4477 20 11C20 11.5523 19.5523 12 19 12H1C0.447716 12 0 11.5523 0 11Z"
+      fill="inherit"
+      fill-opacity="0.85"
+    />
+  </svg>
+  <p
+    class="text ml-5"
+  />
+</button>
+`;
+
+exports[`отрисовывает кнопку с иконкой сортировки по убыванию 1`] = `
+<button
+  class="text text_type_button text_color_primary button undefined false "
+  type="button"
+>
+  <svg
+    fill="inherit"
+    height="12"
+    viewBox="0 0 20 12"
+    width="20"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      clip-rule="evenodd"
+      d="M0 1C0 0.44772 0.44772 0 1 0H19C19.5523 0 20 0.44772 20 1C20 1.55228 19.5523 2 19 2H1C0.44772 2 0 1.55228 0 1ZM0 6C0 5.4477 0.44772 5 1 5H15C15.5523 5 16 5.4477 16 6C16 6.5523 15.5523 7 15 7H1C0.44772 7 0 6.5523 0 6ZM1 10C0.44772 10 0 10.4477 0 11C0 11.5523 0.44772 12 1 12H11C11.5523 12 12 11.5523 12 11C12 10.4477 11.5523 10 11 10H1Z"
+      fill="inherit"
+      fill-opacity="0.85"
+      fill-rule="evenodd"
+    />
+  </svg>
+  <p
+    class="text ml-5"
+  />
+</button>
+`;
+
+exports[`отрисовывает кнопку с индикацией загрузки 1`] = `
+<button
+  class="text text_type_button text_color_primary button undefined loader "
+  disabled=""
+  type="button"
+>
+  <img
+    alt="Загрузка."
+    class="loader_icon"
+    src="loader.svg"
+  />
+</button>
+`;
+
+exports[`отрисовывает кнопку с текстом 1`] = `
+<button
+  class="text text_type_button text_color_primary button undefined false "
+  type="button"
+>
+  <p
+    class="text undefined"
+  >
+    Нажми меня
+  </p>
+</button>
+`;
+
+exports[`отрисовывает разблокированную кнопку 1`] = `
+<button
+  class="text text_type_button text_color_primary button undefined false "
+  disabled=""
+  type="button"
+>
+  <p
+    class="text undefined"
+  />
+</button>
+`;
