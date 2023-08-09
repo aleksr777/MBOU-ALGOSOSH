@@ -3,40 +3,37 @@ import { render, fireEvent } from '@testing-library/react'
 import Button from './button'
 import { Direction } from '../../../types/direction'
 
-// Тестирование отрисовки кнопки с текстом
-test( 'отрисовывает кнопку с текстом', () => {
-  const { container } = render( <Button text="Нажми меня" /> )
-  expect( container.firstChild ).toMatchSnapshot()
-} )
+describe( '<Button />', () => {
 
-// Тестирование отрисовки заблокированной кнопки
-test( 'отрисовывает разблокированную кнопку', () => {
-  const { container } = render( <Button disabled={ true } /> )
-  expect( container.firstChild ).toMatchSnapshot()
-} )
+  it( 'отрисовывает кнопку с текстом', () => {
+    const { asFragment } = render( <Button text="Нажми меня" /> )
+    expect( asFragment() ).toMatchSnapshot()
+  } )
 
-// Тестирование отрисовки кнопки с индикацией загрузки
-test( 'отрисовывает кнопку с индикацией загрузки', () => {
-  const { container } = render( <Button isLoader /> )
-  expect( container.firstChild ).toMatchSnapshot()
-} )
+  it( 'отрисовывает разблокированную кнопку', () => {
+    const { asFragment } = render( <Button disabled={ true } /> )
+    expect( asFragment() ).toMatchSnapshot()
+  } )
 
-// Тестирование отрисовки кнопки с иконкой сортировки по возрастанию
-test( 'отрисовывает кнопку с иконкой сортировки по возрастанию', () => {
-  const { container } = render( <Button sorting={ Direction.Ascending } /> )
-  expect( container.firstChild ).toMatchSnapshot()
-} )
+  it( 'отрисовывает кнопку с индикацией загрузки', () => {
+    const { asFragment } = render( <Button isLoader /> )
+    expect( asFragment() ).toMatchSnapshot()
+  } )
 
-// Тестирование отрисовки кнопки с иконкой сортировки по убыванию
-test( 'отрисовывает кнопку с иконкой сортировки по убыванию', () => {
-  const { container } = render( <Button sorting={ Direction.Descending } /> )
-  expect( container.firstChild ).toMatchSnapshot()
-} )
+  it( 'отрисовывает кнопку с иконкой сортировки по возрастанию', () => {
+    const { asFragment } = render( <Button sorting={ Direction.Ascending } /> )
+    expect( asFragment() ).toMatchSnapshot()
+  } )
 
-// Тестирование корректности вызова колбека при клике на кнопку
-test( 'вызывает onClick при клике на кнопку', () => {
-  const onClick = jest.fn()
-  const { getByText } = render( <Button text="Нажми меня" onClick={ onClick } /> )
-  fireEvent.click( getByText( 'Нажми меня' ) )
-  expect( onClick ).toHaveBeenCalledTimes( 1 )
+  it( 'отрисовывает кнопку с иконкой сортировки по убыванию', () => {
+    const { asFragment } = render( <Button sorting={ Direction.Descending } /> )
+    expect( asFragment() ).toMatchSnapshot()
+  } )
+
+  it( 'вызывает onClick при клике на кнопку', () => {
+    const onClick = jest.fn()
+    const { getByText } = render( <Button text="Нажми меня" onClick={ onClick } /> )
+    fireEvent.click( getByText( 'Нажми меня' ) )
+    expect( onClick ).toHaveBeenCalledTimes( 1 )
+  } )
 } )
