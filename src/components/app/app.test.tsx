@@ -1,83 +1,42 @@
 import React from 'react'
 import { MemoryRouter } from 'react-router-dom'
 import { render } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import App from './app'
 
-describe( 'Test App routing', () => {
+
+describe( 'Test App Routing', () => {
 
   test( 'correct routing to MainPage ', async () => {
+    const links = [ '/recursion', '/fibonacci', '/sorting', '/stack', '/queue', '/list' ]
     const { container } = render(
       <MemoryRouter initialEntries={ [ '/' ] }>
         <App />
       </MemoryRouter>
     )
-
-    const links = [ '/recursion', '/fibonacci', '/sorting', '/stack', '/queue', '/list' ]
-
     links.forEach( link => {
       const linkElement = container.querySelector( `a[href="${ link }"]` )
       expect( linkElement ).toBeInTheDocument()
     } )
   } )
 
-  test( 'correct routing to StringComponent', async () => {
-    const { getByText } = render(
-      <MemoryRouter initialEntries={ [ '/recursion' ] }>
-        <App />
-      </MemoryRouter>
-    )
-    const title = getByText( /строка/i )
-    expect( title ).toBeInTheDocument()
-  } )
+  function testRouteByTitle ( href: string, title: RegExp ) {
+    test( `correct routing to ${ href }`, async () => {
+      const { container, getByText } = render(
+        <MemoryRouter initialEntries={ [ '/' ] }>
+          <App />
+        </MemoryRouter>
+      )
+      const link = container.querySelector( `a[href='${ href }']` )
+      link && userEvent.click( link )
+      expect( getByText( title ) ).toBeInTheDocument()
+    } )
+  }
 
-  test( 'correct routing to FibonacciPage', async () => {
-    const { getByText } = render(
-      <MemoryRouter initialEntries={ [ '/fibonacci' ] }>
-        <App />
-      </MemoryRouter>
-    )
-    const title = getByText( /последовательность фибоначчи/i )
-    expect( title ).toBeInTheDocument()
-  } )
-
-  test( 'correct routing to SortingPage', async () => {
-    const { getByText } = render(
-      <MemoryRouter initialEntries={ [ '/sorting' ] }>
-        <App />
-      </MemoryRouter>
-    )
-    const title = getByText( /сортировка массива/i )
-    expect( title ).toBeInTheDocument()
-  } )
-
-  test( 'correct routing to StackPage', async () => {
-    const { getByText } = render(
-      <MemoryRouter initialEntries={ [ '/stack' ] }>
-        <App />
-      </MemoryRouter>
-    )
-    const title = getByText( /стек/i )
-    expect( title ).toBeInTheDocument()
-  } )
-
-  test( 'correct routing to QueuePage', async () => {
-    const { getByText } = render(
-      <MemoryRouter initialEntries={ [ '/queue' ] }>
-        <App />
-      </MemoryRouter>
-    )
-    const title = getByText( /очередь/i )
-    expect( title ).toBeInTheDocument()
-  } )
-
-  test( 'correct routing to ListPage', async () => {
-    const { getByText } = render(
-      <MemoryRouter initialEntries={ [ '/list' ] }>
-        <App />
-      </MemoryRouter>
-    )
-    const title = getByText( /связный список/i )
-    expect( title ).toBeInTheDocument()
-  } )
-
+  testRouteByTitle( '/recursion', /строка/i )
+  testRouteByTitle( '/fibonacci', /последовательность фибоначчи/i )
+  testRouteByTitle( '/sorting', /сортировка массива/i )
+  testRouteByTitle( '/queue', /очередь/i )
+  testRouteByTitle( '/stack', /стек/i )
+  testRouteByTitle( '/list', /связный список/i )
 } )
