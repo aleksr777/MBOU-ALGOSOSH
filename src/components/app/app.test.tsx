@@ -1,20 +1,14 @@
 import React from 'react'
 import { MemoryRouter } from 'react-router-dom'
 import { render } from '@testing-library/react'
-import { FibonacciPage } from '../fibonacci-page/fibonacci-page'
-import { ListPage } from '../list-page/list-page'
-import { MainPage } from '../main-page/main-page'
-import { QueuePage } from '../queue-page/queue-page'
-import { StringComponent } from '../string/string'
-import { SortingPage } from '../sorting-page/sorting-page'
-import { StackPage } from '../stack-page/stack-page'
+import App from './app'
 
-describe( '<App />', () => {
+describe( 'Test App routing', () => {
 
   test( 'correct routing to MainPage ', async () => {
     const { container } = render(
       <MemoryRouter initialEntries={ [ '/' ] }>
-        <MainPage />
+        <App />
       </MemoryRouter>
     )
 
@@ -29,7 +23,7 @@ describe( '<App />', () => {
   test( 'correct routing to StringComponent', async () => {
     const { getByText } = render(
       <MemoryRouter initialEntries={ [ '/recursion' ] }>
-        <StringComponent />
+        <App />
       </MemoryRouter>
     )
     const title = getByText( /строка/i )
@@ -39,7 +33,7 @@ describe( '<App />', () => {
   test( 'correct routing to FibonacciPage', async () => {
     const { getByText } = render(
       <MemoryRouter initialEntries={ [ '/fibonacci' ] }>
-        <FibonacciPage />
+        <App />
       </MemoryRouter>
     )
     const title = getByText( /последовательность фибоначчи/i )
@@ -49,7 +43,7 @@ describe( '<App />', () => {
   test( 'correct routing to SortingPage', async () => {
     const { getByText } = render(
       <MemoryRouter initialEntries={ [ '/sorting' ] }>
-        <SortingPage />
+        <App />
       </MemoryRouter>
     )
     const title = getByText( /сортировка массива/i )
@@ -59,7 +53,7 @@ describe( '<App />', () => {
   test( 'correct routing to StackPage', async () => {
     const { getByText } = render(
       <MemoryRouter initialEntries={ [ '/stack' ] }>
-        <StackPage />
+        <App />
       </MemoryRouter>
     )
     const title = getByText( /стек/i )
@@ -69,7 +63,7 @@ describe( '<App />', () => {
   test( 'correct routing to QueuePage', async () => {
     const { getByText } = render(
       <MemoryRouter initialEntries={ [ '/queue' ] }>
-        <QueuePage />
+        <App />
       </MemoryRouter>
     )
     const title = getByText( /очередь/i )
@@ -79,7 +73,7 @@ describe( '<App />', () => {
   test( 'correct routing to ListPage', async () => {
     const { getByText } = render(
       <MemoryRouter initialEntries={ [ '/list' ] }>
-        <ListPage />
+        <App />
       </MemoryRouter>
     )
     const title = getByText( /связный список/i )
