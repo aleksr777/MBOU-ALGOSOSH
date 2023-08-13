@@ -1,4 +1,5 @@
 import { swapElementsArr } from './swap-elements-arr'
+import { arraysEqual } from '../utils/arrays-equal'
 import { ElementStates } from '../types/element-states'
 import { StateIndeces } from '../types/types'
 
@@ -27,7 +28,7 @@ export function getSymbolState ( stateIndeces: StateIndeces, index: number ) {
   const { changing, modified } = stateIndeces
 
   const isModified = (
-    ( !changing && modified === [ -1, -1 ] ) ||
+    ( !changing && modified !== null && arraysEqual( modified, [ -1, -1 ] ) ) ||
     ( changing && ( index < changing[ 0 ] || index > changing[ 1 ] ) ) ||
     ( modified && ( index <= modified[ 0 ] || index >= modified[ 1 ] ) )
   )
