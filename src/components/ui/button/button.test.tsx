@@ -5,32 +5,32 @@ import { Direction } from '../../../types/direction'
 
 describe( '<Button />', () => {
 
-  it( 'отрисовывает кнопку с текстом', () => {
+  it( 'render with text', () => {
     const { asFragment } = render( <Button text="Нажми меня" /> )
     expect( asFragment() ).toMatchSnapshot()
   } )
 
-  it( 'отрисовывает разблокированную кнопку', () => {
+  it( 'render disabled', () => {
     const { asFragment } = render( <Button disabled={ true } /> )
     expect( asFragment() ).toMatchSnapshot()
   } )
 
-  it( 'отрисовывает кнопку с индикацией загрузки', () => {
+  it( 'render with loading indication', () => {
     const { asFragment } = render( <Button isLoader /> )
     expect( asFragment() ).toMatchSnapshot()
   } )
 
-  it( 'отрисовывает кнопку с иконкой сортировки по возрастанию', () => {
+  it( 'render with a ascending sort icon', () => {
     const { asFragment } = render( <Button sorting={ Direction.Ascending } /> )
     expect( asFragment() ).toMatchSnapshot()
   } )
 
-  it( 'отрисовывает кнопку с иконкой сортировки по убыванию', () => {
+  it( 'render with a descending sort icon', () => {
     const { asFragment } = render( <Button sorting={ Direction.Descending } /> )
     expect( asFragment() ).toMatchSnapshot()
   } )
 
-  it( 'вызывает onClick при клике на кнопку', () => {
+  it( 'onClick event', () => {
     const onClick = jest.fn()
     const { getByText } = render( <Button text="Нажми меня" onClick={ onClick } /> )
     fireEvent.click( getByText( 'Нажми меня' ) )
