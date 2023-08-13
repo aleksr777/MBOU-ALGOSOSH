@@ -7,7 +7,7 @@ import App from './app'
 
 describe( 'Test App Routing', () => {
 
-  test( 'correct routing to MainPage ', async () => {
+  test( 'Routing to MainPage', async () => {
     const links = [ '/recursion', '/fibonacci', '/sorting', '/stack', '/queue', '/list' ]
     const { container } = render(
       <MemoryRouter initialEntries={ [ '/' ] }>
@@ -21,7 +21,7 @@ describe( 'Test App Routing', () => {
   } )
 
   function testRouteByTitle ( href: string, title: RegExp ) {
-    test( `correct routing to ${ href }`, async () => {
+    test( `Routing to '${ href }'`, async () => {
       const { container, getByText } = render(
         <MemoryRouter initialEntries={ [ '/' ] }>
           <App />
