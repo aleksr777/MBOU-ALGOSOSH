@@ -1,5 +1,5 @@
 import styles from './string.module.css'
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, ChangeEvent } from 'react'
 import { useForm } from '../../hooks/useForm'
 import { SolutionLayout } from '../ui/solution-layout/solution-layout'
 import { Input } from '../ui/input/input'
@@ -9,7 +9,7 @@ import { delay } from '../../utils/delay'
 import { swapElementsArr } from '../../utils/swap-elements-arr'
 import { getReversingStringSteps, getSymbolState } from '../../utils/string-component-utils'
 import { SHORT_DELAY_IN_MS } from '../../constants/delays'
-import { blockForm, activateForm } from '../../utils/block-activate-form'
+import { blockForm, unblockForm } from '../../utils/blocking-form'
 import { ButtonsHookState, StateIndeces } from '../../types/types'
 import { buttonDefaultState } from '../../constants/button-default-state'
 
@@ -26,6 +26,7 @@ export const StringComponent: React.FC = () => {
   const { values, errors, isFormValid, handleChange } = useForm( { stringInput: '' }, validateConfig )
 
   const [ isFormDisabled, setIsFormDisabled ] = useState( false )
+  const [ isBtnDisabled, setIsBtnDisabled ] = useState( false )
   const [ symbolsArr, setSymbolsArr ] = useState<string[]>( [] )
   const [ stateIndeces, setStateIndeces ] = useState<StateIndeces>( {
     changing: null,
@@ -36,6 +37,7 @@ export const StringComponent: React.FC = () => {
 
   const isMounted = useRef( true )
   useEffect( () => {
+    setIsBtnDisabled( true )
     return () => { isMounted.current = false }
   }, [] )
 
@@ -46,17 +48,17 @@ export const StringComponent: React.FC = () => {
 
     if ( !isMounted.current ) return
 
-    blockForm( 'reversString', formUseStates )
+    blockForm( [ 'reversString' ], formUseStates )
 
     let arrSymbols = value.split( "" )
 
     if ( !arrSymbols.length ) {
-      return activateForm( 'reversString', formUseStates )
+      return unblockForm( [ 'reversString' ], formUseStates )
     }
 
     if ( arrSymbols.length < 2 ) {
       setSymbolsArr( [ ...arrSymbols ] )
-      activateForm( 'reversString', formUseStates )
+      unblockForm( [ 'reversString' ], formUseStates )
       return setStateIndeces( {
         changing: null,
         modified: [ -1, -1 ]
@@ -92,12 +94,17 @@ export const StringComponent: React.FC = () => {
         } )
       }
     }
-    activateForm( 'reversString', formUseStates )
+    unblockForm( [ 'reversString' ], formUseStates )
   }
 
   const handleSubmit = ( e: React.FormEvent ) => {
     e.preventDefault()
-    setTimeout( () => renderSymbols( values.stringInput ), SHORT_DELAY_IN_MS )
+    renderSymbols( values.stringInput )
+  }
+
+  const onChangeHandler = ( e: ChangeEvent<HTMLInputElement> ) => {
+    setIsBtnDisabled( false )
+    handleChange( e )
   }
 
   return (
@@ -110,10 +117,8 @@ export const StringComponent: React.FC = () => {
           isLimitText={ true }
           limitText={ errors.stringInput ? errors.stringInput : 'Максимум — 11 символов' }
           value={ values.stringInput }
-          onChange={ handleChange }
-          onFocus={ () => {
-            setSymbolsArr( [] )
-          } }
+          onChange={ onChangeHandler }
+          onFocus={ () => { setSymbolsArr( [] ) } }
           disabled={ isFormDisabled }
         />
 
@@ -123,7 +128,7 @@ export const StringComponent: React.FC = () => {
           extraClass={ styles.button_correct }
           text={ buttonsState.reversString.isLoading ? '' : 'Развернуть' }
           isLoader={ buttonsState.reversString.isLoading ? true : false }
-          disabled={ isFormDisabled && !buttonsState.reversString.isLoading || !isFormValid }
+          disabled={ isFormDisabled && !buttonsState.reversString.isLoading || !isFormValid || isBtnDisabled }
         />
 
       </form>

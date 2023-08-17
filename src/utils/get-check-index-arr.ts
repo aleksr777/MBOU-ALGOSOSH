@@ -8,5 +8,5 @@ function isIndexValid ( index: number, arrLength: number ) {
 
 export function getAndCheckIndex ( indexFromInput: string, arrLength: number ) {
   const index = parseInt( indexFromInput )
-  return isIndexValid( index, arrLength ) ? index : false
+  return isIndexValid( index, arrLength ) ? index : null
 }

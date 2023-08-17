@@ -1,5 +1,5 @@
 import styles from './stack-page.module.css'
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, ChangeEvent } from 'react'
 import { SolutionLayout } from '../ui/solution-layout/solution-layout'
 import { useForm } from '../../hooks/useForm'
 import { Input } from '../ui/input/input'
@@ -7,7 +7,7 @@ import Button from '../ui/button/button'
 import Circle from '../ui/circle/circle'
 import { ElementStates } from '../../types/element-states'
 import { delay } from '../../utils/delay'
-import { blockForm, activateForm } from '../../utils/block-activate-form'
+import { blockForm, unblockForm } from '../../utils/blocking-form'
 import { Stack } from './stack-class'
 import { ButtonsHookState } from '../../types/types'
 import { SHORT_DELAY_IN_MS } from '../../constants/delays'
@@ -36,6 +36,7 @@ export const StackPage: React.FC = () => {
   const [ highlightedIndex, setHighlightedIndex ] = useState<number | null>( null )
   const [ isAllHighlighted, setIsAllHighlighted ] = useState( false )
   const [ isFormDisabled, setIsFormDisabled ] = useState( false )
+  const [ isBtnDisabled, setIsBtnDisabled ] = useState( false )
   const [ stack, setStack ] = useState( new Stack<string>() )
   const [ buttonsState, setButtonsState ] = useState<ButtonsHookState>( {
     push: buttonDefaultState,
@@ -45,6 +46,7 @@ export const StackPage: React.FC = () => {
 
   const isMounted = useRef( true )
   useEffect( () => {
+    setIsBtnDisabled( true )
     return () => { isMounted.current = false }
   }, [] )
 
@@ -56,33 +58,34 @@ export const StackPage: React.FC = () => {
 
   async function renderPush ( newStack: Stack<string> ) {
     if ( !isMounted.current ) return
-    blockForm( 'push', formUseStates )
+    blockForm( ['push'], formUseStates )
     setStack( newStack )
     resetField( 'stackInput' )
     setHighlightedIndex( stack.size() )
     await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     setHighlightedIndex( null )
-    activateForm( 'push', formUseStates )
+    unblockForm( ['push'], formUseStates )
+    setIsBtnDisabled( true )
   }
 
   async function renderPop ( newStack: Stack<string> ) {
     if ( !isMounted.current ) return
-    blockForm( 'pop', formUseStates )
+    blockForm( ['pop'], formUseStates )
     setHighlightedIndex( stack.size() - 1 )
     await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     setStack( newStack )
     setHighlightedIndex( null )
-    activateForm( 'pop', formUseStates )
+    unblockForm( ['pop'], formUseStates )
   }
 
   async function renderClear ( newStack: Stack<string> ) {
     if ( !isMounted.current ) return
-    blockForm( 'clear', formUseStates )
+    blockForm( ['clear'], formUseStates )
     setIsAllHighlighted( true )
     await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     setStack( newStack )
     setIsAllHighlighted( false )
-    activateForm( 'clear', formUseStates )
+    unblockForm( ['clear'], formUseStates )
   }
 
   const handlePush = () => {
@@ -111,6 +114,12 @@ export const StackPage: React.FC = () => {
     handlePush()
   }
 
+  const onChangeHandler = ( e: ChangeEvent<HTMLInputElement> ) => {
+    setIsBtnDisabled( false )
+    handleChange( e )
+  }
+
+
   return (
 
     <SolutionLayout title='Стек'>
@@ -124,7 +133,7 @@ export const StackPage: React.FC = () => {
           limitText={ errors.stackInput ? errors.stackInput : 'Максимум — 4 символа' }
           value={ values.stackInput }
           maxLength={ 4 }
-          onChange={ handleChange }
+          onChange={ onChangeHandler }
           disabled={ isFormDisabled }
         />
 
@@ -134,7 +143,7 @@ export const StackPage: React.FC = () => {
           text={ buttonsState.push.isLoading ? '' : 'Добавить' }
           extraClass={ styles.button_correct_medium }
           isLoader={ buttonsState.push.isLoading ? true : false }
-          disabled={ isFormDisabled && !buttonsState.push.isLoading || !isFormValid }
+          disabled={ isFormDisabled && !buttonsState.push.isLoading || !isFormValid || isBtnDisabled }
           onClick={ handlePush }
         />
 

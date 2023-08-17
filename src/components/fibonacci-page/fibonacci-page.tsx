@@ -23,17 +23,20 @@ export const FibonacciPage: React.FC = () => {
 
   const [ isAnimating, setIsAnimating ] = useState( true )
   const [ isFormDisabled, setIsFormDisabled ] = useState( false )
+  const [ isBtnDisabled, setIsBtnDisabled ] = useState( false )
   const [ symbolsArr, setSymbolsArr ] = useState<number[]>( [] )
+
+  const fibonacciCache = useRef<{ [ key: number ]: number[] }>( {} )
 
   const isMounted = useRef( true )
   useEffect( () => {
+    setIsBtnDisabled( true )
     return () => { isMounted.current = false }
   }, [] )
 
   const controller = new AbortController()
   const signal = controller.signal
 
-  const fibonacciCache = useRef<{ [ key: number ]: number[] }>( {} )
 
   async function renderNumbers ( arrNumbers: number[] ) {
 
@@ -67,6 +70,7 @@ export const FibonacciPage: React.FC = () => {
   }
 
   const onChangeHandler = ( e: ChangeEvent<HTMLInputElement> ) => {
+    setIsBtnDisabled( false )
     const number = parseInt( e.target.value )
     const isInputValid = ( number && number < 20 && number > 0 ) ? true : false
     handleChange( e, isInputValid )
@@ -94,7 +98,7 @@ export const FibonacciPage: React.FC = () => {
           text={ isFormDisabled ? '' : 'Рассчитать' }
           type='submit'
           linkedList='small'
-          disabled={ !isFormValid }
+          disabled={ !isFormValid || isBtnDisabled }
         />
       </form>
 

@@ -1,5 +1,5 @@
 import styles from './queue-page.module.css'
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, ChangeEvent } from 'react'
 import { useForm } from '../../hooks/useForm'
 import { SolutionLayout } from '../ui/solution-layout/solution-layout'
 import { Input } from '../ui/input/input'
@@ -8,7 +8,7 @@ import Circle from '../ui/circle/circle'
 import { ElementStates } from '../../types/element-states'
 import { Queue } from './queue-class'
 import { delay } from '../../utils/delay'
-import { blockForm, activateForm } from '../../utils/block-activate-form'
+import { blockForm, unblockForm } from '../../utils/blocking-form'
 import { ButtonsHookState } from '../../types/types'
 import { HEAD, TAIL } from '../../constants/element-captions'
 import { SHORT_DELAY_IN_MS } from '../../constants/delays'
@@ -41,6 +41,7 @@ export const QueuePage: React.FC = () => {
   const [ isAllHighlighted, setIsAllHighlighted ] = useState( false )
   const [ prevData, setPrevData ] = useState( { head: 0, tail: 0 } )
   const [ isFormDisabled, setIsFormDisabled ] = useState( false )
+  const [ isBtnDisabled, setIsBtnDisabled ] = useState( false )
   const [ buttonsState, setButtonsState ] = useState<ButtonsHookState>( {
     add: buttonDefaultState,
     remove: buttonDefaultState,
@@ -49,6 +50,7 @@ export const QueuePage: React.FC = () => {
 
   const isMounted = useRef( true )
   useEffect( () => {
+    setIsBtnDisabled( true )
     return () => { isMounted.current = false }
   }, [] )
 
@@ -65,35 +67,36 @@ export const QueuePage: React.FC = () => {
   async function renderAdd ( queue: Queue<string>, newQueue: Queue<string> ) {
     if ( !isMounted.current ) return
     setPrevData( { ...prevData, tail: queue.tail } )
-    blockForm( 'add', formUseStates )
+    blockForm( ['add'], formUseStates )
     setHighlightedIndex( queue.tail )
     await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     setQueue( newQueue )
     setHighlightedIndex( null )
     resetField( 'queueInput' )
-    activateForm( 'add', formUseStates )
+    unblockForm( ['add'], formUseStates )
+    setIsBtnDisabled( true )
   }
 
   async function renderRemove ( queue: Queue<string>, newQueue: Queue<string> ) {
     if ( !isMounted.current ) return
     setPrevData( { ...prevData, head: queue.head } )
-    blockForm( 'remove', formUseStates )
+    blockForm( ['remove'], formUseStates )
     setHighlightedIndex( queue.head )
     await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     setQueue( newQueue )
     setHighlightedIndex( null )
-    activateForm( 'remove', formUseStates )
+    unblockForm( ['remove'], formUseStates )
   }
 
   async function renderClear ( queue: Queue<string>, newQueue: Queue<string> ) {
     if ( !isMounted.current ) return
     setPrevData( { head: 0, tail: 0 } )
-    blockForm( 'clear', formUseStates )
+    blockForm( ['clear'], formUseStates )
     setIsAllHighlighted( true )
     await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     setQueue( newQueue )
     setIsAllHighlighted( false )
-    activateForm( 'clear', formUseStates )
+    unblockForm( ['clear'], formUseStates )
   }
 
   const handleAdd = () => {
@@ -122,6 +125,12 @@ export const QueuePage: React.FC = () => {
     handleAdd()
   }
 
+  const onChangeHandler = ( e: ChangeEvent<HTMLInputElement> ) => {
+    setIsBtnDisabled( false )
+    handleChange( e )
+  }
+
+
   return (
     <SolutionLayout title='Очередь'>
       <form className={ styles.formWrapper } onSubmit={ handleSubmit }    >
@@ -132,7 +141,7 @@ export const QueuePage: React.FC = () => {
           limitText={ errors.queueInput ? errors.queueInput : 'Максимум — 4 символа' }
           value={ values.queueInput }
           maxLength={ 4 }
-          onChange={ handleChange }
+          onChange={ onChangeHandler }
           disabled={ isFormDisabled || isMaxTailIndex || isMaxHeadIndex }
         />
 
@@ -142,7 +151,7 @@ export const QueuePage: React.FC = () => {
           extraClass={ styles.button_correct_medium }
           text={ buttonsState.add.isLoading ? '' : 'Добавить' }
           isLoader={ buttonsState.add.isLoading ? true : false }
-          disabled={ isFormDisabled && !buttonsState.add.isLoading || !isFormValid || isMaxTailIndex || isMaxHeadIndex }
+          disabled={ isFormDisabled && !buttonsState.add.isLoading || !isFormValid || isMaxTailIndex || isMaxHeadIndex || isBtnDisabled }
           onClick={ handleAdd }
         />
 
