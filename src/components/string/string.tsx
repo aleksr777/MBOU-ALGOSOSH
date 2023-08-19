@@ -35,6 +35,8 @@ export const StringComponent: React.FC = () => {
   const [ buttonsState, setButtonsState ] = useState<ButtonsHookState>( { reversString: buttonDefaultState } )
   const formUseStates = { setIsFormDisabled, setButtonsState, buttonsState }
 
+  const reversString = 'reversString'
+
   const isMounted = useRef( true )
   useEffect( () => {
     setIsBtnDisabled( true )
@@ -44,29 +46,20 @@ export const StringComponent: React.FC = () => {
   const controller = new AbortController()
   const signal = controller.signal
 
-  async function renderSymbols ( value: string ) {
-
+  async function renderSymbols ( arrSymbols: string[], steps: string[][] ) {
     if ( !isMounted.current ) return
-
-    blockForm( [ 'reversString' ], formUseStates )
-
-    let arrSymbols = value.split( "" )
-
+    blockForm( [ reversString ], formUseStates )
     if ( !arrSymbols.length ) {
-      return unblockForm( [ 'reversString' ], formUseStates )
+      return unblockForm( [ reversString ], formUseStates )
     }
-
     if ( arrSymbols.length < 2 ) {
       setSymbolsArr( [ ...arrSymbols ] )
-      unblockForm( [ 'reversString' ], formUseStates )
+      unblockForm( [ reversString ], formUseStates )
       return setStateIndeces( {
         changing: null,
         modified: [ -1, -1 ]
       } )
     }
-
-    const steps = await getReversingStringSteps( arrSymbols )
-
     for ( let i = 0; i < steps.length; i++ ) {
       if ( !isMounted.current ) return
       let arr = steps[ i ]
@@ -94,12 +87,14 @@ export const StringComponent: React.FC = () => {
         } )
       }
     }
-    unblockForm( [ 'reversString' ], formUseStates )
+    unblockForm( [ reversString ], formUseStates )
   }
 
-  const handleSubmit = ( e: React.FormEvent ) => {
+  const handleSubmit = async ( e: React.FormEvent ) => {
     e.preventDefault()
-    renderSymbols( values.stringInput )
+    const arrSymbols = values.stringInput.split( '' )
+    const steps = await getReversingStringSteps( arrSymbols )
+    renderSymbols( arrSymbols, steps )
   }
 
   const onChangeHandler = ( e: ChangeEvent<HTMLInputElement> ) => {
