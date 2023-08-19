@@ -46,11 +46,11 @@ describe( 'Testing Recursion Page', function () {
 
     let testString = 'test2'
     let stringArr = testString.split( '' )
-    cy.get( '[class*="circle_modified"]' ).should( 'not.exist' )
+    cy.get( '[class*="circle_circle"]' ).should( 'not.exist' )
     cy.get( 'input[name="stringInput"]' ).type( testString )
-    cy.get( 'button[type="submit"]' ).should('not.be.disabled').click()
+    cy.get( 'button[type="submit"]' ).should('not.be.disabled').should('have.text', 'Развернуть').click()
     cy.get( 'button[type="submit"] img[class*="loader_icon"]' ).should( 'be.visible' )
-    cy.get( 'button[type="submit"]' ).should( 'be.disabled' )
+    cy.get( 'button[type="submit"]' ).should( 'be.disabled' ).should('not.have.text', 'Развернуть')
     cy.wait( 100 )
 
     checkChars( stringArr )
@@ -72,7 +72,7 @@ describe( 'Testing Recursion Page', function () {
     testString = '2tset'
     stringArr = testString.split( '' )
     cy.get( 'button[type="submit"] img[class*="loader_icon"]' ).should( 'not.exist' )
-    cy.get( 'button[type="submit"]' ).should('not.be.disabled')
+    cy.get( 'button[type="submit"]' ).should('not.be.disabled').should('have.text', 'Развернуть')
     checkChars( stringArr )
     checkPartialClassByIndices( [], [], [ 0, 1, 3, 4 ] )
   } )
