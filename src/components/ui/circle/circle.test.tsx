@@ -2,66 +2,60 @@ import React from 'react'
 import { render } from '@testing-library/react'
 import Circle from './circle'
 import { ElementStates } from '../../../types/element-states'
+import { CircleProps } from '../circle/circle'
 
 describe( '<Circle />', () => {
 
-  it( 'render without letter', () => {
-    const { asFragment } = render( <Circle /> )
+  function renderAndMatchSnapshot ( props: CircleProps ) {
+    const { asFragment } = render( <Circle { ...props } /> )
     expect( asFragment() ).toMatchSnapshot()
+  }
+
+  it( 'render without letter', () => {
+    renderAndMatchSnapshot( {} )
   } )
 
   it( 'render with letters', () => {
-    const { asFragment } = render( <Circle letter="A" /> )
-    expect( asFragment() ).toMatchSnapshot()
+    renderAndMatchSnapshot( { letter: "A" } )
   } )
 
   it( 'render with head', () => {
-    const { asFragment } = render( <Circle head="Head Content" /> )
-    expect( asFragment() ).toMatchSnapshot()
+    renderAndMatchSnapshot( { head: "Head Content" } )
   } )
 
   it( 'render correctly with react element in head', () => {
-    const { asFragment } = render(
-      <Circle head={
-        <Circle letter={ 'A' } state={ ElementStates.Changing } isSmall={ true } />
-      } /> )
-    expect( asFragment() ).toMatchSnapshot()
+    renderAndMatchSnapshot( {
+      head: <Circle letter='A' state={ ElementStates.Changing } isSmall={ true } />
+    } )
   } )
 
   it( 'render correctly with tail', () => {
-    const { asFragment } = render( <Circle tail="Tail Content" /> )
-    expect( asFragment() ).toMatchSnapshot()
+    renderAndMatchSnapshot( { tail: "Tail Content" } )
   } )
 
   it( 'render correctly with react element in tail', () => {
-    const { asFragment } = render( <Circle tail={
-      <Circle letter={ 'A' } state={ ElementStates.Changing } isSmall={ true } />
-    } /> )
-    expect( asFragment() ).toMatchSnapshot()
+    renderAndMatchSnapshot( {
+      tail: <Circle letter='A' state={ ElementStates.Changing } isSmall={ true } />
+    } )
   } )
 
   it( 'render correctly with index', () => {
-    const { asFragment } = render( <Circle index={ 5 } /> )
-    expect( asFragment() ).toMatchSnapshot()
+    renderAndMatchSnapshot( { index: 5 } )
   } )
 
   it( 'render correctly with isSmall prop', () => {
-    const { asFragment } = render( <Circle isSmall={ true } /> )
-    expect( asFragment() ).toMatchSnapshot()
+    renderAndMatchSnapshot( { isSmall: true } )
   } )
 
   it( 'render correctly in default state', () => {
-    const { asFragment } = render( <Circle state={ ElementStates.Default } /> )
-    expect( asFragment() ).toMatchSnapshot()
+    renderAndMatchSnapshot( { state: ElementStates.Default } )
   } )
 
   it( 'renders correctly in changing state', () => {
-    const { asFragment } = render( <Circle state={ ElementStates.Changing } /> )
-    expect( asFragment() ).toMatchSnapshot()
+    renderAndMatchSnapshot( { state: ElementStates.Changing } )
   } )
 
   it( 'render correctly in modified state', () => {
-    const { asFragment } = render( <Circle state={ ElementStates.Modified } /> )
-    expect( asFragment() ).toMatchSnapshot()
+    renderAndMatchSnapshot( { state: ElementStates.Modified } )
   } )
 } )

@@ -2,7 +2,7 @@ import React, { memo } from 'react'
 import styles from './circle.module.css'
 import { ElementStates } from '../../../types/element-states'
 
-interface CircleProps {
+export interface CircleProps {
   state?: ElementStates
   letter?: string
   head?: string | React.ReactElement | null
