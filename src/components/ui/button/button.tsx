@@ -5,7 +5,7 @@ import { AscendingIcon } from '../icons/ascending-icon'
 import { DescendingIcon } from '../icons/descending-icon'
 import { Direction } from '../../../types/direction'
 
-interface ButtonProps extends React.HTMLProps<HTMLButtonElement> {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   text?: string
   type?: 'button' | 'submit' | 'reset'
   sorting?: Direction

@@ -9,11 +9,12 @@ describe( 'Test App Routing', () => {
 
   test( 'Routing to MainPage', async () => {
     const links = [ '/recursion', '/fibonacci', '/sorting', '/stack', '/queue', '/list' ]
-    const { container } = render(
+    const { container, asFragment } = render(
       <MemoryRouter initialEntries={ [ '/' ] }>
         <App />
       </MemoryRouter>
     )
+    expect( asFragment() ).toMatchSnapshot()
     links.forEach( link => {
       const linkElement = container.querySelector( `a[href="${ link }"]` )
       expect( linkElement ).toBeInTheDocument()
@@ -22,11 +23,12 @@ describe( 'Test App Routing', () => {
 
   function testRouteByTitle ( href: string, title: RegExp ) {
     test( `Routing to '${ href }'`, async () => {
-      const { container, getByText } = render(
+      const { container, getByText, asFragment } = render(
         <MemoryRouter initialEntries={ [ '/' ] }>
           <App />
         </MemoryRouter>
       )
+      expect( asFragment() ).toMatchSnapshot()
       const link = container.querySelector( `a[href='${ href }']` )
       link && userEvent.click( link )
       expect( getByText( title ) ).toBeInTheDocument()

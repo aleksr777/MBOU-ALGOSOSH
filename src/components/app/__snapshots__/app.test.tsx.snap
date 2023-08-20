@@ -1,0 +1,1030 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test App Routing Routing to '/fibonacci' 1`] = `
+<DocumentFragment>
+  <div
+    class="app"
+  >
+    <main
+      class="content "
+    >
+      <div
+        class="title_box"
+      >
+        <h1
+          class="text text_type_h1 text_color_h1 title"
+        >
+          МБОУ АЛГОСОШ
+        </h1>
+        <p
+          class="text text_type_fibonacci text_color_secondary fibonacci_title"
+        >
+          им. Фибоначчи
+        </p>
+      </div>
+      <div
+        class="cards_box"
+      >
+        <a
+          class="link"
+          href="/recursion"
+        >
+          <div
+            class="card string"
+          />
+        </a>
+        <a
+          class="link"
+          href="/fibonacci"
+        >
+          <div
+            class="card fibonacci"
+          />
+        </a>
+        <a
+          class="link"
+          href="/sorting"
+        >
+          <div
+            class="card arr"
+          />
+        </a>
+        <a
+          class="link"
+          href="/stack"
+        >
+          <div
+            class="card stack"
+          />
+        </a>
+        <a
+          class="link"
+          href="/queue"
+        >
+          <div
+            class="card queue"
+          />
+        </a>
+        <a
+          class="link"
+          href="/list"
+        >
+          <div
+            class="card list"
+          />
+        </a>
+      </div>
+      <div
+        class="marquee-container ticker"
+        style="--pause-on-hover: running; --pause-on-click: running; --width: 100%; --transform: none;"
+      >
+        <div
+          class="marquee"
+          style="--play: running; --direction: normal; --duration: 0s; --delay: 0s; --iteration-count: infinite; --min-width: 100%;"
+        >
+          <div
+            class="initial-child-container"
+          >
+            <div
+              class="child"
+              style="--transform: none;"
+            >
+              <p
+                class="text text_type_ticker text_color_secondary ticker_text"
+              >
+                Вдохновлено школами, в которых не учили алгоритмам
+              </p>
+            </div>
+            <div
+              class="child"
+              style="--transform: none;"
+            >
+              <div
+                class="dot_box"
+              >
+                <p
+                  class="dot"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="marquee"
+          style="--play: running; --direction: normal; --duration: 0s; --delay: 0s; --iteration-count: infinite; --min-width: 100%;"
+        >
+          <div
+            class="child"
+            style="--transform: none;"
+          >
+            <p
+              class="text text_type_ticker text_color_secondary ticker_text"
+            >
+              Вдохновлено школами, в которых не учили алгоритмам
+            </p>
+          </div>
+          <div
+            class="child"
+            style="--transform: none;"
+          >
+            <div
+              class="dot_box"
+            >
+              <p
+                class="dot"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <p
+        class="text text_type_column text_color_input mt-14 copyright"
+      >
+        © Сделано в Практикуме.
+      </p>
+    </main>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Test App Routing Routing to '/list' 1`] = `
+<DocumentFragment>
+  <div
+    class="app"
+  >
+    <main
+      class="content "
+    >
+      <div
+        class="title_box"
+      >
+        <h1
+          class="text text_type_h1 text_color_h1 title"
+        >
+          МБОУ АЛГОСОШ
+        </h1>
+        <p
+          class="text text_type_fibonacci text_color_secondary fibonacci_title"
+        >
+          им. Фибоначчи
+        </p>
+      </div>
+      <div
+        class="cards_box"
+      >
+        <a
+          class="link"
+          href="/recursion"
+        >
+          <div
+            class="card string"
+          />
+        </a>
+        <a
+          class="link"
+          href="/fibonacci"
+        >
+          <div
+            class="card fibonacci"
+          />
+        </a>
+        <a
+          class="link"
+          href="/sorting"
+        >
+          <div
+            class="card arr"
+          />
+        </a>
+        <a
+          class="link"
+          href="/stack"
+        >
+          <div
+            class="card stack"
+          />
+        </a>
+        <a
+          class="link"
+          href="/queue"
+        >
+          <div
+            class="card queue"
+          />
+        </a>
+        <a
+          class="link"
+          href="/list"
+        >
+          <div
+            class="card list"
+          />
+        </a>
+      </div>
+      <div
+        class="marquee-container ticker"
+        style="--pause-on-hover: running; --pause-on-click: running; --width: 100%; --transform: none;"
+      >
+        <div
+          class="marquee"
+          style="--play: running; --direction: normal; --duration: 0s; --delay: 0s; --iteration-count: infinite; --min-width: 100%;"
+        >
+          <div
+            class="initial-child-container"
+          >
+            <div
+              class="child"
+              style="--transform: none;"
+            >
+              <p
+                class="text text_type_ticker text_color_secondary ticker_text"
+              >
+                Вдохновлено школами, в которых не учили алгоритмам
+              </p>
+            </div>
+            <div
+              class="child"
+              style="--transform: none;"
+            >
+              <div
+                class="dot_box"
+              >
+                <p
+                  class="dot"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="marquee"
+          style="--play: running; --direction: normal; --duration: 0s; --delay: 0s; --iteration-count: infinite; --min-width: 100%;"
+        >
+          <div
+            class="child"
+            style="--transform: none;"
+          >
+            <p
+              class="text text_type_ticker text_color_secondary ticker_text"
+            >
+              Вдохновлено школами, в которых не учили алгоритмам
+            </p>
+          </div>
+          <div
+            class="child"
+            style="--transform: none;"
+          >
+            <div
+              class="dot_box"
+            >
+              <p
+                class="dot"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <p
+        class="text text_type_column text_color_input mt-14 copyright"
+      >
+        © Сделано в Практикуме.
+      </p>
+    </main>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Test App Routing Routing to '/queue' 1`] = `
+<DocumentFragment>
+  <div
+    class="app"
+  >
+    <main
+      class="content "
+    >
+      <div
+        class="title_box"
+      >
+        <h1
+          class="text text_type_h1 text_color_h1 title"
+        >
+          МБОУ АЛГОСОШ
+        </h1>
+        <p
+          class="text text_type_fibonacci text_color_secondary fibonacci_title"
+        >
+          им. Фибоначчи
+        </p>
+      </div>
+      <div
+        class="cards_box"
+      >
+        <a
+          class="link"
+          href="/recursion"
+        >
+          <div
+            class="card string"
+          />
+        </a>
+        <a
+          class="link"
+          href="/fibonacci"
+        >
+          <div
+            class="card fibonacci"
+          />
+        </a>
+        <a
+          class="link"
+          href="/sorting"
+        >
+          <div
+            class="card arr"
+          />
+        </a>
+        <a
+          class="link"
+          href="/stack"
+        >
+          <div
+            class="card stack"
+          />
+        </a>
+        <a
+          class="link"
+          href="/queue"
+        >
+          <div
+            class="card queue"
+          />
+        </a>
+        <a
+          class="link"
+          href="/list"
+        >
+          <div
+            class="card list"
+          />
+        </a>
+      </div>
+      <div
+        class="marquee-container ticker"
+        style="--pause-on-hover: running; --pause-on-click: running; --width: 100%; --transform: none;"
+      >
+        <div
+          class="marquee"
+          style="--play: running; --direction: normal; --duration: 0s; --delay: 0s; --iteration-count: infinite; --min-width: 100%;"
+        >
+          <div
+            class="initial-child-container"
+          >
+            <div
+              class="child"
+              style="--transform: none;"
+            >
+              <p
+                class="text text_type_ticker text_color_secondary ticker_text"
+              >
+                Вдохновлено школами, в которых не учили алгоритмам
+              </p>
+            </div>
+            <div
+              class="child"
+              style="--transform: none;"
+            >
+              <div
+                class="dot_box"
+              >
+                <p
+                  class="dot"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="marquee"
+          style="--play: running; --direction: normal; --duration: 0s; --delay: 0s; --iteration-count: infinite; --min-width: 100%;"
+        >
+          <div
+            class="child"
+            style="--transform: none;"
+          >
+            <p
+              class="text text_type_ticker text_color_secondary ticker_text"
+            >
+              Вдохновлено школами, в которых не учили алгоритмам
+            </p>
+          </div>
+          <div
+            class="child"
+            style="--transform: none;"
+          >
+            <div
+              class="dot_box"
+            >
+              <p
+                class="dot"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <p
+        class="text text_type_column text_color_input mt-14 copyright"
+      >
+        © Сделано в Практикуме.
+      </p>
+    </main>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Test App Routing Routing to '/recursion' 1`] = `
+<DocumentFragment>
+  <div
+    class="app"
+  >
+    <main
+      class="content "
+    >
+      <div
+        class="title_box"
+      >
+        <h1
+          class="text text_type_h1 text_color_h1 title"
+        >
+          МБОУ АЛГОСОШ
+        </h1>
+        <p
+          class="text text_type_fibonacci text_color_secondary fibonacci_title"
+        >
+          им. Фибоначчи
+        </p>
+      </div>
+      <div
+        class="cards_box"
+      >
+        <a
+          class="link"
+          href="/recursion"
+        >
+          <div
+            class="card string"
+          />
+        </a>
+        <a
+          class="link"
+          href="/fibonacci"
+        >
+          <div
+            class="card fibonacci"
+          />
+        </a>
+        <a
+          class="link"
+          href="/sorting"
+        >
+          <div
+            class="card arr"
+          />
+        </a>
+        <a
+          class="link"
+          href="/stack"
+        >
+          <div
+            class="card stack"
+          />
+        </a>
+        <a
+          class="link"
+          href="/queue"
+        >
+          <div
+            class="card queue"
+          />
+        </a>
+        <a
+          class="link"
+          href="/list"
+        >
+          <div
+            class="card list"
+          />
+        </a>
+      </div>
+      <div
+        class="marquee-container ticker"
+        style="--pause-on-hover: running; --pause-on-click: running; --width: 100%; --transform: none;"
+      >
+        <div
+          class="marquee"
+          style="--play: running; --direction: normal; --duration: 0s; --delay: 0s; --iteration-count: infinite; --min-width: 100%;"
+        >
+          <div
+            class="initial-child-container"
+          >
+            <div
+              class="child"
+              style="--transform: none;"
+            >
+              <p
+                class="text text_type_ticker text_color_secondary ticker_text"
+              >
+                Вдохновлено школами, в которых не учили алгоритмам
+              </p>
+            </div>
+            <div
+              class="child"
+              style="--transform: none;"
+            >
+              <div
+                class="dot_box"
+              >
+                <p
+                  class="dot"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="marquee"
+          style="--play: running; --direction: normal; --duration: 0s; --delay: 0s; --iteration-count: infinite; --min-width: 100%;"
+        >
+          <div
+            class="child"
+            style="--transform: none;"
+          >
+            <p
+              class="text text_type_ticker text_color_secondary ticker_text"
+            >
+              Вдохновлено школами, в которых не учили алгоритмам
+            </p>
+          </div>
+          <div
+            class="child"
+            style="--transform: none;"
+          >
+            <div
+              class="dot_box"
+            >
+              <p
+                class="dot"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <p
+        class="text text_type_column text_color_input mt-14 copyright"
+      >
+        © Сделано в Практикуме.
+      </p>
+    </main>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Test App Routing Routing to '/sorting' 1`] = `
+<DocumentFragment>
+  <div
+    class="app"
+  >
+    <main
+      class="content "
+    >
+      <div
+        class="title_box"
+      >
+        <h1
+          class="text text_type_h1 text_color_h1 title"
+        >
+          МБОУ АЛГОСОШ
+        </h1>
+        <p
+          class="text text_type_fibonacci text_color_secondary fibonacci_title"
+        >
+          им. Фибоначчи
+        </p>
+      </div>
+      <div
+        class="cards_box"
+      >
+        <a
+          class="link"
+          href="/recursion"
+        >
+          <div
+            class="card string"
+          />
+        </a>
+        <a
+          class="link"
+          href="/fibonacci"
+        >
+          <div
+            class="card fibonacci"
+          />
+        </a>
+        <a
+          class="link"
+          href="/sorting"
+        >
+          <div
+            class="card arr"
+          />
+        </a>
+        <a
+          class="link"
+          href="/stack"
+        >
+          <div
+            class="card stack"
+          />
+        </a>
+        <a
+          class="link"
+          href="/queue"
+        >
+          <div
+            class="card queue"
+          />
+        </a>
+        <a
+          class="link"
+          href="/list"
+        >
+          <div
+            class="card list"
+          />
+        </a>
+      </div>
+      <div
+        class="marquee-container ticker"
+        style="--pause-on-hover: running; --pause-on-click: running; --width: 100%; --transform: none;"
+      >
+        <div
+          class="marquee"
+          style="--play: running; --direction: normal; --duration: 0s; --delay: 0s; --iteration-count: infinite; --min-width: 100%;"
+        >
+          <div
+            class="initial-child-container"
+          >
+            <div
+              class="child"
+              style="--transform: none;"
+            >
+              <p
+                class="text text_type_ticker text_color_secondary ticker_text"
+              >
+                Вдохновлено школами, в которых не учили алгоритмам
+              </p>
+            </div>
+            <div
+              class="child"
+              style="--transform: none;"
+            >
+              <div
+                class="dot_box"
+              >
+                <p
+                  class="dot"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="marquee"
+          style="--play: running; --direction: normal; --duration: 0s; --delay: 0s; --iteration-count: infinite; --min-width: 100%;"
+        >
+          <div
+            class="child"
+            style="--transform: none;"
+          >
+            <p
+              class="text text_type_ticker text_color_secondary ticker_text"
+            >
+              Вдохновлено школами, в которых не учили алгоритмам
+            </p>
+          </div>
+          <div
+            class="child"
+            style="--transform: none;"
+          >
+            <div
+              class="dot_box"
+            >
+              <p
+                class="dot"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <p
+        class="text text_type_column text_color_input mt-14 copyright"
+      >
+        © Сделано в Практикуме.
+      </p>
+    </main>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Test App Routing Routing to '/stack' 1`] = `
+<DocumentFragment>
+  <div
+    class="app"
+  >
+    <main
+      class="content "
+    >
+      <div
+        class="title_box"
+      >
+        <h1
+          class="text text_type_h1 text_color_h1 title"
+        >
+          МБОУ АЛГОСОШ
+        </h1>
+        <p
+          class="text text_type_fibonacci text_color_secondary fibonacci_title"
+        >
+          им. Фибоначчи
+        </p>
+      </div>
+      <div
+        class="cards_box"
+      >
+        <a
+          class="link"
+          href="/recursion"
+        >
+          <div
+            class="card string"
+          />
+        </a>
+        <a
+          class="link"
+          href="/fibonacci"
+        >
+          <div
+            class="card fibonacci"
+          />
+        </a>
+        <a
+          class="link"
+          href="/sorting"
+        >
+          <div
+            class="card arr"
+          />
+        </a>
+        <a
+          class="link"
+          href="/stack"
+        >
+          <div
+            class="card stack"
+          />
+        </a>
+        <a
+          class="link"
+          href="/queue"
+        >
+          <div
+            class="card queue"
+          />
+        </a>
+        <a
+          class="link"
+          href="/list"
+        >
+          <div
+            class="card list"
+          />
+        </a>
+      </div>
+      <div
+        class="marquee-container ticker"
+        style="--pause-on-hover: running; --pause-on-click: running; --width: 100%; --transform: none;"
+      >
+        <div
+          class="marquee"
+          style="--play: running; --direction: normal; --duration: 0s; --delay: 0s; --iteration-count: infinite; --min-width: 100%;"
+        >
+          <div
+            class="initial-child-container"
+          >
+            <div
+              class="child"
+              style="--transform: none;"
+            >
+              <p
+                class="text text_type_ticker text_color_secondary ticker_text"
+              >
+                Вдохновлено школами, в которых не учили алгоритмам
+              </p>
+            </div>
+            <div
+              class="child"
+              style="--transform: none;"
+            >
+              <div
+                class="dot_box"
+              >
+                <p
+                  class="dot"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="marquee"
+          style="--play: running; --direction: normal; --duration: 0s; --delay: 0s; --iteration-count: infinite; --min-width: 100%;"
+        >
+          <div
+            class="child"
+            style="--transform: none;"
+          >
+            <p
+              class="text text_type_ticker text_color_secondary ticker_text"
+            >
+              Вдохновлено школами, в которых не учили алгоритмам
+            </p>
+          </div>
+          <div
+            class="child"
+            style="--transform: none;"
+          >
+            <div
+              class="dot_box"
+            >
+              <p
+                class="dot"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <p
+        class="text text_type_column text_color_input mt-14 copyright"
+      >
+        © Сделано в Практикуме.
+      </p>
+    </main>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Test App Routing Routing to MainPage 1`] = `
+<DocumentFragment>
+  <div
+    class="app"
+  >
+    <main
+      class="content "
+    >
+      <div
+        class="title_box"
+      >
+        <h1
+          class="text text_type_h1 text_color_h1 title"
+        >
+          МБОУ АЛГОСОШ
+        </h1>
+        <p
+          class="text text_type_fibonacci text_color_secondary fibonacci_title"
+        >
+          им. Фибоначчи
+        </p>
+      </div>
+      <div
+        class="cards_box"
+      >
+        <a
+          class="link"
+          href="/recursion"
+        >
+          <div
+            class="card string"
+          />
+        </a>
+        <a
+          class="link"
+          href="/fibonacci"
+        >
+          <div
+            class="card fibonacci"
+          />
+        </a>
+        <a
+          class="link"
+          href="/sorting"
+        >
+          <div
+            class="card arr"
+          />
+        </a>
+        <a
+          class="link"
+          href="/stack"
+        >
+          <div
+            class="card stack"
+          />
+        </a>
+        <a
+          class="link"
+          href="/queue"
+        >
+          <div
+            class="card queue"
+          />
+        </a>
+        <a
+          class="link"
+          href="/list"
+        >
+          <div
+            class="card list"
+          />
+        </a>
+      </div>
+      <div
+        class="marquee-container ticker"
+        style="--pause-on-hover: running; --pause-on-click: running; --width: 100%; --transform: none;"
+      >
+        <div
+          class="marquee"
+          style="--play: running; --direction: normal; --duration: 0s; --delay: 0s; --iteration-count: infinite; --min-width: 100%;"
+        >
+          <div
+            class="initial-child-container"
+          >
+            <div
+              class="child"
+              style="--transform: none;"
+            >
+              <p
+                class="text text_type_ticker text_color_secondary ticker_text"
+              >
+                Вдохновлено школами, в которых не учили алгоритмам
+              </p>
+            </div>
+            <div
+              class="child"
+              style="--transform: none;"
+            >
+              <div
+                class="dot_box"
+              >
+                <p
+                  class="dot"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="marquee"
+          style="--play: running; --direction: normal; --duration: 0s; --delay: 0s; --iteration-count: infinite; --min-width: 100%;"
+        >
+          <div
+            class="child"
+            style="--transform: none;"
+          >
+            <p
+              class="text text_type_ticker text_color_secondary ticker_text"
+            >
+              Вдохновлено школами, в которых не учили алгоритмам
+            </p>
+          </div>
+          <div
+            class="child"
+            style="--transform: none;"
+          >
+            <div
+              class="dot_box"
+            >
+              <p
+                class="dot"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <p
+        class="text text_type_column text_color_input mt-14 copyright"
+      >
+        © Сделано в Практикуме.
+      </p>
+    </main>
+  </div>
+</DocumentFragment>
+`;

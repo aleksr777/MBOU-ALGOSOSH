@@ -103,7 +103,9 @@ export const StringComponent: React.FC = () => {
   }
 
   return (
+
     <SolutionLayout title='Строка'>
+
       <form className={ styles.formWrapper } onSubmit={ handleSubmit }>
         <Input
           placeholder='Введите текст'
