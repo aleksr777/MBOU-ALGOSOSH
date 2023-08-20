@@ -1,9 +1,9 @@
+import 'tsconfig-paths/register'
 import { defineConfig } from "cypress"
 
 export default defineConfig( {
   e2e: {
     setupNodeEvents ( on, config ) {
-      // implement node event listeners here
     },
   },
 
@@ -14,6 +14,8 @@ export default defineConfig( {
     },
   },
 
-  viewportWidth: 1920, // Ширина вьюпорта
-  viewportHeight: 1080, // Высота вьюпорта
+  viewportWidth: 1920,
+  viewportHeight: 1080,
+
+  fileServerFolder: "./"
 } )
