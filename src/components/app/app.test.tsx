@@ -22,23 +22,33 @@ describe( 'Test App Routing', () => {
   } )
 
   function testRouteByTitle ( href: string, title: RegExp ) {
-    test( `Routing to '${ href }'`, async () => {
-      const { container, getByText, asFragment } = render(
-        <MemoryRouter initialEntries={ [ '/' ] }>
-          <App />
-        </MemoryRouter>
-      )
-      expect( asFragment() ).toMatchSnapshot()
-      const link = container.querySelector( `a[href='${ href }']` )
-      link && userEvent.click( link )
-      expect( getByText( title ) ).toBeInTheDocument()
-    } )
+    const { container, getByText, asFragment } = render(
+      <MemoryRouter initialEntries={ [ '/' ] }>
+        <App />
+      </MemoryRouter>
+    )
+    expect( asFragment() ).toMatchSnapshot()
+    const link = container.querySelector( `a[href='${ href }']` )
+    link && userEvent.click( link )
+    expect( getByText( title ) ).toBeInTheDocument()
   }
 
-  testRouteByTitle( '/recursion', /строка/i )
-  testRouteByTitle( '/fibonacci', /последовательность фибоначчи/i )
-  testRouteByTitle( '/sorting', /сортировка массива/i )
-  testRouteByTitle( '/queue', /очередь/i )
-  testRouteByTitle( '/stack', /стек/i )
-  testRouteByTitle( '/list', /связный список/i )
+  it( 'Routing to StringPage', async () => {
+    testRouteByTitle( '/recursion', /строка/i )
+  } )
+  it( 'Routing to FibonacciPage', async () => {
+    testRouteByTitle( '/fibonacci', /последовательность фибоначчи/i )
+  } )
+  it( 'Routing to SortingPage', async () => {
+    testRouteByTitle( '/sorting', /сортировка массива/i )
+  } )
+  it( 'Routing to QueuePage', async () => {
+    testRouteByTitle( '/queue', /очередь/i )
+  } )
+  it( 'Routing to StackPage', async () => {
+    testRouteByTitle( '/stack', /стек/i )
+  } )
+  it( 'Routing to QueuePage', async () => {
+    testRouteByTitle( '/list', /связный список/i )
+  } )
 } )
