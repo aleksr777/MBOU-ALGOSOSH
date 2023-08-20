@@ -2,32 +2,33 @@ import React from 'react'
 import { render, fireEvent } from '@testing-library/react'
 import Button from './button'
 import { Direction } from '../../../types/direction'
+import { ButtonProps } from '../button/button'
 
 describe( '<Button />', () => {
 
-  it( 'render with text', () => {
-    const { asFragment } = render( <Button text="Нажми меня" /> )
+  function renderAndMatchSnapshot ( props: ButtonProps ) {
+    const { asFragment } = render( <Button { ...props } /> )
     expect( asFragment() ).toMatchSnapshot()
+  }
+
+  it( 'render with text', () => {
+    renderAndMatchSnapshot( { text: "Нажми меня" } )
   } )
 
   it( 'render disabled', () => {
-    const { asFragment } = render( <Button disabled={ true } /> )
-    expect( asFragment() ).toMatchSnapshot()
+    renderAndMatchSnapshot( { disabled: true } )
   } )
 
   it( 'render with loading indication', () => {
-    const { asFragment } = render( <Button isLoader /> )
-    expect( asFragment() ).toMatchSnapshot()
+    renderAndMatchSnapshot( { isLoader: true } )
   } )
 
   it( 'render with a ascending sort icon', () => {
-    const { asFragment } = render( <Button sorting={ Direction.Ascending } /> )
-    expect( asFragment() ).toMatchSnapshot()
+    renderAndMatchSnapshot( { sorting: Direction.Ascending } )
   } )
 
   it( 'render with a descending sort icon', () => {
-    const { asFragment } = render( <Button sorting={ Direction.Descending } /> )
-    expect( asFragment() ).toMatchSnapshot()
+    renderAndMatchSnapshot( { sorting: Direction.Descending } )
   } )
 
   it( 'onClick event', () => {
