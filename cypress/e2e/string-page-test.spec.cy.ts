@@ -9,15 +9,21 @@ describe( 'Testing Recursion Page', function () {
 
   it( 'should have a disabled submit button when input is empty', () => {
     let testString = 'test1'
-    cy.get( 'input[name="stringInput"]' ).should( 'have.value', '' ) // пустая строка при загрузке странице
-    cy.get( 'button[type="submit"]' ).should( 'be.disabled' )
-    cy.get( 'input[name="stringInput"]' ).type( testString )
+    cy.get( 'input[name="stringInput"]' ).as( 'input' )
+    cy.get( 'button[type="submit"]' ).as( 'button' )
+    // после загрузки страницы
+    cy.get( '@input' ).should( 'have.value', '' )
+    cy.get( '@button' ).should( 'be.disabled' )
+    // после введения и удаления текста в инпуте
+    cy.get( '@input' ).type( testString )
     cy.wait( SHORT_DELAY_IN_MS )
-    cy.get( 'input[name="stringInput"]' ).clear()// пустая строка после введения и удаления текста в инпуте
-    cy.get( 'button[type="submit"]' ).should( 'be.disabled' )
+    cy.get( '@input' ).clear()
+    cy.get( '@button' ).should( 'be.disabled' )
   } )
 
   it( 'should correctly animate', () => {
+
+    cy.get( 'button[type="submit"]' ).as( 'button' )
 
     function checkChars ( stringArr: string[] ) {
       stringArr.forEach( ( char, index ) => {
@@ -48,9 +54,9 @@ describe( 'Testing Recursion Page', function () {
     let stringArr = testString.split( '' )
     cy.get( '[class*="circle_circle"]' ).should( 'not.exist' )
     cy.get( 'input[name="stringInput"]' ).type( testString )
-    cy.get( 'button[type="submit"]' ).should('not.be.disabled').should('have.text', 'Развернуть').click()
+    cy.get( '@button' ).should( 'not.be.disabled' ).should( 'have.text', 'Развернуть' ).click()
     cy.get( 'button[type="submit"] img[class*="loader_icon"]' ).should( 'be.visible' )
-    cy.get( 'button[type="submit"]' ).should( 'be.disabled' ).should('not.have.text', 'Развернуть')
+    cy.get( '@button' ).should( 'be.disabled' ).should( 'not.have.text', 'Развернуть' )
     cy.wait( 100 )
 
     checkChars( stringArr )
@@ -72,7 +78,7 @@ describe( 'Testing Recursion Page', function () {
     testString = '2tset'
     stringArr = testString.split( '' )
     cy.get( 'button[type="submit"] img[class*="loader_icon"]' ).should( 'not.exist' )
-    cy.get( 'button[type="submit"]' ).should('not.be.disabled').should('have.text', 'Развернуть')
+    cy.get( '@button' ).should( 'not.be.disabled' ).should( 'have.text', 'Развернуть' )
     checkChars( stringArr )
     checkPartialClassByIndices( [], [], [ 0, 1, 3, 4 ] )
   } )
