@@ -61,7 +61,7 @@ export const SortingPage: React.FC = () => {
   ) {
     if ( !isMounted.current ) return
     const btnName = ( direction === ASCENDING ) ? 'ascending' : 'descending'
-    blockForm( [btnName], formUseStates )
+    blockForm( [ btnName ], formUseStates )
     let arrSteps: StepsSortingType = []
     if ( sortingRadio === CHOICE ) { arrSteps = await getStepsSortingChoice( columnsNumbers, direction ) }
     else if ( sortingRadio === BUBBLE ) { arrSteps = await getStepsSortingBubble( columnsNumbers, direction ) }
@@ -80,7 +80,7 @@ export const SortingPage: React.FC = () => {
     setChangingIndixes( [ null, null ] )
     await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     setIsColumnsSorted( true )
-    unblockForm( [btnName], formUseStates )
+    unblockForm( [ btnName ], formUseStates )
   }
 
   function animateSort ( direction: string ) {
