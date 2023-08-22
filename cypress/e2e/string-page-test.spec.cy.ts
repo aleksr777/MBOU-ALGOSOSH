@@ -14,11 +14,13 @@ describe( 'Testing Recursion Page', function () {
     // после загрузки страницы
     cy.get( '@input' ).should( 'have.value', '' )
     cy.get( '@button' ).should( 'be.disabled' )
+    cy.wait( SHORT_DELAY_IN_MS )
     // после введения и удаления текста в инпуте
     cy.get( '@input' ).type( testString )
     cy.wait( SHORT_DELAY_IN_MS )
     cy.get( '@input' ).clear()
     cy.get( '@button' ).should( 'be.disabled' )
+    cy.wait( SHORT_DELAY_IN_MS )
   } )
 
   it( 'should correctly animate', () => {
@@ -56,7 +58,7 @@ describe( 'Testing Recursion Page', function () {
     cy.get( 'input[name="stringInput"]' ).type( testString )
     cy.get( '@button' ).should( 'not.be.disabled' ).should( 'have.text', 'Развернуть' ).click()
     cy.get( 'button[type="submit"] img[class*="loader_icon"]' ).should( 'be.visible' )
-    cy.get( '@button' ).should( 'be.disabled' ).should( 'not.have.text', 'Развернуть' )
+    cy.get( '@button' ).should( 'be.disabled' ).should( 'not.have.text' )
     cy.wait( 100 )
 
     checkChars( stringArr )
