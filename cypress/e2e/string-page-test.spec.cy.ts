@@ -1,7 +1,8 @@
 import { SHORT_DELAY_IN_MS } from '../../src/constants/delays'
+import { checkMainValue, checkMainClassByIndices } from '../../src/utils/e2e-tests-utils'
 
 
-describe( 'Testing Recursion Page', function () {
+describe( 'Testing String Page', function () {
 
   beforeEach( () => {
     cy.visit( 'http://localhost:3000/recursion' )
@@ -27,31 +28,6 @@ describe( 'Testing Recursion Page', function () {
 
     cy.get( 'button[type="submit"]' ).as( 'button' )
 
-    function checkChars ( stringArr: string[] ) {
-      stringArr.forEach( ( char, index ) => {
-        cy.get( '[class*="letter"]' ).eq( index ).should( 'contain.text', char )
-      } )
-    }
-
-    function checkPartialClassByIndices (
-      defaultIndices: number[],
-      changingIndices: number[],
-      modifiedIndices: number[]
-    ) {
-      const checkIndicesForClass = ( indices: number[], partialClassName: string ) => {
-        cy.get( '[class*="circle_circle"]' ).then( ( elements ) => {
-          indices.forEach( index => {
-            cy.wrap( elements.eq( index ) )
-              .invoke( 'attr', 'class' )
-              .should( 'match', new RegExp( partialClassName ) )
-          } )
-        } )
-      }
-      checkIndicesForClass( defaultIndices, 'circle_default' )
-      checkIndicesForClass( changingIndices, 'circle_changing' )
-      checkIndicesForClass( modifiedIndices, 'circle_modified' )
-    }
-
     let testString = 'test2'
     let stringArr = testString.split( '' )
     cy.get( '[class*="circle_circle"]' ).should( 'not.exist' )
@@ -61,28 +37,28 @@ describe( 'Testing Recursion Page', function () {
     cy.get( '@button' ).should( 'be.disabled' ).should( 'not.have.text' )
     cy.wait( 100 )
 
-    checkChars( stringArr )
-    checkPartialClassByIndices( [ 1, 2, 3 ], [ 0, 4 ], [] )
+    checkMainValue( stringArr )
+    checkMainClassByIndices( [ 1, 2, 3 ], [ 0, 4 ], [] )
     cy.wait( SHORT_DELAY_IN_MS )
 
-    checkPartialClassByIndices( [ 1, 2, 3 ], [], [ 0, 4 ] )
+    checkMainClassByIndices( [ 1, 2, 3 ], [], [ 0, 4 ] )
     cy.wait( SHORT_DELAY_IN_MS )
 
     testString = '2estt'
     stringArr = testString.split( '' )
-    checkChars( stringArr )
-    checkPartialClassByIndices( [ 2 ], [ 1, 3 ], [ 0, 4 ] )
+    checkMainValue( stringArr )
+    checkMainClassByIndices( [ 2 ], [ 1, 3 ], [ 0, 4 ] )
     cy.wait( SHORT_DELAY_IN_MS )
 
-    checkPartialClassByIndices( [ 2 ], [], [ 0, 1, 3, 4 ] )
+    checkMainClassByIndices( [ 2 ], [], [ 0, 1, 3, 4 ] )
     cy.wait( SHORT_DELAY_IN_MS )
 
     testString = '2tset'
     stringArr = testString.split( '' )
     cy.get( 'button[type="submit"] img[class*="loader_icon"]' ).should( 'not.exist' )
     cy.get( '@button' ).should( 'not.be.disabled' ).should( 'have.text', 'Развернуть' )
-    checkChars( stringArr )
-    checkPartialClassByIndices( [], [], [ 0, 1, 3, 4 ] )
+    checkMainValue( stringArr )
+    checkMainClassByIndices( [], [], [ 0, 1, 3, 4 ] )
   } )
 
 } )

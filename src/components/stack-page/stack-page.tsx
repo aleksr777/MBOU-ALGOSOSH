@@ -138,7 +138,7 @@ export const StackPage: React.FC = () => {
         />
 
         <Button
-          type='button'
+          type='submit'
           linkedList='small'
           text={ buttonsState.push.isLoading ? '' : 'Добавить' }
           extraClass={ styles.button_correct_medium }

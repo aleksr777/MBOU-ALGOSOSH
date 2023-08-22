@@ -1,4 +1,5 @@
 import { SHORT_DELAY_IN_MS } from '../../src/constants/delays'
+import { checkTailStrValue } from '../../src/utils/e2e-tests-utils'
 
 
 describe( 'Testing Fibonacci Page', function () {
@@ -22,7 +23,7 @@ describe( 'Testing Fibonacci Page', function () {
     cy.wait( SHORT_DELAY_IN_MS )
   } )
 
-  
+
   it( 'should correctly animate', () => {
 
     const checkElements = ( arr: number[] ) => {
@@ -32,7 +33,6 @@ describe( 'Testing Fibonacci Page', function () {
         cy.get( '[class*="circle_circle"]' )
           .invoke( 'attr', 'class' )
           .should( 'match', new RegExp( 'circle_default' ) )
-        cy.get( '[class*="circle_tail"][class*="circle_string"]' ).should( 'contain.text', index )
       } )
     }
 
@@ -45,17 +45,30 @@ describe( 'Testing Fibonacci Page', function () {
     cy.get( 'button[type="submit"] img[class*="loader_icon"]' ).should( 'be.visible' )
     cy.get( '@button' ).should( 'be.disabled' ).should( 'not.have.text' )
     cy.wait( SHORT_DELAY_IN_MS )
+
     checkElements( [ 1 ] )
+    checkTailStrValue( [ '0' ] )
     cy.wait( SHORT_DELAY_IN_MS )
+
     checkElements( [ 1, 1 ] )
+    checkTailStrValue( [ '0', '1' ] )
     cy.wait( SHORT_DELAY_IN_MS )
+
     checkElements( [ 1, 1, 2 ] )
+    checkTailStrValue( [ '0', '1', '2' ] )
     cy.wait( SHORT_DELAY_IN_MS )
+
     checkElements( [ 1, 1, 2, 3 ] )
+    checkTailStrValue( [ '0', '1', '2', '3' ] )
     cy.wait( SHORT_DELAY_IN_MS )
+
     checkElements( [ 1, 1, 2, 3, 5 ] )
+    checkTailStrValue( [ '0', '1', '2', '3', '4' ] )
     cy.wait( SHORT_DELAY_IN_MS )
+    
     checkElements( [ 1, 1, 2, 3, 5, 8 ] )
+    checkTailStrValue( [ '0', '1', '2', '3', '4', '5' ] )
+    cy.wait( SHORT_DELAY_IN_MS )
   } )
 
 } )
