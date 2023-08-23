@@ -1,40 +1,43 @@
 import { SHORT_DELAY_IN_MS } from '../../src/constants/delays'
-import { checkMainValue, checkMainClassByIndices, checkHeadStrValue } from '../../src/utils/e2e-tests-utils'
+import { checkMainValue, checkMainClassByIndices, checkHeadStrValue, checkElementsCount, checkTailStrValue, checkCircleIndex } from '../../src/utils/e2e-tests-utils'
 
 
 describe( 'Testing Stack Page', function () {
 
   beforeEach( () => {
     cy.visit( 'http://localhost:3000/stack' )
+    cy.get( 'input[name="stackInput"]' ).as( 'input' )
   } )
 
   it( 'should have a disabled submit button when input is empty', () => {
 
-    cy.get( 'input[name="stackInput"]' ).as( 'input' )
-    cy.get( 'button[type="submit"]' ).as( 'button' )
+    cy.get( 'button[type="submit"]' ).as( 'buttonSubmit' )
     // после загрузки страницы
     cy.get( '@input' ).should( 'have.value', '' )
-    cy.get( '@button' ).should( 'be.disabled' )
+    cy.get( '@buttonSubmit' ).should( 'be.disabled' )
     cy.wait( SHORT_DELAY_IN_MS )
     // после введения и удаления текста в инпуте
     cy.get( '@input' ).type( '10' )
     cy.wait( SHORT_DELAY_IN_MS )
     cy.get( '@input' ).clear()
-    cy.get( '@button' ).should( 'be.disabled' )
+    cy.get( '@buttonSubmit' ).should( 'be.disabled' )
     cy.wait( SHORT_DELAY_IN_MS )
 
   } )
 
   it( 'should correctly add an element to the stack', () => {
 
-    cy.get( 'input[name="stackInput"]' ).as( 'input' )
-    cy.get( 'button[type="submit"]' ).as( 'button' )
+    cy.get( 'button[type="submit"]' ).as( 'buttonSubmit' )
 
     cy.get( '@input' ).type( 'test' )
     cy.wait( SHORT_DELAY_IN_MS )
-    cy.get( '@button' ).should( 'not.be.disabled' ).should( 'have.text', 'Добавить' ).click()
+    checkElementsCount( 0 )
+    cy.get( '@buttonSubmit' ).should( 'not.be.disabled' ).should( 'have.text', 'Добавить' ).click()
+    checkElementsCount( 1 )
     checkMainValue( [ 'test' ] )
     checkHeadStrValue( [ 'top' ] )
+    checkTailStrValue( [ '' ] )
+    checkCircleIndex( [ '0' ] )
     checkMainClassByIndices( [], [ 0 ], [] )
     cy.wait( SHORT_DELAY_IN_MS )
     checkMainClassByIndices( [ 0 ], [], [] )
@@ -42,9 +45,13 @@ describe( 'Testing Stack Page', function () {
 
     cy.get( '@input' ).type( 'me' )
     cy.wait( SHORT_DELAY_IN_MS )
-    cy.get( '@button' ).should( 'not.be.disabled' ).should( 'have.text', 'Добавить' ).click()
+    checkElementsCount( 1 )
+    cy.get( '@buttonSubmit' ).should( 'not.be.disabled' ).should( 'have.text', 'Добавить' ).click()
+    checkElementsCount( 2 )
     checkMainValue( [ 'test', 'me' ] )
     checkHeadStrValue( [ '', 'top' ] )
+    checkTailStrValue( [ '', '' ] )
+    checkCircleIndex( [ '0', '1' ] )
     checkMainClassByIndices( [ 0 ], [ 1 ], [] )
     cy.wait( SHORT_DELAY_IN_MS )
     checkMainClassByIndices( [ 0, 1 ], [], [] )
@@ -52,14 +59,103 @@ describe( 'Testing Stack Page', function () {
 
     cy.get( '@input' ).type( 'now' )
     cy.wait( SHORT_DELAY_IN_MS )
-    cy.get( '@button' ).should( 'not.be.disabled' ).should( 'have.text', 'Добавить' ).click()
+    checkElementsCount( 2 )
+    cy.get( '@buttonSubmit' ).should( 'not.be.disabled' ).should( 'have.text', 'Добавить' ).click()
+    checkElementsCount( 3 )
     checkMainValue( [ 'test', 'me', 'now' ] )
     checkHeadStrValue( [ '', '', 'top' ] )
+    checkTailStrValue( [ '', '', '' ] )
+    checkCircleIndex( [ '0', '1', '2' ] )
     checkMainClassByIndices( [ 0, 1 ], [ 2 ], [] )
     cy.wait( SHORT_DELAY_IN_MS )
     checkMainClassByIndices( [ 0, 1, 2 ], [], [] )
     cy.wait( SHORT_DELAY_IN_MS )
 
+  } )
+
+  it( 'should correctly remove an element from the stack', () => {
+
+    cy.get( 'button[type="submit"]' ).as( 'buttonSubmit' )
+    cy.get( 'button:contains("Удалить")' ).as( 'buttonDel' )
+
+    cy.get( '@input' ).type( 'test' )
+    cy.get( '@buttonSubmit' ).click()
+    cy.get( '@input' ).type( 'me' )
+    cy.get( '@buttonSubmit' ).click()
+    cy.get( '@input' ).type( 'now' )
+    cy.get( '@buttonSubmit' ).click()
+
+    cy.get( '@buttonDel' ).click()
+    checkElementsCount( 3 )
+    checkMainValue( [ 'test', 'me', 'now' ] )
+    checkHeadStrValue( [ '', '', 'top' ] )
+    checkTailStrValue( [ '', '', '' ] )
+    checkCircleIndex( [ '0', '1', '2' ] )
+    checkMainClassByIndices( [ 0, 1 ], [ 2 ], [] )
+    cy.wait( SHORT_DELAY_IN_MS )
+    checkElementsCount( 2 )
+    checkMainValue( [ 'test', 'me' ] )
+    checkHeadStrValue( [ '', 'top' ] )
+    checkTailStrValue( [ '', '' ] )
+    checkCircleIndex( [ '0', '1' ] )
+    checkMainClassByIndices( [ 0, 1 ], [], [] )
+
+    cy.get( '@buttonDel' ).click()
+    checkElementsCount( 2 )
+    checkMainValue( [ 'test' ] )
+    checkMainValue( [ 'test', 'me' ] )
+    checkHeadStrValue( [ '', 'top' ] )
+    checkTailStrValue( [ '', '' ] )
+    checkCircleIndex( [ '0', '1' ] )
+    checkMainClassByIndices( [ 0 ], [ 1 ], [] )
+    cy.wait( SHORT_DELAY_IN_MS )
+    checkElementsCount( 1 )
+    checkMainValue( [ 'test' ] )
+    checkHeadStrValue( [ 'top' ] )
+    checkTailStrValue( [ '' ] )
+    checkCircleIndex( [ '0' ] )
+    checkMainClassByIndices( [ 0 ], [], [] )
+
+    cy.get( '@buttonDel' ).click()
+    checkElementsCount( 1 )
+    checkMainValue( [ 'test' ] )
+    checkHeadStrValue( [ 'top' ] )
+    checkTailStrValue( [ '' ] )
+    checkCircleIndex( [ '0' ] )
+    checkMainClassByIndices( [], [ 0 ], [] )
+    cy.wait( SHORT_DELAY_IN_MS )
+    checkElementsCount( 0 )
+  } )
+
+  it( 'should clear the stack when the "Clear" button is pressed', () => {
+
+    cy.get( 'button[type="submit"]' ).as( 'buttonSubmit' )
+    cy.get( 'button:contains("Очистить")' ).as( 'buttonClear' )
+
+
+    cy.get( '@input' ).type( 'test' )
+    cy.get( '@buttonSubmit' ).click()
+    cy.get( '@input' ).type( 'me' )
+    cy.get( '@buttonSubmit' ).click()
+    cy.get( '@input' ).type( 'now' )
+    cy.get( '@buttonSubmit' ).click()
+
+    checkElementsCount( 3 )
+    checkMainValue( [ 'test', 'me', 'now' ] )
+    checkHeadStrValue( [ '', '', 'top' ] )
+    checkTailStrValue( [ '', '', '' ] )
+    checkCircleIndex( [ '0', '1', '2' ] )
+    checkMainClassByIndices( [ 0, 1, 2 ], [], [] )
+
+    cy.get( '@buttonClear' ).click()
+    checkElementsCount( 3 )
+    checkMainValue( [ 'test', 'me', 'now' ] )
+    checkHeadStrValue( [ '', '', 'top' ] )
+    checkTailStrValue( [ '', '', '' ] )
+    checkCircleIndex( [ '0', '1', '2' ] )
+    checkMainClassByIndices( [], [ 0, 1, 2 ], [] )
+    cy.wait( SHORT_DELAY_IN_MS )
+    checkElementsCount( 0 )
   } )
 
 } )

@@ -19,6 +19,17 @@ export function checkTailStrValue ( stringArr: string[] ) {
 	} )
 }
 
+export function checkCircleIndex ( stringArr: string[] ) {
+	stringArr.forEach( ( value, index ) => {
+		// Ищем 'статичную' часть наименования класса
+		cy.get( '[class*="circle_index"]' ).eq( index ).should( 'contain.text', value )
+	} )
+}
+
+export function checkElementsCount ( expectedCount: number ) {
+	// Ищем 'статичную' часть наименования класса
+	cy.get( '[class*="circle_circle"]' ).should( 'have.length', expectedCount )
+}
 
 const checkIndicesForClass = ( indices: number[], partialClassName: string ) => {
 	// Ищем 'статичную' часть наименования класса
