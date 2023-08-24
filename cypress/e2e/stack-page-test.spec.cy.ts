@@ -1,5 +1,5 @@
 import { SHORT_DELAY_IN_MS } from '../../src/constants/delays'
-import { checkMainValue, checkMainClassByIndices, checkHeadStrValue, checkElementsCount, checkTailStrValue, checkCircleIndex } from '../../src/utils/e2e-tests-utils'
+import { checkStrValues, checkMainClassByIndices, checkElementsCount } from '../../src/utils/e2e-tests-utils'
 
 
 describe( 'Testing Stack Page', function () {
@@ -34,10 +34,12 @@ describe( 'Testing Stack Page', function () {
     checkElementsCount( 0 )
     cy.get( '@buttonSubmit' ).should( 'not.be.disabled' ).should( 'have.text', 'Добавить' ).click()
     checkElementsCount( 1 )
-    checkMainValue( [ 'test' ] )
-    checkHeadStrValue( [ 'top' ] )
-    checkTailStrValue( [ '' ] )
-    checkCircleIndex( [ '0' ] )
+    checkStrValues(
+      [ 'test' ], // main
+      [ 'top' ], // tops
+      null, // tails
+      [ '0' ] // indixes
+    )
     checkMainClassByIndices( [], [ 0 ], [] )
     cy.wait( SHORT_DELAY_IN_MS )
     checkMainClassByIndices( [ 0 ], [], [] )
@@ -48,10 +50,12 @@ describe( 'Testing Stack Page', function () {
     checkElementsCount( 1 )
     cy.get( '@buttonSubmit' ).should( 'not.be.disabled' ).should( 'have.text', 'Добавить' ).click()
     checkElementsCount( 2 )
-    checkMainValue( [ 'test', 'me' ] )
-    checkHeadStrValue( [ '', 'top' ] )
-    checkTailStrValue( [ '', '' ] )
-    checkCircleIndex( [ '0', '1' ] )
+    checkStrValues(
+      [ 'test', 'me' ], // main
+      [ '', 'top' ], // tops
+      null, // tails
+      [ '0', '1' ] // indixes
+    )
     checkMainClassByIndices( [ 0 ], [ 1 ], [] )
     cy.wait( SHORT_DELAY_IN_MS )
     checkMainClassByIndices( [ 0, 1 ], [], [] )
@@ -62,16 +66,19 @@ describe( 'Testing Stack Page', function () {
     checkElementsCount( 2 )
     cy.get( '@buttonSubmit' ).should( 'not.be.disabled' ).should( 'have.text', 'Добавить' ).click()
     checkElementsCount( 3 )
-    checkMainValue( [ 'test', 'me', 'now' ] )
-    checkHeadStrValue( [ '', '', 'top' ] )
-    checkTailStrValue( [ '', '', '' ] )
-    checkCircleIndex( [ '0', '1', '2' ] )
+    checkStrValues(
+      [ 'test', 'me', 'now' ], // main
+      [ '', '', 'top' ], // tops
+      null, // tails
+      [ '0', '1', '2' ] // indixes
+    )
     checkMainClassByIndices( [ 0, 1 ], [ 2 ], [] )
     cy.wait( SHORT_DELAY_IN_MS )
     checkMainClassByIndices( [ 0, 1, 2 ], [], [] )
     cy.wait( SHORT_DELAY_IN_MS )
 
   } )
+
 
   it( 'should correctly remove an element from the stack', () => {
 
@@ -87,45 +94,55 @@ describe( 'Testing Stack Page', function () {
 
     cy.get( '@buttonDel' ).click()
     checkElementsCount( 3 )
-    checkMainValue( [ 'test', 'me', 'now' ] )
-    checkHeadStrValue( [ '', '', 'top' ] )
-    checkTailStrValue( [ '', '', '' ] )
-    checkCircleIndex( [ '0', '1', '2' ] )
+    checkStrValues(
+      [ 'test', 'me', 'now' ], // main
+      [ '', '', 'top' ], // tops
+      null, // tails
+      [ '0', '1', '2' ] // indixes
+    )
     checkMainClassByIndices( [ 0, 1 ], [ 2 ], [] )
     cy.wait( SHORT_DELAY_IN_MS )
     checkElementsCount( 2 )
-    checkMainValue( [ 'test', 'me' ] )
-    checkHeadStrValue( [ '', 'top' ] )
-    checkTailStrValue( [ '', '' ] )
-    checkCircleIndex( [ '0', '1' ] )
+    checkStrValues(
+      [ 'test', 'me' ], // main
+      [ '', 'top' ], // tops
+      null, // tails
+      [ '0', '1' ] // indixes
+    )
     checkMainClassByIndices( [ 0, 1 ], [], [] )
 
     cy.get( '@buttonDel' ).click()
     checkElementsCount( 2 )
-    checkMainValue( [ 'test' ] )
-    checkMainValue( [ 'test', 'me' ] )
-    checkHeadStrValue( [ '', 'top' ] )
-    checkTailStrValue( [ '', '' ] )
-    checkCircleIndex( [ '0', '1' ] )
+    checkStrValues(
+      [ 'test', 'me' ], // main
+      [ '', 'top' ], // tops
+      null, // tails
+      [ '0', '1' ] // indixes
+    )
     checkMainClassByIndices( [ 0 ], [ 1 ], [] )
     cy.wait( SHORT_DELAY_IN_MS )
     checkElementsCount( 1 )
-    checkMainValue( [ 'test' ] )
-    checkHeadStrValue( [ 'top' ] )
-    checkTailStrValue( [ '' ] )
-    checkCircleIndex( [ '0' ] )
+    checkStrValues(
+      [ 'test' ], // main
+      [ 'top' ], // tops
+      null, // tails
+      [ '0' ] // indixes
+    )
     checkMainClassByIndices( [ 0 ], [], [] )
 
     cy.get( '@buttonDel' ).click()
     checkElementsCount( 1 )
-    checkMainValue( [ 'test' ] )
-    checkHeadStrValue( [ 'top' ] )
-    checkTailStrValue( [ '' ] )
-    checkCircleIndex( [ '0' ] )
+    checkStrValues(
+      [ 'test' ], // main
+      [ 'top' ], // tops
+      null, // tails
+      [ '0' ] // indixes
+    )
     checkMainClassByIndices( [], [ 0 ], [] )
     cy.wait( SHORT_DELAY_IN_MS )
     checkElementsCount( 0 )
   } )
+
 
   it( 'should clear the stack when the "Clear" button is pressed', () => {
 
@@ -141,18 +158,22 @@ describe( 'Testing Stack Page', function () {
     cy.get( '@buttonSubmit' ).click()
 
     checkElementsCount( 3 )
-    checkMainValue( [ 'test', 'me', 'now' ] )
-    checkHeadStrValue( [ '', '', 'top' ] )
-    checkTailStrValue( [ '', '', '' ] )
-    checkCircleIndex( [ '0', '1', '2' ] )
+    checkStrValues(
+      [ 'test', 'me', 'now' ], // main
+      [ '', '', 'top' ], // tops
+      null, // tails
+      [ '0', '1', '2' ] // indixes
+    )
     checkMainClassByIndices( [ 0, 1, 2 ], [], [] )
 
     cy.get( '@buttonClear' ).click()
     checkElementsCount( 3 )
-    checkMainValue( [ 'test', 'me', 'now' ] )
-    checkHeadStrValue( [ '', '', 'top' ] )
-    checkTailStrValue( [ '', '', '' ] )
-    checkCircleIndex( [ '0', '1', '2' ] )
+    checkStrValues(
+      [ 'test', 'me', 'now' ], // main
+      [ '', '', 'top' ], // tops
+      null, // tails
+      [ '0', '1', '2' ] // indixes
+    )
     checkMainClassByIndices( [], [ 0, 1, 2 ], [] )
     cy.wait( SHORT_DELAY_IN_MS )
     checkElementsCount( 0 )

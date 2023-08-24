@@ -105,7 +105,10 @@ export const FibonacciPage: React.FC = () => {
       <div className={ styles.blockLetters }>
         { isAnimating &&
           symbolsArr.map( ( symbol, index ) => (
-            <Circle key={ index } tail={ index.toString() } letter={ symbol.toString() } state={ ElementStates.Default } />
+            <Circle key={ index }
+              index={ index }
+              letter={ symbol.toString() }
+              state={ ElementStates.Default } />
           ) )
         }
       </div>

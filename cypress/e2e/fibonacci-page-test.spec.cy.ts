@@ -1,5 +1,5 @@
 import { SHORT_DELAY_IN_MS } from '../../src/constants/delays'
-import { checkTailStrValue } from '../../src/utils/e2e-tests-utils'
+import { checkStrValues, checkMainClassByIndices, checkElementsCount } from '../../src/utils/e2e-tests-utils'
 
 
 describe( 'Testing Fibonacci Page', function () {
@@ -26,49 +26,67 @@ describe( 'Testing Fibonacci Page', function () {
 
   it( 'should correctly animate', () => {
 
-    const checkElements = ( arr: number[] ) => {
-      arr.forEach( ( char, index ) => {
-        cy.get( '[class*="letter"]' ).eq( index )
-          .should( 'contain.text', char )
-        cy.get( '[class*="circle_circle"]' )
-          .invoke( 'attr', 'class' )
-          .should( 'match', new RegExp( 'circle_default' ) )
-      } )
-    }
-
     cy.get( 'button[type="submit"]' ).as( 'button' )
     cy.get( 'input[name="fibonacciInput"]' ).as( 'input' )
 
-    cy.get( '@input' ).type( '5' )
+    cy.get( '@input' ).type( '4' )
     cy.wait( SHORT_DELAY_IN_MS )
+    checkElementsCount( 0 )
     cy.get( '@button' ).should( 'not.be.disabled' ).should( 'have.text', 'Рассчитать' ).click()
     cy.get( 'button[type="submit"] img[class*="loader_icon"]' ).should( 'be.visible' )
     cy.get( '@button' ).should( 'be.disabled' ).should( 'not.have.text' )
     cy.wait( SHORT_DELAY_IN_MS )
 
-    checkElements( [ 1 ] )
-    checkTailStrValue( [ '0' ] )
+    checkElementsCount( 1 )
+    checkStrValues(
+      [ '1' ], // main
+      null, // tops
+      null, // tails
+      [ '0' ] // indixes
+    )
+    checkMainClassByIndices( [ 0 ], [], [] )
     cy.wait( SHORT_DELAY_IN_MS )
 
-    checkElements( [ 1, 1 ] )
-    checkTailStrValue( [ '0', '1' ] )
+    checkElementsCount( 2 )
+    checkStrValues(
+      [ '1', '1' ], // main
+      null, // tops
+      null, // tails
+      [ '0', '1' ] // indixes
+    )
+    checkMainClassByIndices( [ 0, 1 ], [], [] )
     cy.wait( SHORT_DELAY_IN_MS )
 
-    checkElements( [ 1, 1, 2 ] )
-    checkTailStrValue( [ '0', '1', '2' ] )
+    checkElementsCount( 3 )
+    checkStrValues(
+      [ '1', '1', '2' ], // main
+      null, // tops
+      null, // tails
+      [ '0', '1', '2' ] // indixes
+    )
+    checkMainClassByIndices( [ 0, 1, 2 ], [], [] )
     cy.wait( SHORT_DELAY_IN_MS )
 
-    checkElements( [ 1, 1, 2, 3 ] )
-    checkTailStrValue( [ '0', '1', '2', '3' ] )
+    checkElementsCount( 4 )
+    checkStrValues(
+      [ '1', '1', '2', '3' ], // main
+      null, // tops
+      null, // tails
+      [ '0', '1', '2', '3' ] // indixes
+    )
+    checkMainClassByIndices( [ 0, 1, 2, 3 ], [], [] )
     cy.wait( SHORT_DELAY_IN_MS )
 
-    checkElements( [ 1, 1, 2, 3, 5 ] )
-    checkTailStrValue( [ '0', '1', '2', '3', '4' ] )
+    checkElementsCount( 5 )
+    checkStrValues(
+      [ '1', '1', '2', '3', '5' ], // main
+      null, // tops
+      null, // tails
+      [ '0', '1', '2', '3', '4' ] // indixes
+    )
+    checkMainClassByIndices( [ 0, 1, 2, 3, 4 ], [], [] )
     cy.wait( SHORT_DELAY_IN_MS )
-    
-    checkElements( [ 1, 1, 2, 3, 5, 8 ] )
-    checkTailStrValue( [ '0', '1', '2', '3', '4', '5' ] )
-    cy.wait( SHORT_DELAY_IN_MS )
+
   } )
 
 } )
