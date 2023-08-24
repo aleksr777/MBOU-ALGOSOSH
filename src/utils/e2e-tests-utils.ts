@@ -26,17 +26,17 @@ export function checkStrValues (
 	}
 
 	mainStrArr.forEach( ( value, index ) => {
-		cy.get( '[class*="letter"]' ).eq( index ).should( 'contain.text', value )
+		cy.get( '[data-testid="circle-letter"]' ).eq( index ).should( 'contain.text', value )
 	} )
 
-	checkArr( headStrArr, '[class*="head"][class*="circle_string"]' )
-	checkArr( tailStrArr, '[class*="tail"][class*="circle_string"]' )
-	checkArr( circleIndexArr, '[class*="circle_index"]' )
+	checkArr( headStrArr, '[data-testid="circle-head"]' )
+	checkArr( tailStrArr, '[data-testid="circle-tail"]' )
+	checkArr( circleIndexArr, '[data-testid="circle-index"]' )
 }
 
 export function checkElementsCount ( expectedCount: number ) {
 	// Ищем 'статичную' часть наименования класса
-	cy.get( '[class*="circle_circle"]' ).should( 'have.length', expectedCount )
+	cy.get( '[data-testid="circle-wrapper"]' ).should( 'have.length', expectedCount )
 }
 
 export function checkMainClassByIndices (
@@ -46,7 +46,7 @@ export function checkMainClassByIndices (
 ) {
 	const checkIndicesForClass = ( indices: number[], partialClassName: string ) => {
 		// Ищем 'статичную' часть наименования класса
-		cy.get( '[class*="circle_circle"]' ).then( ( elements ) => {
+		cy.get( '[data-testid="circle-wrapper"]' ).then( ( elements ) => {
 			indices.forEach( index => {
 				cy.wrap( elements.eq( index ) )
 					.invoke( 'attr', 'class' )
@@ -54,7 +54,7 @@ export function checkMainClassByIndices (
 			} )
 		} )
 	}
-	checkIndicesForClass( defaultIndices, 'circle_default' )
-	checkIndicesForClass( changingIndices, 'circle_changing' )
-	checkIndicesForClass( modifiedIndices, 'circle_modified' )
+	checkIndicesForClass( defaultIndices, 'default' )
+	checkIndicesForClass( changingIndices, 'changing' )
+	checkIndicesForClass( modifiedIndices, 'modified' )
 }
