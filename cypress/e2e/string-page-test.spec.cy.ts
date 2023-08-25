@@ -15,6 +15,7 @@ describe( 'Testing String Page', function () {
     cy.visit( 'http://localhost:3000/recursion' )
     cy.get( 'input[name="stringInput"]' ).as( 'input' )
     cy.get( 'button[type="submit"]' ).as( 'buttonSubmit' )
+    checkElementsCount( 0 )
   } )
 
   it( 'should have a disabled submit button when input is empty', () => {
@@ -32,8 +33,6 @@ describe( 'Testing String Page', function () {
 
   it( 'should correctly animate', () => {
 
-    checkElementsCount( 0 )
-    checkDisabledButton( '@buttonSubmit', 'Развернуть' )
     cy.get( '@input' ).type( 'test2' )
     checkAndClickButton( '@buttonSubmit', 'Развернуть' )
 

@@ -144,7 +144,7 @@ export const StackPage: React.FC = () => {
           extraClass={ styles.button_correct_medium }
           isLoader={ buttonsState.push.isLoading ? true : false }
           disabled={ isFormDisabled && !buttonsState.push.isLoading || !isFormValid || isBtnDisabled }
-          onClick={ handlePush }
+          onClick={ handleSubmit }
         />
 
         <Button

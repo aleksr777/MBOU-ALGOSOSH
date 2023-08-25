@@ -1,6 +1,6 @@
 export function checkStrValues (
-	mainStrArr: ( unknown | string | number )[],
-	headStrArr: ( unknown | string )[] | null,
+	mainStrArr: ( string | number )[] | null,
+	headStrArr: ( string )[] | null,
 	tailStrArr: ( string )[] | null,
 	circleIndexArr: ( string )[] | null
 ) {
@@ -25,10 +25,7 @@ export function checkStrValues (
 		}
 	}
 
-	mainStrArr.forEach( ( value, index ) => {
-		cy.get( '[data-testid="circle-letter"]' ).eq( index ).should( 'contain.text', value )
-	} )
-
+	checkArr( mainStrArr, '[data-testid="circle-letter"]' )
 	checkArr( headStrArr, '[data-testid="circle-head"]' )
 	checkArr( tailStrArr, '[data-testid="circle-tail"]' )
 	checkArr( circleIndexArr, '[data-testid="circle-index"]' )

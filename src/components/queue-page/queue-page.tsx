@@ -146,13 +146,13 @@ export const QueuePage: React.FC = () => {
         />
 
         <Button
-          type='button'
+          type='submit'
           linkedList='small'
           extraClass={ styles.button_correct_medium }
           text={ buttonsState.add.isLoading ? '' : 'Добавить' }
           isLoader={ buttonsState.add.isLoading ? true : false }
           disabled={ isFormDisabled && !buttonsState.add.isLoading || !isFormValid || isMaxTailIndex || isMaxHeadIndex || isBtnDisabled }
-          onClick={ handleAdd }
+          onClick={ handleSubmit }
         />
 
         <Button
