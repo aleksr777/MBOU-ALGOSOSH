@@ -64,11 +64,11 @@ export function checkAndClickButton ( selectorStr: string, text: string ) {
 		.should( 'not.be.disabled' )
 		.should( 'have.text', text )
 		.within( () => {
-			cy.get( 'img[data-testid="loader-icon"]' ).should( 'not.exist' )
+			cy.get( '[data-testid="loader-icon"]' ).should( 'not.exist' )
 		} )
 		.click()
 		.within( () => {
-			cy.get( 'img[data-testid="loader-icon"]' ).should( 'be.visible' )
+			cy.get( '[data-testid="loader-icon"]' ).should( 'be.visible' )
 		} )
 		.should( 'be.disabled' )
 		.should( 'not.have.text' )
@@ -79,7 +79,7 @@ export function checkActiveButton ( selectorStr: string, text: string ) {
 		.should( 'not.be.disabled' )
 		.should( 'have.text', text )
 		.within( () => {
-			cy.get( 'img[data-testid="loader-icon"]' ).should( 'not.exist' )
+			cy.get( '[data-testid="loader-icon"]' ).should( 'not.exist' )
 		} )
 }
 
@@ -88,6 +88,6 @@ export function checkDisabledButton ( selectorStr: string, text: string ) {
 		.should( 'be.disabled' )
 		.should( 'have.text', text )
 		.within( () => {
-			cy.get( 'img[data-testid="loader-icon"]' ).should( 'not.exist' )
+			cy.get( '[data-testid="loader-icon"]' ).should( 'not.exist' )
 		} )
 }
