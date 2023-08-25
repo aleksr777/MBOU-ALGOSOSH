@@ -1,40 +1,42 @@
 import { SHORT_DELAY_IN_MS } from '../../src/constants/delays'
-import { checkStrValues, checkMainClassByIndices, checkElementsCount } from '../../src/utils/e2e-tests-utils'
+import {
+  checkStrValues,
+  checkMainClassByIndices,
+  checkElementsCount,
+  checkDisabledButton,
+  checkAndClickButton,
+  checkActiveButton
+} from '../../src/utils/e2e-tests-utils'
 
 
 describe( 'Testing Fibonacci Page', function () {
 
   beforeEach( () => {
     cy.visit( 'http://localhost:3000/fibonacci' )
+    cy.get( 'input[name="fibonacciInput"]' ).as( 'input' )
+    cy.get( 'button[type="submit"]' ).as( 'buttonSubmit' )
   } )
 
   it( 'should have a disabled submit button when input is empty', () => {
-    cy.get( 'input[name="fibonacciInput"]' ).as( 'input' )
-    cy.get( 'button[type="submit"]' ).as( 'button' )
     // после загрузки страницы
+    checkDisabledButton( '@buttonSubmit', 'Рассчитать' )
     cy.get( '@input' ).should( 'have.value', '' )
-    cy.get( '@button' ).should( 'be.disabled' )
     cy.wait( SHORT_DELAY_IN_MS )
     // после введения и удаления текста в инпуте
-    cy.get( '@input' ).type( '10' )
+    cy.get( '@input' ).type( 'test1' )
     cy.wait( SHORT_DELAY_IN_MS )
     cy.get( '@input' ).clear()
-    cy.get( '@button' ).should( 'be.disabled' )
+    checkDisabledButton( '@buttonSubmit', 'Рассчитать' )
     cy.wait( SHORT_DELAY_IN_MS )
   } )
 
 
   it( 'should correctly animate', () => {
 
-    cy.get( 'button[type="submit"]' ).as( 'button' )
-    cy.get( 'input[name="fibonacciInput"]' ).as( 'input' )
-
     cy.get( '@input' ).type( '4' )
     cy.wait( SHORT_DELAY_IN_MS )
     checkElementsCount( 0 )
-    cy.get( '@button' ).should( 'not.be.disabled' ).should( 'have.text', 'Рассчитать' ).click()
-    cy.get( 'button[type="submit"] img[class*="loader_icon"]' ).should( 'be.visible' )
-    cy.get( '@button' ).should( 'be.disabled' ).should( 'not.have.text' )
+    checkAndClickButton( '@buttonSubmit', 'Рассчитать' )
     cy.wait( SHORT_DELAY_IN_MS )
 
     checkElementsCount( 1 )
@@ -84,9 +86,10 @@ describe( 'Testing Fibonacci Page', function () {
       null, // tails
       [ '0', '1', '2', '3', '4' ] // indixes
     )
-    checkMainClassByIndices( [ 0, 1, 2, 3, 4 ], [], [] )
     cy.wait( SHORT_DELAY_IN_MS )
-
+    checkMainClassByIndices( [ 0, 1, 2, 3, 4 ], [], [] )
+    checkActiveButton( '@buttonSubmit', 'Рассчитать' )
+    
   } )
 
 } )

@@ -13,7 +13,7 @@ import { blockForm, unblockForm } from '../../utils/blocking-form'
 import { ButtonsHookState, StateIndeces } from '../../types/types'
 import { buttonDefaultState } from '../../constants/button-default-state'
 
-export const StringComponent: React.FC = () => {
+export const StringPage: React.FC = () => {
 
   const validateConfig = {
     stringInput: {

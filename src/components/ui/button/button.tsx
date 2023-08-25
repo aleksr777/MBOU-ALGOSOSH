@@ -36,7 +36,12 @@ const Button: React.FC<ButtonProps> = ( {
       { ...rest }
     >
       { isLoader ? (
-        <img className={ styles.loader_icon } src={ loaderIcon } alt='Загрузка.' />
+        <img
+          data-testid='loader-icon'
+          className={ styles.loader_icon }
+          src={ loaderIcon }
+          alt='Загрузка.'
+        />
       ) : (
         <>
           { sorting && currentIcon }
