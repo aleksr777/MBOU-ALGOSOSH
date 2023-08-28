@@ -3,6 +3,7 @@ export const circleTailId = '[data-testid="circle-tail"]'
 export const circleLetterId = '[data-testid="circle-letter"]'
 export const circleIndexId = '[data-testid="circle-index"]'
 export const circleWrapperId = '[data-testid="circle-wrapper"]'
+export const loaderIconId = '[data-testid="loader-icon"]'
 
 export function checkBtnWhenInputEmpty (
 	inputSelector: string,
@@ -83,11 +84,11 @@ export function checkAndClickButton ( selectorStr: string, text: string ) {
 		.should( 'exist' )
 		.should( 'not.be.disabled' )
 		.within( () => {
-			cy.get( '[data-testid="loader-icon"]' ).should( 'not.exist' )
+			cy.get( loaderIconId ).should( 'not.exist' )
 		} )
 		.click()
 		.within( () => {
-			cy.get( '[data-testid="loader-icon"]' ).should( 'be.visible' )
+			cy.get( loaderIconId ).should( 'be.visible' )
 		} )
 		.should( 'be.disabled' )
 		.should( 'not.have.text' )
@@ -98,7 +99,7 @@ export function checkActiveButton ( selectorStr: string, text: string ) {
 		.should( 'exist' )
 		.should( 'not.be.disabled' )
 		.within( () => {
-			cy.get( '[data-testid="loader-icon"]' ).should( 'not.exist' )
+			cy.get( loaderIconId ).should( 'not.exist' )
 		} )
 		.should( 'have.text', text )
 }
@@ -108,7 +109,7 @@ export function checkDisabledButton ( selectorStr: string, text: string ) {
 		.should( 'exist' )
 		.should( 'be.disabled' )
 		.within( () => {
-			cy.get( '[data-testid="loader-icon"]' ).should( 'not.exist' )
+			cy.get( loaderIconId ).should( 'not.exist' )
 		} )
 		.should( 'have.text', text )
 }
@@ -173,14 +174,14 @@ export function waitDisappearMiniCircle ( selector: string, index: number ) {
 }
 
 export function waitDisappearValueByIndex ( index: number ) {
-	cy.get( '[data-testid="circle-letter"]' )
+	cy.get( circleLetterId )
 		.eq( index )
 		.should( 'not.have.text' )
 }
 
 export function getValueByIndex ( index: number, callback: ( value: string ) => void ) {
-	cy.get( '[data-testid="circle-letter"]' ).eq( index ).invoke( 'text' ).then( textValue => {
-		const firstLetterValue = textValue.trim()
-		callback( firstLetterValue )
+	cy.get( circleLetterId ).eq( index ).invoke( 'text' ).then( textValue => {
+		const letterValue = textValue.trim()
+		callback( letterValue )
 	} )
 }
