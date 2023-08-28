@@ -78,6 +78,7 @@ exports[`<Button /> render with loading indication 1`] = `
     <img
       alt="Загрузка."
       class="loader_icon"
+      data-testid="loader-icon"
       src="loader.svg"
     />
   </button>
