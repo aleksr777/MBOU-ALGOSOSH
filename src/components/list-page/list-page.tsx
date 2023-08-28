@@ -313,8 +313,7 @@ export const ListPage: React.FC = () => {
     blockButtons( [ btnAddByIndex, btnDeleteByIndex ], buttonsIndexState, setButtonsIndexState )
     blockButtons( [ btnAddHead, btnAddTail ], buttonsHeadTailState, setButtonsHeadTailState )
     const newList = new LinkedList()
-    /* for ( let i = 0; i < 6; i++ ) { */
-    for ( let i = 0; i < 3; i++ ) {
+    for ( let i = 0; i < 6; i++ ) {
       const randomValue = Math.floor( Math.random() * 100 ) + 1
       newList.append( randomValue.toString() )
     }
