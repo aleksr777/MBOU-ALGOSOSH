@@ -11,7 +11,7 @@ import {
 describe( 'Testing Fibonacci Page', function () {
 
   beforeEach( () => {
-    cy.visit( 'http://localhost:3000/fibonacci' )
+    cy.visit( 'fibonacci' )
     cy.get( 'input[name="fibonacciInput"]' ).as( 'input' )
     cy.get( 'button[type="submit"]' ).as( 'buttonSubmit' )
   } )

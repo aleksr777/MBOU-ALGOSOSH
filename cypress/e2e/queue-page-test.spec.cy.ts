@@ -12,7 +12,7 @@ import {
 describe( 'Testing Queue Page', function () {
 
   beforeEach( () => {
-    cy.visit( 'http://localhost:3000/queue' )
+    cy.visit( 'queue' )
     cy.get( 'input[name="queueInput"]' ).as( 'input' )
     cy.get( 'button[type="submit"]' ).as( 'buttonSubmit' )
     checkElementsCount( 7 )

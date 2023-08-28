@@ -11,7 +11,7 @@ import {
 describe( 'Testing String Page', function () {
 
   beforeEach( () => {
-    cy.visit( 'http://localhost:3000/recursion' )
+    cy.visit( 'recursion' )
     cy.get( 'input[name="stringInput"]' ).as( 'input' )
     cy.get( 'button[type="submit"]' ).as( 'buttonSubmit' )
     checkElementsCount( 0 )

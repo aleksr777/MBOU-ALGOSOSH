@@ -3,6 +3,7 @@ import { defineConfig } from "cypress"
 
 export default defineConfig( {
   e2e: {
+    baseUrl: 'http://localhost:3000/',
     setupNodeEvents ( on, config ) {
     },
   },
@@ -14,8 +15,8 @@ export default defineConfig( {
     },
   },
 
-  viewportWidth: 1920,
-  viewportHeight: 1080,
+  viewportWidth: 1280,
+  viewportHeight: 800,
 
   fileServerFolder: "./"
 } )

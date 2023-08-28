@@ -11,7 +11,7 @@ import {
 describe( 'Testing Stack Page', function () {
 
   beforeEach( () => {
-    cy.visit( 'http://localhost:3000/stack' )
+    cy.visit( 'stack' )
     cy.get( 'input[name="stackInput"]' ).as( 'input' )
     cy.get( 'button[type="submit"]' ).as( 'buttonSubmit' )
     checkElementsCount( 0 )

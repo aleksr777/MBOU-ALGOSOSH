@@ -21,7 +21,7 @@ import {
 describe( 'Testing List Page', function () {
 
   beforeEach( () => {
-    cy.visit( 'http://localhost:3000/list' )
+    cy.visit( 'list' )
   } )
 
 
