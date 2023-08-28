@@ -4,7 +4,8 @@ import {
   checkElementsCount,
   checkAndClickButton,
   checkActiveButton,
-  checkBtnWhenInputEmpty
+  checkBtnWhenInputEmpty,
+  btnSubmitSelector
 } from '../../src/utils/e2e-tests-utils'
 
 
@@ -13,7 +14,7 @@ describe( 'Testing String Page', function () {
   beforeEach( () => {
     cy.visit( 'recursion' )
     cy.get( 'input[name="stringInput"]' ).as( 'input' )
-    cy.get( 'button[type="submit"]' ).as( 'buttonSubmit' )
+    cy.get( btnSubmitSelector ).as( 'buttonSubmit' )
     checkElementsCount( 0 )
   } )
 

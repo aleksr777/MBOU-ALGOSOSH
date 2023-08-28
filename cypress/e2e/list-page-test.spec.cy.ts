@@ -12,9 +12,11 @@ import {
   getValueByIndex,
   waitDisappearValueByIndex,
   checkActiveButton,
-  circleHeadId,
-  circleTailId,
-  circleIndexId
+  circleHeadIdSelector,
+  circleTailIdSelector,
+  circleIndexIdSelector,
+  htInputSelector,
+  indxInputSelector
 } from '../../src/utils/e2e-tests-utils'
 
 
@@ -27,11 +29,11 @@ describe( 'Testing List Page', function () {
 
   it( 'should have the disabled buttons when inputs are empty', () => {
 
-    cy.get( 'input[name="headTailInput"]' ).as( 'htInput' )
+    cy.get( htInputSelector ).as( 'htInput' )
     cy.get( 'button:contains("Добавить в head")' ).as( 'addToHeadBtn' )
     cy.get( 'button:contains("Добавить в tail")' ).as( 'addToTailBtn' )
 
-    cy.get( 'input[name="indicesInput"]' ).as( 'idxInput' )
+    cy.get( indxInputSelector ).as( 'idxInput' )
     cy.get( 'button:contains("Добавить по индексу")' ).as( 'addByIndexBtn' )
     cy.get( 'button:contains("Удалить по индексу")' ).as( 'delByIndexBtn' )
 
@@ -59,43 +61,43 @@ describe( 'Testing List Page', function () {
 
     checkArrValues(
       [ 'head', '', '', '', '', '' ],
-      circleHeadId
+      circleHeadIdSelector
     )
     checkArrValues(
       [ '', '', '', '', '', 'tail' ],
-      circleTailId
+      circleTailIdSelector
     )
     checkArrValues(
       [ '0', '1', '2', '3', '4', '5' ],
-      circleIndexId
+      circleIndexIdSelector
     )
   } )
 
 
   it( 'should correctly add an element to the head', () => {
 
-    cy.get( 'input[name="headTailInput"]' ).as( 'htInput' )
+    cy.get( htInputSelector ).as( 'htInput' )
     cy.get( 'button:contains("Добавить в head")' ).as( 'addToHeadBtn' )
 
     cy.get( '@htInput' ).type( 'test' ).should( 'have.value', 'test' )
     checkAndClickButton( '@addToHeadBtn', 'Добавить в head' )
     checkElementsCount( 6 )
     checkMainValuesNotEmpty()
-    checkMiniCircle( circleHeadId, 'test', 'changing', 0 )
-    waitDisappearMiniCircle( circleHeadId, 0 )
+    checkMiniCircle( circleHeadIdSelector, 'test', 'changing', 0 )
+    waitDisappearMiniCircle( circleHeadIdSelector, 0 )
     checkMainClassByIndices( [ 1, 2, 3, 4, 5, 6 ], [], [ 0 ] )
     checkMainClassByIndices( [ 0, 1, 2, 3, 4, 5, 6 ], [], [] )
     checkArrValues(
       [ 'head', '', '', '', '', '', '' ],
-      circleHeadId
+      circleHeadIdSelector
     )
     checkArrValues(
       [ '', '', '', '', '', '', 'tail' ],
-      circleTailId
+      circleTailIdSelector
     )
     checkArrValues(
       [ '0', '1', '2', '3', '4', '5', '6' ],
-      circleIndexId
+      circleIndexIdSelector
     )
     checkElementsCount( 7 )
     checkMainValueByIndex( 'test', 0 )
@@ -106,28 +108,28 @@ describe( 'Testing List Page', function () {
 
   it( 'should correctly add an element to the tail', () => {
 
-    cy.get( 'input[name="headTailInput"]' ).as( 'htInput' )
+    cy.get( htInputSelector ).as( 'htInput' )
     cy.get( 'button:contains("Добавить в tail")' ).as( 'addToTailBtn' )
 
     cy.get( '@htInput' ).type( 'test' ).should( 'have.value', 'test' )
     checkAndClickButton( '@addToTailBtn', 'Добавить в tail' )
     checkElementsCount( 6 )
     checkMainValuesNotEmpty()
-    checkMiniCircle( circleTailId, 'test', 'changing', 5 )
-    waitDisappearMiniCircle( circleTailId, 5 )
+    checkMiniCircle( circleTailIdSelector, 'test', 'changing', 5 )
+    waitDisappearMiniCircle( circleTailIdSelector, 5 )
     checkMainClassByIndices( [ 0, 1, 2, 3, 4, 5 ], [], [ 6 ] )
     checkMainClassByIndices( [ 0, 1, 2, 3, 4, 5, 6 ], [], [] )
     checkArrValues(
       [ 'head', '', '', '', '', '', '' ],
-      circleHeadId
+      circleHeadIdSelector
     )
     checkArrValues(
       [ '', '', '', '', '', '', 'tail' ],
-      circleTailId
+      circleTailIdSelector
     )
     checkArrValues(
       [ '0', '1', '2', '3', '4', '5', '6' ],
-      circleIndexId
+      circleIndexIdSelector
     )
     checkElementsCount( 7 )
     checkMainValueByIndex( 'test', 6 )
@@ -137,8 +139,8 @@ describe( 'Testing List Page', function () {
 
   it( 'should correctly add an element by index', () => {
 
-    cy.get( 'input[name="headTailInput"]' ).as( 'htInput' )
-    cy.get( 'input[name="indicesInput"]' ).as( 'idxInput' )
+    cy.get( htInputSelector ).as( 'htInput' )
+    cy.get( indxInputSelector ).as( 'idxInput' )
     cy.get( 'button:contains("Добавить по индексу")' ).as( 'addByIndexBtn' )
 
     cy.get( '@htInput' ).type( 'test' ).should( 'have.value', 'test' )
@@ -149,30 +151,30 @@ describe( 'Testing List Page', function () {
     checkMainClassByIndices( [ 0, 1, 2, 3, 4, 5 ], [], [] )
     checkAndClickButton( '@addByIndexBtn', 'Добавить по индексу' )
 
-    checkMiniCircle( circleHeadId, 'test', 'changing', 0 )
+    checkMiniCircle( circleHeadIdSelector, 'test', 'changing', 0 )
     checkMainClassByIndices( [ 1, 2, 3, 4, 5 ], [ 0 ], [] )
-    waitDisappearMiniCircle( circleHeadId, 0 )
+    waitDisappearMiniCircle( circleHeadIdSelector, 0 )
 
-    checkMiniCircle( circleHeadId, 'test', 'changing', 1 )
+    checkMiniCircle( circleHeadIdSelector, 'test', 'changing', 1 )
     checkMainClassByIndices( [ 2, 3, 4, 5 ], [ 0, 1 ], [] )
-    waitDisappearMiniCircle( circleHeadId, 1 )
+    waitDisappearMiniCircle( circleHeadIdSelector, 1 )
 
-    checkMiniCircle( circleHeadId, 'test', 'changing', 2 )
+    checkMiniCircle( circleHeadIdSelector, 'test', 'changing', 2 )
     checkMainClassByIndices( [ 3, 4, 5 ], [ 0, 1, 2 ], [] )
-    waitDisappearMiniCircle( circleHeadId, 2 )
+    waitDisappearMiniCircle( circleHeadIdSelector, 2 )
 
     checkElementsCount( 7 )
     checkArrValues(
       [ 'head', '', '', '', '', '', '' ],
-      circleHeadId
+      circleHeadIdSelector
     )
     checkArrValues(
       [ '', '', '', '', '', '', 'tail' ],
-      circleTailId
+      circleTailIdSelector
     )
     checkArrValues(
       [ '0', '1', '2', '3', '4', '5', '6' ],
-      circleIndexId
+      circleIndexIdSelector
     )
     checkMainValueByIndex( 'test', 2 )
     checkMainClassByIndices( [ 0, 1, 2, 3, 4, 5, 6 ], [], [] )
@@ -191,20 +193,20 @@ describe( 'Testing List Page', function () {
     getValueByIndex( 0, ( value ) => {
       cy.get( '@delFromHeadBtn' ).click()
       waitDisappearValueByIndex( 0 )
-      checkMiniCircle( circleHeadId, value, 'changing', 0 )
-      waitDisappearMiniCircle( circleHeadId, 0 )
+      checkMiniCircle( circleHeadIdSelector, value, 'changing', 0 )
+      waitDisappearMiniCircle( circleHeadIdSelector, 0 )
       checkElementsCount( 5 )
       checkArrValues(
         [ 'head', '', '', '', '' ],
-        circleHeadId
+        circleHeadIdSelector
       )
       checkArrValues(
         [ '', '', '', '', 'tail' ],
-        circleTailId
+        circleTailIdSelector
       )
       checkArrValues(
         [ '0', '1', '2', '3', '4' ],
-        circleIndexId
+        circleIndexIdSelector
       )
       checkMainClassByIndices( [ 0, 1, 2, 3, 4 ], [], [] )
       checkActiveButton( '@delFromHeadBtn', 'Удалить из head' )
@@ -223,19 +225,19 @@ describe( 'Testing List Page', function () {
     getValueByIndex( 5, ( value ) => {
       cy.get( '@delFromTailBtn' ).click()
       waitDisappearValueByIndex( 5 )
-      checkMiniCircle( circleTailId, value, 'changing', 5 )
-      waitDisappearMiniCircle( circleTailId, 5 )
+      checkMiniCircle( circleTailIdSelector, value, 'changing', 5 )
+      waitDisappearMiniCircle( circleTailIdSelector, 5 )
       checkArrValues(
         [ 'head', '', '', '', '' ],
-        circleHeadId
+        circleHeadIdSelector
       )
       checkArrValues(
         [ '', '', '', '', 'tail' ],
-        circleTailId
+        circleTailIdSelector
       )
       checkArrValues(
         [ '0', '1', '2', '3', '4' ],
-        circleIndexId
+        circleIndexIdSelector
       )
       checkElementsCount( 5 )
       checkMainClassByIndices( [ 0, 1, 2, 3, 4 ], [], [] )
@@ -246,7 +248,7 @@ describe( 'Testing List Page', function () {
 
   it( 'should correctly remove an element by index', () => {
 
-    cy.get( 'input[name="indicesInput"]' ).as( 'idxInput' )
+    cy.get( indxInputSelector ).as( 'idxInput' )
     cy.get( 'button:contains("Удалить по индексу")' ).as( 'delByIndexBtn' )
 
     cy.get( '@idxInput' ).type( '2' ).should( 'have.value', '2' )
@@ -260,19 +262,19 @@ describe( 'Testing List Page', function () {
       checkMainClassByIndices( [ 2, 3, 4, 5 ], [ 0, 1 ], [] )
       waitDisappearValueByIndex( 2 )
       checkMainClassByIndices( [ 3, 4, 5 ], [ 0, 1, 2 ], [] )
-      checkMiniCircle( circleTailId, value, 'changing', 2 )
-      waitDisappearMiniCircle( circleTailId, 2 )
+      checkMiniCircle( circleTailIdSelector, value, 'changing', 2 )
+      waitDisappearMiniCircle( circleTailIdSelector, 2 )
       checkArrValues(
         [ 'head', '', '', '', '' ],
-        circleHeadId
+        circleHeadIdSelector
       )
       checkArrValues(
         [ '', '', '', '', 'tail' ],
-        circleTailId
+        circleTailIdSelector
       )
       checkArrValues(
         [ '0', '1', '2', '3', '4' ],
-        circleIndexId
+        circleIndexIdSelector
       )
       checkElementsCount( 5 )
       checkMainClassByIndices( [ 0, 1, 2, 3, 4 ], [], [] )

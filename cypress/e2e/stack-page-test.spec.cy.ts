@@ -5,7 +5,8 @@ import {
   checkDisabledButton,
   checkAndClickButton,
   checkBtnWhenInputEmpty,
-  addTestElements
+  addTestElements,
+  btnSubmitSelector
 } from '../../src/utils/e2e-tests-utils'
 
 describe( 'Testing Stack Page', function () {
@@ -13,7 +14,7 @@ describe( 'Testing Stack Page', function () {
   beforeEach( () => {
     cy.visit( 'stack' )
     cy.get( 'input[name="stackInput"]' ).as( 'input' )
-    cy.get( 'button[type="submit"]' ).as( 'buttonSubmit' )
+    cy.get( btnSubmitSelector ).as( 'buttonSubmit' )
     checkElementsCount( 0 )
   } )
 

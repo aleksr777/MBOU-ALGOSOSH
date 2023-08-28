@@ -1,9 +1,12 @@
-export const circleHeadId = '[data-testid="circle-head"]'
-export const circleTailId = '[data-testid="circle-tail"]'
-export const circleLetterId = '[data-testid="circle-letter"]'
-export const circleIndexId = '[data-testid="circle-index"]'
-export const circleWrapperId = '[data-testid="circle-wrapper"]'
-export const loaderIconId = '[data-testid="loader-icon"]'
+export const circleHeadIdSelector = '[data-testid="circle-head"]'
+export const circleTailIdSelector = '[data-testid="circle-tail"]'
+export const circleLetterIdSelector = '[data-testid="circle-letter"]'
+export const circleIndexIdSelector = '[data-testid="circle-index"]'
+export const circleWrapperIdSelector = '[data-testid="circle-wrapper"]'
+export const loaderIconIdSelector = '[data-testid="loader-icon"]'
+export const htInputSelector = 'input[name="headTailInput"]'
+export const indxInputSelector = 'input[name="indicesInput"]'
+export const btnSubmitSelector = 'button[type="submit"]'
 
 export function checkBtnWhenInputEmpty (
 	inputSelector: string,
@@ -47,14 +50,14 @@ export function checkValues (
 	tailArr: ( string )[] | null,
 	circleIndexArr: ( string )[] | null
 ) {
-	checkArrValues( mainArr, circleLetterId )
-	checkArrValues( headArr, circleHeadId )
-	checkArrValues( tailArr, circleTailId )
-	checkArrValues( circleIndexArr, circleIndexId )
+	checkArrValues( mainArr, circleLetterIdSelector )
+	checkArrValues( headArr, circleHeadIdSelector )
+	checkArrValues( tailArr, circleTailIdSelector )
+	checkArrValues( circleIndexArr, circleIndexIdSelector )
 }
 
 export function checkElementsCount ( expectedCount: number ) {
-	cy.get( circleWrapperId ).should( 'have.length', expectedCount )
+	cy.get( circleWrapperIdSelector ).should( 'have.length', expectedCount )
 }
 
 export function checkMainClassByIndices (
@@ -64,7 +67,7 @@ export function checkMainClassByIndices (
 ) {
 	const checkIndicesForClass = ( indices: number[], partialClassName: string ) => {
 		// Ищем 'статичную' часть наименования класса
-		cy.get( circleWrapperId )
+		cy.get( circleWrapperIdSelector )
 			.should( 'exist' )
 			.then( ( elements ) => {
 				indices.forEach( index => {
@@ -84,11 +87,11 @@ export function checkAndClickButton ( selectorStr: string, text: string ) {
 		.should( 'exist' )
 		.should( 'not.be.disabled' )
 		.within( () => {
-			cy.get( loaderIconId ).should( 'not.exist' )
+			cy.get( loaderIconIdSelector ).should( 'not.exist' )
 		} )
 		.click()
 		.within( () => {
-			cy.get( loaderIconId ).should( 'be.visible' )
+			cy.get( loaderIconIdSelector ).should( 'be.visible' )
 		} )
 		.should( 'be.disabled' )
 		.should( 'not.have.text' )
@@ -99,7 +102,7 @@ export function checkActiveButton ( selectorStr: string, text: string ) {
 		.should( 'exist' )
 		.should( 'not.be.disabled' )
 		.within( () => {
-			cy.get( loaderIconId ).should( 'not.exist' )
+			cy.get( loaderIconIdSelector ).should( 'not.exist' )
 		} )
 		.should( 'have.text', text )
 }
@@ -109,13 +112,13 @@ export function checkDisabledButton ( selectorStr: string, text: string ) {
 		.should( 'exist' )
 		.should( 'be.disabled' )
 		.within( () => {
-			cy.get( loaderIconId ).should( 'not.exist' )
+			cy.get( loaderIconIdSelector ).should( 'not.exist' )
 		} )
 		.should( 'have.text', text )
 }
 
 export function checkMainValueByIndex ( expectedValue: string, indexToCheck: number ) {
-	cy.get( circleLetterId )
+	cy.get( circleLetterIdSelector )
 		.should( 'exist' )
 		.each( ( $el, index ) => {
 			if ( index === indexToCheck ) {
@@ -127,7 +130,7 @@ export function checkMainValueByIndex ( expectedValue: string, indexToCheck: num
 }
 
 export function checkMainValuesNotEmpty () {
-	cy.get( circleLetterId )
+	cy.get( circleLetterIdSelector )
 		.should( 'exist' )
 		.each( ( $el ) => {
 			expect( $el.text().trim() ).to.not.be.empty
@@ -153,11 +156,11 @@ export function checkMiniCircle (
 	index: number
 ) {
 	cy.get( selector ).eq( index ).should( 'exist' ).within( () => {
-		cy.get( circleWrapperId )
+		cy.get( circleWrapperIdSelector )
 			.should( 'exist' )
 			.invoke( 'attr', 'class' )
 			.should( 'match', new RegExp( partialClass ) )
-		cy.get( circleLetterId )
+		cy.get( circleLetterIdSelector )
 			.should( 'exist' )
 			.contains( expectedText )
 	} )
@@ -168,19 +171,19 @@ export function waitDisappearMiniCircle ( selector: string, index: number ) {
 		.eq( index )
 		.should( 'exist' )
 		.within( () => {
-			cy.get( circleLetterId ).should( 'exist' )
-			cy.get( circleLetterId ).should( 'not.exist' )
+			cy.get( circleLetterIdSelector ).should( 'exist' )
+			cy.get( circleLetterIdSelector ).should( 'not.exist' )
 		} )
 }
 
 export function waitDisappearValueByIndex ( index: number ) {
-	cy.get( circleLetterId )
+	cy.get( circleLetterIdSelector )
 		.eq( index )
 		.should( 'not.have.text' )
 }
 
 export function getValueByIndex ( index: number, callback: ( value: string ) => void ) {
-	cy.get( circleLetterId ).eq( index ).invoke( 'text' ).then( textValue => {
+	cy.get( circleLetterIdSelector ).eq( index ).invoke( 'text' ).then( textValue => {
 		const letterValue = textValue.trim()
 		callback( letterValue )
 	} )

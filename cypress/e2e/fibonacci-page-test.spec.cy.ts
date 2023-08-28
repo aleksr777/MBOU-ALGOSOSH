@@ -4,7 +4,8 @@ import {
   checkElementsCount,
   checkAndClickButton,
   checkActiveButton,
-  checkBtnWhenInputEmpty
+  checkBtnWhenInputEmpty,
+  btnSubmitSelector
 } from '../../src/utils/e2e-tests-utils'
 
 
@@ -13,7 +14,7 @@ describe( 'Testing Fibonacci Page', function () {
   beforeEach( () => {
     cy.visit( 'fibonacci' )
     cy.get( 'input[name="fibonacciInput"]' ).as( 'input' )
-    cy.get( 'button[type="submit"]' ).as( 'buttonSubmit' )
+    cy.get( btnSubmitSelector ).as( 'buttonSubmit' )
   } )
 
   it( 'should have a disabled submit button when input is empty', () => {

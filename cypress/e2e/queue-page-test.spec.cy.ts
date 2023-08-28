@@ -5,7 +5,8 @@ import {
   checkDisabledButton,
   checkAndClickButton,
   checkBtnWhenInputEmpty,
-  addTestElements
+  addTestElements,
+  btnSubmitSelector
 } from '../../src/utils/e2e-tests-utils'
 
 
@@ -14,7 +15,7 @@ describe( 'Testing Queue Page', function () {
   beforeEach( () => {
     cy.visit( 'queue' )
     cy.get( 'input[name="queueInput"]' ).as( 'input' )
-    cy.get( 'button[type="submit"]' ).as( 'buttonSubmit' )
+    cy.get( btnSubmitSelector ).as( 'buttonSubmit' )
     checkElementsCount( 7 )
     checkMainClassByIndices( [ 0, 1, 2, 3, 4, 5, 6 ], [], [] )
   } )
