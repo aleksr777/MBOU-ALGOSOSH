@@ -23,11 +23,11 @@
 
 --------------
 
-## Запуск установки пакетов: # npm i<br>
+Запуск установки пакетов: npm i<br>
 
-## Запуск проекта в режиме разработчика: # npm start<br>
+Запуск проекта в режиме разработчика: npm start<br>
 Сервер: <http://localhost:3000>.<br>
 
-## Запуск тестирования Jest: # npm test<br>
+Запуск тестирования Jest: npm test<br>
 
-### Запуск тестирования Cypress: npm run cypress:open<br>
+Запуск тестирования Cypress: npm run cypress:open<br>
