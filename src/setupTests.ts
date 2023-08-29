@@ -1,5 +1,27 @@
-// jest-dom adds custom jest matchers for asserting on DOM nodes.
-// allows you to do things like:
-// expect(element).toHaveTextContent(/react/i)
-// learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom';
+
+type MockROCallback = ( entries: any[], observer: ResizeObserver ) => void
+
+class MockResizeObserver {
+  callback: MockROCallback
+
+  constructor ( callback: MockROCallback ) {
+    this.callback = callback
+  }
+
+  observe ( target: Element ) {
+    // Имитация наблюдения за изменением размера элемента.
+  }
+
+  unobserve ( target: Element ) {
+    // Имитация прекращения наблюдения за изменением размера элемента.
+  }
+
+  disconnect () {
+    // Имитация прекращения всех наблюдений.
+  }
+}
+
+global.ResizeObserver = MockResizeObserver
+
+export { }

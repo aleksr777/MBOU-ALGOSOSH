@@ -1,4 +1,5 @@
-import React, { useState, ChangeEvent, useRef } from 'react'
+import styles from './fibonacci-page.module.css'
+import React, { useState, ChangeEvent, useRef, useEffect } from 'react'
 import { getFibonacciNumbers } from '../../utils/get-fibonacci-numbers'
 import { useForm } from '../../hooks/useForm'
 import { Input } from '../ui/input/input'
@@ -8,7 +9,6 @@ import { SolutionLayout } from '../ui/solution-layout/solution-layout'
 import { ElementStates } from '../../types/element-states'
 import { delay } from '../../utils/delay'
 import { DELAY_IN_MS, SHORT_DELAY_IN_MS } from '../../constants/delays'
-import styles from './fibonacci-page.module.css'
 
 export const FibonacciPage: React.FC = () => {
   const validateConfig = {
@@ -23,15 +23,30 @@ export const FibonacciPage: React.FC = () => {
 
   const [ isAnimating, setIsAnimating ] = useState( true )
   const [ isFormDisabled, setIsFormDisabled ] = useState( false )
+  const [ isBtnDisabled, setIsBtnDisabled ] = useState( false )
   const [ symbolsArr, setSymbolsArr ] = useState<number[]>( [] )
 
   const fibonacciCache = useRef<{ [ key: number ]: number[] }>( {} )
 
+  const isMounted = useRef( true )
+  useEffect( () => {
+    setIsBtnDisabled( true )
+    return () => { isMounted.current = false }
+  }, [] )
+
+  const controller = new AbortController()
+  const signal = controller.signal
+
+
   async function renderNumbers ( arrNumbers: number[] ) {
+
+    if ( !isMounted.current ) return
+
     for ( let i = 0; i < arrNumbers.length; i++ ) {
+      if ( !isMounted.current ) return
       setSymbolsArr( arrNumbers.slice( 0, i + 1 ) )
       if ( i < arrNumbers.length - 1 ) {
-        await delay( SHORT_DELAY_IN_MS )
+        await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
       } else {
         setIsFormDisabled( false )
       }
@@ -42,7 +57,7 @@ export const FibonacciPage: React.FC = () => {
     e.preventDefault()
     if ( !checkIsFormValid() ) { return }
     const number = parseInt( values.fibonacciInput )
-    if ( number && number <= 19 && number >= 1 ) {
+    if ( number && number <= 19 && number >= 1 && isMounted.current ) {
       setIsFormDisabled( true )
       setIsAnimating( true )
       setSymbolsArr( [] )
@@ -55,6 +70,7 @@ export const FibonacciPage: React.FC = () => {
   }
 
   const onChangeHandler = ( e: ChangeEvent<HTMLInputElement> ) => {
+    setIsBtnDisabled( false )
     const number = parseInt( e.target.value )
     const isInputValid = ( number && number < 20 && number > 0 ) ? true : false
     handleChange( e, isInputValid )
@@ -82,14 +98,17 @@ export const FibonacciPage: React.FC = () => {
           text={ isFormDisabled ? '' : 'Рассчитать' }
           type='submit'
           linkedList='small'
-          disabled={ !isFormValid }
+          disabled={ !isFormValid || isBtnDisabled }
         />
       </form>
 
       <div className={ styles.blockLetters }>
         { isAnimating &&
           symbolsArr.map( ( symbol, index ) => (
-            <Circle key={ index } tail={ index.toString() } letter={ symbol.toString() } state={ ElementStates.Default } />
+            <Circle key={ index }
+              index={ index }
+              letter={ symbol.toString() }
+              state={ ElementStates.Default } />
           ) )
         }
       </div>

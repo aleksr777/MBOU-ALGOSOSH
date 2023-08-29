@@ -2,19 +2,19 @@
   box-sizing: border-box;
 }
 
-.formWrapper {
+.blockWrapper {
   width: 950px;
   padding: 0;
   margin: 0 auto 114px auto;
 }
 
-.blockHeadsTails {
+.formHeadTail {
   display: flex;
   column-gap: 12px;
   margin-bottom: 10px;
 }
 
-.blockIndices {
+.formIndices {
   display: flex;
   column-gap: 12px;
 }

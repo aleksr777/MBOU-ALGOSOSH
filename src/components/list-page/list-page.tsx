@@ -1,5 +1,6 @@
 import styles from './list-page.module.css'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef, ChangeEvent } from 'react'
+import LinkedList from './linked-list-class'
 import { SolutionLayout } from '../ui/solution-layout/solution-layout'
 import { useForm } from '../../hooks/useForm'
 import { Input } from '../ui/input/input'
@@ -7,16 +8,36 @@ import ArrowIcon from '../ui/icons/arrow-icon'
 import Button from '../ui/button/button'
 import Circle from '../ui/circle/circle'
 import { delay } from '../../utils/delay'
+import { blockButtons, unblockButtons } from '../../utils/blocking-form'
 import { handleSubmitDefault } from '../../utils/handle-submit-default'
-import { blockForm, activateForm } from '../../utils/block-activate-form'
 import { getAndCheckIndex } from '../../utils/get-check-index-arr'
-import { getCircleState, getStepsDeleteHead, getStepsDeleteTail, getStepsDeleteByIndex } from '../../utils/list-page-utils'
 import { HEAD, TAIL } from '../../constants/element-captions'
 import { SHORT_DELAY_IN_MS } from '../../constants/delays'
 import { buttonDefaultState } from '../../constants/button-default-state'
-import LinkedList from './linked-list-class'
 import { ButtonsHookState, ListType } from '../../types/types'
 import { ElementStates } from '../../types/element-states'
+import {
+  getCircleState,
+  getStepsDeleteHead,
+  getStepsDeleteTail,
+  getStepsDeleteByIndex,
+  blockAllForms,
+  unblockAllForms
+} from '../../utils/list-page-utils'
+import {
+  formHeadTail,
+  formIndices,
+  indicesInput,
+  headTailInput,
+  btnAddHead,
+  btnAddTail,
+  btnDeleteHead,
+  btnDeleteTail,
+  btnAddByIndex,
+  btnDeleteByIndex,
+  validHeadTailConfig,
+  validIndicesConfig
+} from '../../constants/list-page-constants'
 
 type miniCircleDataType = {
   letter: string
@@ -27,59 +48,56 @@ type miniCircleDataType = {
 
 export const ListPage: React.FC = () => {
 
-  const indicesInput = 'indicesInput'
-  const headsTailsInput = 'headsTailsInput'
+  const isMounted = useRef( true )
+  useEffect( () => {
+    return () => { isMounted.current = false }
+  }, [] )
 
-  const btnAddHead = 'addHead'
-  const btnAddTail = 'addTail'
-  const btnDeleteHead = 'deleteHead'
-  const btnDeleteTail = 'deleteTail'
-  const btnAddByIndex = 'addByIndex'
-  const btnDeleteByIndex = 'deleteByIndex'
+  const headTailData = useForm( { headTailInput: '' }, validHeadTailConfig )
+  const headTailInputValue = headTailData.values.headTailInput
+  const headTailInputError = headTailData.errors.headTailInput
 
-  const validateConfig = {
-    headsTailsInput: {
-      pattern: /^[a-zA-Zа-яА-Я0-9]{0,4}$/,
-      checkIsEmptyValue: true,
-      defaultErrorMessage: 'Допустимы только буквы и цифры!!!',
-      emptyValueMessage: 'Введите значение!!!'
-    },
-    indicesInput: {
-      pattern: /^[0-9]{0,4}$/,
-      checkIsEmptyValue: true,
-      defaultErrorMessage: 'Допустимы только цифры!!!',
-      emptyValueMessage: 'Введите значение!!!'
-    },
-  }
-
-  const {
-    values,
-    errors,
-    isFormValid,
-    handleChange,
-    resetField
-  } = useForm( {
-    headsTailsInput: '',
-    indicesInput: ''
-  }, validateConfig )
+  const indicesData = useForm( { indicesInput: '' }, validIndicesConfig )
+  const indicesInputValue = indicesData.values.indicesInput
+  const indicesInputError = indicesData.errors.indicesInput
 
   const [ list, setList ] = useState( new LinkedList<unknown | string>() )
   const [ miniCircleData, setMiniCircleData ] = useState<miniCircleDataType | null>( null )
   const [ modifiedCircleIndex, setModifiedCircleIndex ] = useState<number | null>( null )
   const [ changingCircleIndices, setChangingCircleIndices ] = useState<number[] | null>( null )
-  const [ isFormDisabled, setIsFormDisabled ] = useState( false )
-  const [ buttonsState, setButtonsState ] = useState<ButtonsHookState>( {
-    addHead: buttonDefaultState,
-    addTail: buttonDefaultState,
-    deleteHead: buttonDefaultState,
-    deleteTail: buttonDefaultState,
-    addByIndex: buttonDefaultState,
-    deleteByIndex: buttonDefaultState,
+  const [ isFormHeadTailDisabled, setIsFormHeadTailDisabled ] = useState( false )
+  const [ isFormIndicesDisabled, setIsFormIndicesDisabled ] = useState( false )
+  const [ buttonsHeadTailState, setButtonsHeadTailState ] = useState<ButtonsHookState>( {
+    [ btnAddHead ]: buttonDefaultState,
+    [ btnAddTail ]: buttonDefaultState,
+    [ btnDeleteHead ]: buttonDefaultState,
+    [ btnDeleteTail ]: buttonDefaultState
+  } )
+  const [ buttonsIndexState, setButtonsIndexState ] = useState<ButtonsHookState>( {
+    [ btnAddByIndex ]: buttonDefaultState,
+    [ btnDeleteByIndex ]: buttonDefaultState
   } )
 
-  // Для блокировки-разблокировки формы
-  const formUseStates = { setIsFormDisabled, setButtonsState, buttonsState }
 
+  const formsUseStates = {
+    setIsFormHeadTailDisabled,
+    buttonsHeadTailState,
+    setButtonsHeadTailState,
+    setIsFormIndicesDisabled,
+    buttonsIndexState,
+    setButtonsIndexState
+  }
+
+  function setDefaultFormStates ( buttonName: string, formName: string ) {
+    unblockAllForms( formsUseStates, [ buttonName ], formName )
+    blockButtons( [ btnAddHead, btnAddTail ], buttonsHeadTailState, setButtonsHeadTailState )
+    blockButtons( [ btnAddByIndex, btnDeleteByIndex ], buttonsIndexState, setButtonsIndexState )
+    headTailData.resetField( headTailInput )
+    indicesData.resetField( indicesInput )
+  }
+
+  const controller = new AbortController()
+  const signal = controller.signal
 
   function getMiniCircleElement ( miniCircleData: miniCircleDataType ) {
     return <Circle tail={ '' } head={ '' } letter={ miniCircleData.letter } state={ ElementStates.Changing } isSmall={ true } extraClass={ styles.circle_correct_mb } />
@@ -99,143 +117,201 @@ export const ListPage: React.FC = () => {
     return index === arrLength - 1 ? TAIL : ''
   }
 
-  function setDefaultFormStates ( buttonName: string ) {
-    activateForm( buttonName, formUseStates )
-    resetField( indicesInput )
-    resetField( headsTailsInput )
-  }
-
   async function renderAddHead ( secondList: ListType ) {
-    blockForm( btnAddHead, formUseStates )
-    await delay( SHORT_DELAY_IN_MS )
-    setMiniCircleData( { letter: values.headsTailsInput, index: 0, position: HEAD } )
-    await delay( SHORT_DELAY_IN_MS )
+    if ( !isMounted.current ) return
+    blockAllForms( formsUseStates, [ btnAddHead ], formHeadTail )
+    await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
+    setMiniCircleData( { letter: headTailInputValue, index: 0, position: HEAD } )
+    await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     setModifiedCircleIndex( 0 )
     setList( secondList )
     setMiniCircleData( null )
-    await delay( SHORT_DELAY_IN_MS )
+    await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     setModifiedCircleIndex( null )
-    setDefaultFormStates( btnAddHead )
+    setDefaultFormStates( btnAddHead, formHeadTail )
+    if ( buttonsHeadTailState[ btnDeleteHead ].isDisabled
+      || buttonsHeadTailState[ btnDeleteTail ].isDisabled ) {
+      unblockButtons( [ btnDeleteHead, btnDeleteTail ], buttonsHeadTailState, setButtonsHeadTailState )
+    }
   }
 
-  async function renderAddTail (
-    secondList: ListType, arrLength: number ) {
-    blockForm( btnAddTail, formUseStates )
-    await delay( SHORT_DELAY_IN_MS )
-    setMiniCircleData( { letter: values.headsTailsInput, index: arrLength - 1, position: TAIL } )
-    await delay( SHORT_DELAY_IN_MS )
+  async function renderAddTail ( secondList: ListType, arrLength: number ) {
+    if ( !isMounted.current ) return
+    blockAllForms( formsUseStates, [ btnAddTail ], formHeadTail )
+    await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
+    setMiniCircleData( { letter: headTailInputValue, index: arrLength - 1, position: TAIL } )
+    await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     setList( secondList )
     setMiniCircleData( null )
     setModifiedCircleIndex( arrLength )
-    await delay( SHORT_DELAY_IN_MS )
+    await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     setModifiedCircleIndex( null )
-    setDefaultFormStates( btnAddTail )
+    setDefaultFormStates( btnAddTail, formHeadTail )
+    if ( buttonsHeadTailState[ btnDeleteHead ].isDisabled
+      || buttonsHeadTailState[ btnDeleteTail ].isDisabled ) {
+      unblockButtons( [ btnDeleteHead, btnDeleteTail ], buttonsHeadTailState, setButtonsHeadTailState )
+    }
   }
 
-  async function renderDeleteHead ( steps: ListType[] ) {
-    blockForm( btnDeleteHead, formUseStates )
-    await delay( SHORT_DELAY_IN_MS )
+  async function renderDeleteHead ( steps: ListType[], arrLength: number ) {
+    if ( !isMounted.current ) return
+    blockAllForms( formsUseStates, [ btnDeleteHead ], formHeadTail )
+    await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     setList( steps[ 1 ] )
     setMiniCircleData( { letter: steps[ 0 ].head?.value as string, index: 0, position: HEAD } )
-    await delay( SHORT_DELAY_IN_MS )
+    await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     setList( steps[ 2 ] )
     setMiniCircleData( null )
-    setDefaultFormStates( btnDeleteHead )
+    setDefaultFormStates( btnDeleteHead, formHeadTail )
+    if ( arrLength < 2 ) {
+      blockButtons( [ btnDeleteHead, btnDeleteTail ], buttonsHeadTailState, setButtonsHeadTailState )
+      blockButtons( [ btnDeleteByIndex ], buttonsIndexState, setButtonsIndexState )
+    }
   }
 
   async function renderDeleteTail ( steps: ListType[], arrLength: number ) {
-    blockForm( btnDeleteTail, formUseStates )
-    await delay( SHORT_DELAY_IN_MS )
+    if ( !isMounted.current ) return
+    blockAllForms( formsUseStates, [ btnDeleteTail ], formHeadTail )
+    await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     setMiniCircleData( { letter: steps[ 0 ].tail?.value as string, index: arrLength - 1, position: TAIL } )
     setList( steps[ 1 ] )
-    await delay( SHORT_DELAY_IN_MS )
+    await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     setList( steps[ 2 ] )
     setMiniCircleData( null )
-    setDefaultFormStates( btnDeleteTail )
+    setDefaultFormStates( btnDeleteTail, formHeadTail )
+    if ( arrLength < 2 ) {
+      blockButtons( [ btnDeleteHead, btnDeleteTail ], buttonsHeadTailState, setButtonsHeadTailState )
+      blockButtons( [ btnDeleteByIndex ], buttonsIndexState, setButtonsIndexState )
+    }
   }
 
   async function renderAddByIndex ( secondList: ListType, indexValue: number ) {
-    blockForm( btnAddByIndex, formUseStates )
+    if ( !isMounted.current ) return
+    blockAllForms( formsUseStates, [ btnAddByIndex ], formIndices )
     const arr = []
-    for ( let i = 0; i <= parseInt( values.indicesInput ); i++ ) {
-      setMiniCircleData( { letter: values.headsTailsInput, index: i, position: HEAD } )
+    for ( let i = 0; i <= parseInt( indicesInputValue ); i++ ) {
+      setMiniCircleData( { letter: headTailInputValue, index: i, position: HEAD } )
       i >= 0 && arr.push( i - 1 )
       setChangingCircleIndices( [ ...arr ] )
-      await delay( SHORT_DELAY_IN_MS )
+      await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     }
     setMiniCircleData( null )
     setList( secondList )
     setModifiedCircleIndex( indexValue )
     setChangingCircleIndices( null )
-    await delay( SHORT_DELAY_IN_MS )
+    await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     setModifiedCircleIndex( null )
-    setDefaultFormStates( btnAddByIndex )
+    setDefaultFormStates( btnAddByIndex, formIndices )
+    if ( buttonsHeadTailState[ btnDeleteHead ].isDisabled
+      || buttonsHeadTailState[ btnDeleteTail ].isDisabled ) {
+      unblockButtons( [ btnDeleteHead, btnDeleteTail ], buttonsHeadTailState, setButtonsHeadTailState )
+    }
   }
 
-  async function renderDeleteByIndex ( steps: ListType[], indexNum: number ) {
-    blockForm( btnDeleteByIndex, formUseStates )
+  async function renderDeleteByIndex ( steps: ListType[], indexNum: number, arrLength: number ) {
+    if ( !isMounted.current ) return
+    blockAllForms( formsUseStates, [ btnDeleteByIndex ], formIndices )
     const valueByIndex = steps[ 0 ].getByIndex( indexNum )
     const arr = []
     for ( let i = 0; i <= indexNum; i++ ) {
+      if ( !isMounted.current ) return
       arr.push( i )
       setChangingCircleIndices( [ ...arr ] )
-      await delay( SHORT_DELAY_IN_MS )
+      await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     }
     arr.pop()
     setChangingCircleIndices( [ ...arr ] )
     setMiniCircleData( { letter: valueByIndex as string, index: indexNum, position: TAIL } )
     setList( steps[ 1 ] )
-    await delay( SHORT_DELAY_IN_MS )
+    await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     setList( steps[ 2 ] )
     setChangingCircleIndices( null )
     setMiniCircleData( null )
-    setDefaultFormStates( btnDeleteByIndex )
+    setDefaultFormStates( btnDeleteByIndex, formIndices )
+    if ( arrLength < 2 ) {
+      blockButtons( [ btnDeleteHead, btnDeleteTail ], buttonsHeadTailState, setButtonsHeadTailState )
+      blockButtons( [ btnDeleteByIndex ], buttonsIndexState, setButtonsIndexState )
+    }
   }
 
   const handleAddHead = async () => {
-    if ( !values.headsTailsInput ) { return }
+    if ( !headTailInputValue ) { return }
     const secondList = list.clone() as ListType
-    secondList.prepend( values.headsTailsInput )
+    secondList.prepend( headTailInputValue )
     renderAddHead( secondList )
   }
 
   const handleAddTail = async ( arrLength: number ) => {
-    if ( !values.headsTailsInput ) { return }
+    if ( !headTailInputValue ) { return }
     const secondList = list.clone() as ListType
-    secondList.append( values.headsTailsInput )
+    secondList.append( headTailInputValue )
     renderAddTail( secondList, arrLength )
   }
 
-  const handleDeleteHead = async () => {
+  const handleDeleteHead = async ( arrLength: number ) => {
     if ( !list.head ) { return }
     const steps = getStepsDeleteHead( list )
-    renderDeleteHead( steps )
+    renderDeleteHead( steps, arrLength )
   }
 
   const handleDeleteTail = async ( arrLength: number ) => {
-    if ( !list.head?.next ) { return }
+    if ( !list.head ) { return }
     const steps = getStepsDeleteTail( list, arrLength )
     renderDeleteTail( steps, arrLength )
   }
 
   const handleAddByIndex = async ( arrLength: number ) => {
-    const indexValue = getAndCheckIndex( values.indicesInput, arrLength )
-    if ( indexValue === false || !values.headsTailsInput || !values.indicesInput ) { return }
+    const indexValue = getAndCheckIndex( indicesInputValue, arrLength )
+    if ( indexValue === null || !headTailInputValue || !indicesInputValue ) { return }
     const secondList = list.clone() as ListType
-    secondList.addByIndex( values.headsTailsInput, indexValue )
+    secondList.addByIndex( headTailInputValue, indexValue )
     renderAddByIndex( secondList, indexValue )
   }
 
   const handleDeleteByIndex = async ( arrLength: number ) => {
-    const indexValue = getAndCheckIndex( values.indicesInput, arrLength )
-    if ( indexValue === false || !values.indicesInput ) { return }
-    const indexNum = parseInt( values.indicesInput )
+    const indexValue = getAndCheckIndex( indicesInputValue, arrLength )
+    if ( indexValue === null || !indicesInputValue ) { return }
+    const indexNum = parseInt( indicesInputValue )
     const steps = getStepsDeleteByIndex( list, indexNum )
-    renderDeleteByIndex( steps, indexNum )
+    renderDeleteByIndex( steps, indexNum, arrLength )
+  }
+
+  const onChangeHandler = ( e: ChangeEvent<HTMLInputElement>, arrLength: number ) => {
+    if ( e.target.name === headTailInput ) {
+      if ( e.target.value ) {
+        unblockButtons( [ btnAddHead, btnAddTail ], buttonsHeadTailState, setButtonsHeadTailState )
+        if ( indicesInputValue && buttonsIndexState[ btnAddByIndex ].isDisabled ) {
+          unblockButtons( [ btnAddByIndex ], buttonsIndexState, setButtonsIndexState )
+        }
+      } else {
+        blockButtons( [ btnAddHead, btnAddTail ], buttonsHeadTailState, setButtonsHeadTailState )
+      }
+      headTailData.handleChange( e )
+    }
+    else if ( e.target.name === indicesInput ) {
+      const number = parseInt( e.target.value )
+      if ( arrLength === 0 && number === 0 && headTailInputValue ) {
+        unblockButtons( [ btnAddByIndex ], buttonsIndexState, setButtonsIndexState )
+        indicesData.handleChange( e )
+        return
+      }
+      const isValid = ( typeof number === 'number' && number < arrLength && number >= 0 ) ? true : false
+      if ( isValid ) {
+        if ( headTailInputValue ) {
+          unblockButtons( [ btnAddByIndex, btnDeleteByIndex ], buttonsIndexState, setButtonsIndexState )
+        } else {
+          unblockButtons( [ btnDeleteByIndex ], buttonsIndexState, setButtonsIndexState )
+        }
+      } else {
+        blockButtons( [ btnAddByIndex, btnDeleteByIndex ], buttonsIndexState, setButtonsIndexState )
+      }
+      indicesData.handleChange( e )
+    }
   }
 
   useEffect( () => {
-    let isMounted = true
+    blockButtons( [ btnAddByIndex, btnDeleteByIndex ], buttonsIndexState, setButtonsIndexState )
+    blockButtons( [ btnAddHead, btnAddTail ], buttonsHeadTailState, setButtonsHeadTailState )
     const newList = new LinkedList()
     for ( let i = 0; i < 6; i++ ) {
       const randomValue = Math.floor( Math.random() * 100 ) + 1
@@ -243,9 +319,6 @@ export const ListPage: React.FC = () => {
     }
     if ( isMounted ) {
       setList( newList )
-    }
-    return () => {
-      isMounted = false
     }
   }, [] )
 
@@ -255,101 +328,123 @@ export const ListPage: React.FC = () => {
 
     <SolutionLayout title='Связный список'>
 
-      <form className={ styles.formWrapper } onSubmit={ handleSubmitDefault }>
+      <div className={ styles.blockWrapper }>
 
-        <div className={ styles.blockHeadsTails }>
+        <form className={ styles.formHeadTail } onSubmit={ handleSubmitDefault }>
 
           <Input
-            name={ headsTailsInput }
+            name={ headTailInput }
             placeholder='Введите значение'
             isLimitText={ true }
             maxLength={ 4 }
-            value={ values.headsTailsInput }
-            limitText={ errors.headsTailsInput ? errors.headsTailsInput : 'Максимум — 4 символа' }
-            onChange={ handleChange }
-            disabled={ isFormDisabled }
+            value={ headTailInputValue }
+            limitText={ headTailInputError ? headTailInputError : 'Максимум — 4 символа' }
+            onChange={ ( e: React.ChangeEvent<HTMLInputElement> ) => onChangeHandler( e, listArr.length ) }
+            disabled={ isFormHeadTailDisabled }
           />
 
           <Button
-            text={ buttonsState.addHead.isLoading ? '' : 'Добавить в head' }
             type='button'
             linkedList='small'
+            text={ buttonsHeadTailState.addHead.isLoading ? '' : 'Добавить в head' }
             extraClass={ styles.button_correct_small }
             onClick={ handleAddHead }
-            isLoader={ buttonsState.addHead.isLoading ? true : false }
-            disabled={ isFormDisabled && !buttonsState.addHead.isLoading || !isFormValid }
+            isLoader={ buttonsHeadTailState.addHead.isLoading ? true : false }
+            disabled={
+              isFormHeadTailDisabled && !buttonsHeadTailState.addHead.isLoading
+              || !headTailData.isFormValid
+              || buttonsHeadTailState.addHead.isDisabled
+            }
           />
 
           <Button
-            text={ buttonsState.addTail.isLoading ? '' : 'Добавить в tail' }
             type='button'
             linkedList='small'
+            text={ buttonsHeadTailState.addTail.isLoading ? '' : 'Добавить в tail' }
             extraClass={ styles.button_correct_small }
             onClick={ () => handleAddTail( listArr.length ) }
-            isLoader={ buttonsState.addTail.isLoading ? true : false }
-            disabled={ isFormDisabled && !buttonsState.addTail.isLoading || !isFormValid }
+            isLoader={ buttonsHeadTailState.addTail.isLoading ? true : false }
+            disabled={
+              isFormHeadTailDisabled && !buttonsHeadTailState.addTail.isLoading
+              || !headTailData.isFormValid
+              || buttonsHeadTailState.addTail.isDisabled
+            }
           />
 
           <Button
-            text={ buttonsState.deleteHead.isLoading ? '' : 'Удалить из head' }
             type='button'
             linkedList='small'
+            text={ buttonsHeadTailState.deleteHead.isLoading ? '' : 'Удалить из head' }
             extraClass={ styles.button_correct_small }
-            onClick={ handleDeleteHead }
-            isLoader={ buttonsState.deleteHead.isLoading ? true : false }
-            disabled={ isFormDisabled && !buttonsState.deleteHead.isLoading }
+            onClick={ () => handleDeleteHead( listArr.length ) }
+            isLoader={ buttonsHeadTailState.deleteHead.isLoading ? true : false }
+            disabled={
+              isFormHeadTailDisabled && !buttonsHeadTailState.deleteHead.isLoading
+              || buttonsHeadTailState.deleteHead.isDisabled
+            }
           />
 
           <Button
-            text={ buttonsState.deleteTail.isLoading ? '' : 'Удалить из tail' }
             type='button'
             linkedList='small'
+            text={ buttonsHeadTailState.deleteTail.isLoading ? '' : 'Удалить из tail' }
             extraClass={ styles.button_correct_small }
             onClick={ () => handleDeleteTail( listArr.length ) }
-            isLoader={ buttonsState.deleteTail.isLoading ? true : false }
-            disabled={ isFormDisabled && !buttonsState.deleteTail.isLoading }
+            isLoader={ buttonsHeadTailState.deleteTail.isLoading ? true : false }
+            disabled={ isFormHeadTailDisabled && !buttonsHeadTailState.deleteTail.isLoading
+              || buttonsHeadTailState.deleteTail.isDisabled
+            }
           />
 
-        </div>
+        </form>
 
-        <div className={ styles.blockIndices }>
+        <form className={ styles.formIndices } onSubmit={ handleSubmitDefault }>
 
           <Input
             name={ indicesInput }
             placeholder='Введите индекс'
-            maxLength={ 4 }
+            maxLength={ 2 }
             isLimitText={ true }
-            limitText={ errors.indicesInput ? errors.indicesInput : '' }
-            value={ values.indicesInput }
-            onChange={ handleChange }
-            disabled={ isFormDisabled }
+            limitText={ indicesInputError ? indicesInputError : 'Введите индекс' }
+            value={ indicesInputValue }
+            onChange={ ( e: React.ChangeEvent<HTMLInputElement> ) => onChangeHandler( e, listArr.length ) }
+            disabled={ isFormIndicesDisabled }
           />
 
           <Button
-            text={ buttonsState.addByIndex.isLoading ? '' : 'Добавить по индексу' }
             type='button'
             linkedList='big'
+            text={ buttonsIndexState.addByIndex.isLoading ? '' : 'Добавить по индексу' }
             extraClass={ styles.button_correct_large }
             onClick={ () => handleAddByIndex( listArr.length ) }
-            isLoader={ buttonsState.addByIndex.isLoading ? true : false }
-            disabled={ isFormDisabled && !buttonsState.addByIndex.isLoading || !isFormValid }
+            isLoader={ buttonsIndexState.addByIndex.isLoading ? true : false }
+            disabled={
+              isFormIndicesDisabled && !buttonsIndexState.addByIndex.isLoading
+              || !indicesData.isFormValid
+              || buttonsIndexState.addByIndex.isDisabled
+              || !headTailData.isFormValid
+            }
           />
 
           <Button
-            text={ buttonsState.deleteByIndex.isLoading ? '' : 'Удалить по индексу' }
             type='button'
             linkedList='big'
+            text={ buttonsIndexState.deleteByIndex.isLoading ? '' : 'Удалить по индексу' }
             extraClass={ styles.button_correct_large }
             onClick={ () => handleDeleteByIndex( listArr.length ) }
-            isLoader={ buttonsState.deleteByIndex.isLoading ? true : false }
-            disabled={ isFormDisabled && !buttonsState.deleteByIndex.isLoading || !isFormValid }
+            isLoader={ buttonsIndexState.deleteByIndex.isLoading ? true : false }
+            disabled={
+              isFormIndicesDisabled && !buttonsIndexState.deleteByIndex.isLoading
+              || !indicesData.isFormValid
+              || buttonsIndexState.deleteByIndex.isDisabled
+            }
           />
-        </div>
+        </form>
 
-      </form>
+      </div>
 
       <div className={ styles.blockAnimate }>
-        { listArr.map( ( value, index ) => (
+        { listArr && listArr.map( ( value, index ) => (
           <div key={ index } className={ styles.blockCircle }>
             <Circle
               index={ index }
@@ -359,7 +454,9 @@ export const ListPage: React.FC = () => {
               state={ getCircleState( index, modifiedCircleIndex, changingCircleIndices ) } />
             { index === listArr.length - 1 ? null : <ArrowIcon fill='var(--default-color)' /> }
           </div>
-        ) ) }
+        ) )
+        }
+
       </div>
 
     </SolutionLayout>

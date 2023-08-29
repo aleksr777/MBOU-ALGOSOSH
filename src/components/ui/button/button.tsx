@@ -5,7 +5,7 @@ import { AscendingIcon } from '../icons/ascending-icon'
 import { DescendingIcon } from '../icons/descending-icon'
 import { Direction } from '../../../types/direction'
 
-interface ButtonProps extends React.HTMLProps<HTMLButtonElement> {
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   text?: string
   type?: 'button' | 'submit' | 'reset'
   sorting?: Direction
@@ -36,7 +36,12 @@ const Button: React.FC<ButtonProps> = ( {
       { ...rest }
     >
       { isLoader ? (
-        <img className={ styles.loader_icon } src={ loaderIcon } alt='Загрузка.' />
+        <img
+          data-testid='loader-icon'
+          className={ styles.loader_icon }
+          src={ loaderIcon }
+          alt='Загрузка.'
+        />
       ) : (
         <>
           { sorting && currentIcon }

@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
-import { SolutionLayout } from '../ui/solution-layout/solution-layout'
 import styles from './sorting-page.module.css'
+import React, { useState, useRef, useEffect } from 'react'
+import { SolutionLayout } from '../ui/solution-layout/solution-layout'
 import { useForm } from '../../hooks/useForm'
 import { RadioInput } from '../ui/radio-input/radio-input'
 import Button from '../ui/button/button'
@@ -10,7 +10,7 @@ import { randomArr } from '../../utils/random-arr'
 import { handleSubmitDefault } from '../../utils/handle-submit-default'
 import { Direction } from '../../types/direction'
 import { getStepsSortingChoice, getStepsSortingBubble, getSymbolState } from '../../utils/sorting-page-utils'
-import { blockForm, activateForm } from '../../utils/block-activate-form'
+import { blockForm, unblockForm } from '../../utils/blocking-form'
 import { ButtonsHookState, ArrChangingType, StepsSortingType } from '../../types/types'
 import { SHORT_DELAY_IN_MS } from '../../constants/delays'
 import { buttonDefaultState } from '../../constants/button-default-state'
@@ -27,6 +27,7 @@ export const SortingPage: React.FC = () => {
 
   const [ columnsNumbers, setColumnsNumbers ] = useState<number[]>( [] )
   const [ isFormDisabled, setIsFormDisabled ] = useState( false )
+  const [ isBtnDisabled, setIsBtnDisabled ] = useState( false )
   const [ isColumnsSorted, setIsColumnsSorted ] = useState( false )
   const [ changingIndixes, setChangingIndixes ] = useState<[ number | null, number | null ]>( [ null, null ] )
   const [ modifiedIndixes, setModifiedIndixes ] = useState<( number | null )[]>( [] )
@@ -36,7 +37,16 @@ export const SortingPage: React.FC = () => {
     descending: buttonDefaultState
   } )
 
+  const isMounted = useRef( true )
+  useEffect( () => {
+    setIsBtnDisabled( true )
+    return () => { isMounted.current = false }
+  }, [] )
+
   const formUseStates = { setIsFormDisabled, setButtonsState, buttonsState }
+
+  const controller = new AbortController()
+  const signal = controller.signal
 
   function resetStatesData () {
     setModifiedIndixes( [] )
@@ -49,25 +59,28 @@ export const SortingPage: React.FC = () => {
     direction: string,
     sortingRadio: string
   ) {
+    if ( !isMounted.current ) return
     const btnName = ( direction === ASCENDING ) ? 'ascending' : 'descending'
-    blockForm( btnName, formUseStates )
+    blockForm( [ btnName ], formUseStates )
     let arrSteps: StepsSortingType = []
     if ( sortingRadio === CHOICE ) { arrSteps = await getStepsSortingChoice( columnsNumbers, direction ) }
     else if ( sortingRadio === BUBBLE ) { arrSteps = await getStepsSortingBubble( columnsNumbers, direction ) }
     for ( let i = 0; i < arrSteps.length; i++ ) {
       const copyArr = [ ...arrSteps[ i ] ]
-      await delay( SHORT_DELAY_IN_MS )
-      const numbersArray = copyArr.slice( 0, -2 ) as number[]
-      const sortedIndexes = copyArr[ copyArr.length - 2 ] as number[]
-      const checkedIndexes = copyArr[ copyArr.length - 1 ] as ArrChangingType
-      setChangingIndixes( [ checkedIndexes[ 0 ], checkedIndexes[ 1 ] ] )
-      setModifiedIndixes( [ ...sortedIndexes ] )
-      setColumnsNumbers( [ ...numbersArray ] )
+      await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
+      if ( isMounted.current ) {
+        const numbersArray = copyArr.slice( 0, -2 ) as number[]
+        const sortedIndexes = copyArr[ copyArr.length - 2 ] as number[]
+        const checkedIndexes = copyArr[ copyArr.length - 1 ] as ArrChangingType
+        setChangingIndixes( [ checkedIndexes[ 0 ], checkedIndexes[ 1 ] ] )
+        setModifiedIndixes( [ ...sortedIndexes ] )
+        setColumnsNumbers( [ ...numbersArray ] )
+      }
     }
     setChangingIndixes( [ null, null ] )
-    await delay( SHORT_DELAY_IN_MS )
+    await delay( SHORT_DELAY_IN_MS, 'Прервано!', { signal } )
     setIsColumnsSorted( true )
-    activateForm( btnName, formUseStates )
+    unblockForm( [ btnName ], formUseStates )
   }
 
   function animateSort ( direction: string ) {
@@ -76,6 +89,7 @@ export const SortingPage: React.FC = () => {
   }
 
   const getNewColumns = () => {
+    setIsBtnDisabled( false )
     if ( isFormDisabled ) { return }
     resetStatesData()
     const randomNumbers = randomArr( 3, 17, 100 )
@@ -118,7 +132,7 @@ export const SortingPage: React.FC = () => {
             extraClass={ styles.button_correctSize }
             text={ buttonsState.ascending.isLoading ? '' : 'По возрастанию' }
             isLoader={ buttonsState.ascending.isLoading ? true : false }
-            disabled={ isFormDisabled && !buttonsState.ascending.isLoading }
+            disabled={ isFormDisabled && !buttonsState.ascending.isLoading || isBtnDisabled }
             onClick={ () => animateSort( ASCENDING ) }
           />
           <Button
@@ -128,7 +142,7 @@ export const SortingPage: React.FC = () => {
             extraClass={ styles.button_correctSize }
             text={ buttonsState.descending.isLoading ? '' : 'По убыванию' }
             isLoader={ buttonsState.descending.isLoading ? true : false }
-            disabled={ isFormDisabled && !buttonsState.descending.isLoading }
+            disabled={ isFormDisabled && !buttonsState.descending.isLoading || isBtnDisabled }
             onClick={ () => animateSort( DESCENDING ) }
           />
 

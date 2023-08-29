@@ -9,7 +9,8 @@ export type OnlyNumberObjType = {
 }
 
 export type ButtonState = {
-  isLoading: boolean
+  isLoading: boolean,
+  isDisabled: boolean,
 }
 
 export type ButtonsHookState = {

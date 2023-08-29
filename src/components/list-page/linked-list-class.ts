@@ -73,10 +73,8 @@ class LinkedList<T> {
       }
       return
     }
-
     let currentNode = this.head
     let i = 0
-
     while ( currentNode ) {
       if ( i === index - 1 && currentNode.next ) {
         currentNode.next = currentNode.next.next
@@ -88,7 +86,6 @@ class LinkedList<T> {
       currentNode = currentNode.next
       i++
     }
-
     throw new Error( 'Index out of bounds' )
   }
 
@@ -107,7 +104,11 @@ class LinkedList<T> {
       currentNode = currentNode.next
     }
     currentNode.next = null
-    this.tail = currentNode
+    if ( !currentNode.value ) {
+      this.tail = null
+      this.head = null
+    }
+    else { this.tail = currentNode }
   }
 
   updateByIndex ( index: number, newValue: T ) {
@@ -165,6 +166,11 @@ class LinkedList<T> {
     }
 
     return newList
+  }
+
+  clear () {
+    this.head = null
+    this.tail = null
   }
 }
 

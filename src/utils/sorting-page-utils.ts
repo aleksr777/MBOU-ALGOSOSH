@@ -1,34 +1,45 @@
 import { swapElementsArr } from './swap-elements-arr'
 import { Direction } from '../types/direction'
 import { ElementStates } from '../types/element-states'
-import { StepsSortingType, ArrSortingType, ArrChangingType } from '../types/types'
+import { StepsSortingType, ArrChangingType } from '../types/types'
 
 const ASCENDING = Direction.Ascending
 const DESCENDING = Direction.Descending
 
 //Сортировка выбором
-export async function getStepsSortingChoice ( arrNumbers: number[], direction: string ) {
+export async function getStepsSortingChoice ( arrNumbers: number[], direction: string ): Promise<StepsSortingType> {
+
+  if ( arrNumbers.length === 0 ) {
+    return []
+  }
+
+  if ( arrNumbers.length === 1 ) {
+    return [ [ arrNumbers[ 0 ], [], [ null, null ] ] ]
+  }
 
   const arr = [ ...arrNumbers ]
   let sortedIndexes: number[] = []
+  let changingIndexes: ArrChangingType = [ null, null ]
   const steps: StepsSortingType = []
 
-  steps.push( [ ...arr, sortedIndexes.slice(), [ null, null ] ] ) // последний элемент массива - индексы сравниваемых элементов
+  steps.push( [ ...arr, sortedIndexes.slice(), changingIndexes ] )
 
   for ( let i = 0; i < arr.length; i++ ) {
 
     let minOrMaxIndex = i
     for ( let j = i + 1; j < arr.length; j++ ) {
+      changingIndexes = [ i, j ]
       if ( direction === ASCENDING && arr[ j ] < arr[ minOrMaxIndex ] ||
         direction === DESCENDING && arr[ j ] > arr[ minOrMaxIndex ] ) {
         minOrMaxIndex = j
       }
       if ( i !== sortedIndexes[ i ] && i > 0 ) { sortedIndexes[ i - 1 ] = i - 1 }
-      steps.push( [ ...arr, sortedIndexes.slice(), [ i, j ] ] )
+      steps.push( [ ...arr, sortedIndexes.slice(), changingIndexes ] )
     }
     if ( minOrMaxIndex !== i ) {
       swapElementsArr( arr, i, minOrMaxIndex )
-      steps.push( [ ...arr, sortedIndexes.slice(), [ i, minOrMaxIndex ] ] )
+      changingIndexes = [ i, minOrMaxIndex ]
+      steps.push( [ ...arr, sortedIndexes.slice(), changingIndexes ] )
     }
 
   }
@@ -38,13 +49,23 @@ export async function getStepsSortingChoice ( arrNumbers: number[], direction: s
 
 
 // Вариант пузырьковой сортировки - шейкерная сортировка.
-export async function getStepsSortingBubble ( arrNumbers: number[], direction: string ) {
+export async function getStepsSortingBubble ( arrNumbers: number[], direction: string ): Promise<StepsSortingType> {
+
+  if ( arrNumbers.length === 0 ) {
+    return []
+  }
+
+  if ( arrNumbers.length === 1 ) {
+    return [ [ arrNumbers[ 0 ], [], [ null, null ] ] ]
+  }
 
   const arr = [ ...arrNumbers ]
   let sortedIndexes: number[] = []
+  let changingIndexes: ArrChangingType = [ null, null ]
   const steps: StepsSortingType = []
 
-  steps.push( [ ...arr, sortedIndexes.slice(), [ null, null ] ] ) // последний элемент массива - индексы сравниваемых элементов
+  steps.push( [ ...arr, sortedIndexes.slice(), changingIndexes ] )
+  // последний элемент массива - индексы сравниваемых элементов
 
   let left = 0
   let right = arr.length - 1
@@ -60,11 +81,12 @@ export async function getStepsSortingBubble ( arrNumbers: number[], direction: s
     // перемещаем наибольший элемент вправо
     for ( let i = left; i < right; i++ ) {
       let j = i + 1
-      steps.push( [ ...arr, sortedIndexes.slice(), [ i, j ] ] )
+      changingIndexes = [ i, j ]
+      steps.push( [ ...arr, sortedIndexes.slice(), changingIndexes ] )
       if ( ( direction === ASCENDING && arr[ i ] > arr[ j ] ) ||
         ( direction === DESCENDING && arr[ i ] < arr[ j ] ) ) {
         swapElementsArr( arr, i, j )
-        steps.push( [ ...arr, sortedIndexes.slice(), [ i, j ] ] )
+        steps.push( [ ...arr, sortedIndexes.slice(), changingIndexes ] )
         isSwapedRight = true
       }
     }
@@ -75,11 +97,12 @@ export async function getStepsSortingBubble ( arrNumbers: number[], direction: s
     if ( isSwapedRight ) {
       for ( let i = right; i > left; i-- ) {
         let j = i - 1
-        steps.push( [ ...arr, sortedIndexes.slice(), [ i, j ] ] )
+        changingIndexes = [ i, j ]
+        steps.push( [ ...arr, sortedIndexes.slice(), changingIndexes ] )
         if ( ( direction === ASCENDING && arr[ j ] > arr[ i ] ) ||
           ( direction === DESCENDING && arr[ j ] < arr[ i ] ) ) {
           swapElementsArr( arr, i, j )
-          steps.push( [ ...arr, sortedIndexes.slice(), [ i, j ] ] )
+          steps.push( [ ...arr, sortedIndexes.slice(), changingIndexes ] )
           isSwapedLeft = true
         }
       }
@@ -95,7 +118,7 @@ export async function getStepsSortingBubble ( arrNumbers: number[], direction: s
 
 export function getSymbolState (
   modifiedIndexes: ( number | null )[],
-  changingIndexes: [ number | null, number | null ],
+  changingIndexes: ArrChangingType,
   isColumnsSorted: boolean,
   index: number
 ) {
